@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: bbadec165cfd3e649afc060974854758
+timeCreated: 1476510901
+licenseType: Free
+ShaderImporter:
+  defaultTextures:
+  - _AnimatedRamp: {fileID: 2800000, guid: c93a21d6be3dfdc4580112ee5940ae39, type: 3}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
