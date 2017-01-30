@@ -6,7 +6,9 @@ public class HandTool : MonoBehaviour
 
     public GameObject heldItem;
     public float rayMaxDist;
-    public float ConstructionMaxDist;
+    public float constructionMaxDist;
+    public float constructionGridDist;
+
 
     public bool ConstructionMode;
     public GameObject Dirt;
@@ -116,19 +118,32 @@ public class HandTool : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit, ConstructionMaxDist))
+            if (Physics.Raycast(ray, out hit, constructionMaxDist))
             {
-                heldItem.transform.position = new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z);
+                heldItem.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 heldItem.transform.up = hit.normal;
             }
-            else if (Physics.Raycast(heldItem.transform.position, -transform.up, out hit, ConstructionMaxDist))
+            else if (Physics.Raycast(heldItem.transform.position, -transform.up, out hit, constructionMaxDist))
             {
-                heldItem.transform.position = new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z);
+                heldItem.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 heldItem.transform.up = hit.normal;
             }
         }
 
     }
+
+    Vector3 GridPos(Vector3 pos)
+    {
+        float x = pos.x;
+        float z = pos.z;
+
+        x = (Mathf.Round(x / constructionGridDist)) * constructionGridDist;
+        z = (Mathf.Round(z / constructionGridDist)) * constructionGridDist;
+
+        return new Vector3(x, pos.y, z);
+    }
+
+
     public void PickUp(GameObject item)
     {
         if (!heldItem)
@@ -143,8 +158,8 @@ public class HandTool : MonoBehaviour
             if (heldItem.GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             {
                 //Destroy(heldItem.GetComponent<NavMeshAgent>());
-               // heldItem.GetComponent<NavMeshAgent>().updatePosition = false;
-               // heldItem.GetComponent<NavMeshAgent>().updateRotation = false;
+                // heldItem.GetComponent<NavMeshAgent>().updatePosition = false;
+                // heldItem.GetComponent<NavMeshAgent>().updateRotation = false;
                 heldItem.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
             }
         }

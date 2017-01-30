@@ -10,6 +10,7 @@ public class DayNightController : MonoBehaviour
 
     public GameObject Rain;
 
+    public Text textMoney;
     public Text textDays;
     public Text textTime;
 
@@ -52,6 +53,9 @@ public class DayNightController : MonoBehaviour
 
         textDays.text = ingameDay.ToString();
         textTime.text = ((int)(currentTimeOfDay * 100)).ToString();
+
+        textMoney.text = PlayerInventory.instance.money.ToString();
+      
 
     }
 
