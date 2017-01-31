@@ -1,15 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class TestManager : MonoBehaviour
 {
     public GameObject Object1;
     public GameObject Object2;
 
+   // public Text Display;
+   // public string Name;
+   // public string dialog;
+
     // Use this for initialization
     void Start()
     {
-
+      //  Display.text = dialog.Replace("%Name", Name);
     }
 
     // Update is called once per frame

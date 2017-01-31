@@ -20,7 +20,7 @@ public class Tree : MonoBehaviour
 
     public void Harvest()
     {
-        Instantiate(Wood, transform.position, transform.rotation);
+//Instantiate(Wood, transform.position, transform.rotation);
 
         woodAvaliable--;
         if (woodAvaliable == 0)

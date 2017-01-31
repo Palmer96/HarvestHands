@@ -30,15 +30,18 @@ public class HandTool : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
             if (!heldItem)
             {
+                RaycastHit hit;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
                 if (Physics.Raycast(ray, out hit, rayMaxDist))
                 {
                     switch (hit.transform.tag)
                     {
+                        case "Tool":
+                            PickUp(hit.transform.gameObject);
+                            break;
                         case "Item":
                             PickUp(hit.transform.gameObject);
                             break;
@@ -47,14 +50,7 @@ public class HandTool : MonoBehaviour
                             PickUp(hit.transform.gameObject);
                             break;
 
-                        case "Axe":
-                            PickUp(hit.transform.gameObject);
-                            break;
                         case "Dirt":
-                            PickUp(hit.transform.gameObject);
-                            break;
-
-                        case "Shovel":
                             PickUp(hit.transform.gameObject);
                             break;
 
@@ -70,40 +66,40 @@ public class HandTool : MonoBehaviour
                             DayNightController.instance.DayJump();
                             break;
 
+
+
                     }
                 }
             }
             else
             {
-                switch (heldItem.tag)
-                {
-                    case "ConstructZone":
-                        if (ConstructionMode)
-                            ConstructionPlace();
-                        break;
-                    case "Axe":
-                        if (Physics.Raycast(ray, out hit, rayMaxDist))
-                        {
-                            if (hit.transform.CompareTag("Tree"))
-                            {
-                                hit.transform.GetComponent<Tree>().Harvest();
-                            }
-                        }
-                        break;
-                    case "Shovel":
-                        if (Physics.Raycast(ray, out hit, rayMaxDist))
-                        {
-                            if (hit.transform.CompareTag("Ground"))
-                            {
-                                Dig(hit.point);
-                            }
-                        }
-                        break;
-                    default:
-                        Drop();
-                        break;
+                if (heldItem.tag == "Tool")
 
-                }
+                    if (heldItem.GetComponent<Tool>() != null)
+                    {
+                        heldItem.GetComponent<Tool>().UseTool();
+
+                    }
+
+                    else if (heldItem.tag == "Item")
+                    {
+
+                    }
+                    else
+                    {
+                        switch (heldItem.tag)
+                        {
+                            case "ConstructZone":
+                                if (ConstructionMode)
+                                    ConstructionPlace();
+
+                                break;
+                            default:
+                                // Drop();
+                                break;
+                        }
+                    }
+
             }
         }
 
