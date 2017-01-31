@@ -27,7 +27,23 @@ public class HandTool : MonoBehaviour
         //  if (heldItem)
         //      heldItem.transform.rotation =  transform.GetChild(0).rotation;
         // heldItem.transform.rotation = transform.GetChild(0).rotation;
-
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.tag == "NPC")
+                {
+                    NPC npc = hit.transform.GetComponent<NPC>();
+                    if (npc == null)
+                        Debug.Log("npc = null");
+                    Debug.Log("Talking to " + npc.npcName);
+                    
+                    EventManager.TalkTo(npc.npcName);
+                }
+            }
+        }
 
         if (Input.GetMouseButtonDown(0))
         {
