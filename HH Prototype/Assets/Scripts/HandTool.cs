@@ -13,6 +13,7 @@ public class HandTool : MonoBehaviour
     public bool ConstructionMode;
     public GameObject Dirt;
 
+    public float stuff;
     // Use this for initialization
     void Start()
     {
