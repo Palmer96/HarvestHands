@@ -7,6 +7,7 @@ public class QuestManager : MonoBehaviour
 {
     public static QuestManager instance;
     public List<Quest> activeQuests = new List<Quest>();
+    public List<Quest> completedQuests = new List<Quest>();
 
     public Quest startingQuest;
 
@@ -24,9 +25,18 @@ public class QuestManager : MonoBehaviour
         //activeQuests.Add(ScriptableObject.CreateInstance("HarvestPlant1"));
         if (startingQuest != null)
         {
+            Quest startQuest = Quest.CreateInstance<Quest>();
+            startQuest = startingQuest;
+            activeQuests.Add(Instantiate(startQuest));
+            Debug.Log("Quest Description: " + startQuest.questDescription);
+            activeQuests[0].StartQuest();
+
+            //MOVE TO QUEST START???
+
             //activeQuests.Add(Quest.CreateInstance(typeof(Quest));
+
             //Quest quest = Quest.CreateInstance(typeof(Quest));
-            activeQuests.Add(startingQuest);
+            //activeQuests.Add(startingQuest);
         }
         
     }
@@ -34,8 +44,11 @@ public class QuestManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-		
-	}
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Quest[0] current objective = " + activeQuests[0].currentObjective);
+        }
+    }
 
     public static void UpdateQuests()
     {

@@ -17,7 +17,7 @@ public class MoneyReward : QuestReward
 
     public override void GiveReward()
     {
-        
+        PlayerInventory.instance.money += amount;
     }
 }
 
@@ -29,6 +29,11 @@ public class ItemReward : QuestReward
 
     public override void GiveReward()
     {
+        if (reward == null)
+        {
+            Debug.Log("null item reward given");
+        }
+        else
         Instantiate(reward, new Vector3(spawnX, spawnY, spawnZ), Quaternion.identity);
     }
 }

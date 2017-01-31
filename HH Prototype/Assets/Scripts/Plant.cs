@@ -81,6 +81,8 @@ public class Plant : MonoBehaviour
             //if alive
             else
             {
+                EventManager.HarvestPlant(plantName);
+
                 harvestsToRemove--;
 
                 //if creates produce

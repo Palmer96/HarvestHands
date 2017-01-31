@@ -45,6 +45,7 @@ public class HarvestObjective : QuestObjective
 
     public override void ActivateObjective()
     {
+        Debug.Log("Activating harvest objective");
         EventManager.OnHarvest += CheckComplete;
     }
 
@@ -62,7 +63,8 @@ public class HarvestObjective : QuestObjective
             {
                 objectiveDone = true;
                 Debug.Log(currentAmount + "/" + goalAmount + " " + plantType + " harvested!");
-                GenerateRewards();
+                //GenerateRewards();
+                QuestManager.UpdateQuests();
             }
         }
     }
@@ -75,6 +77,7 @@ public class TalkObjective : QuestObjective
 
     public override void ActivateObjective()
     {
+        Debug.Log("Activating talk to objective");
         EventManager.OnTalk += CheckComplete;
     }
 
@@ -89,7 +92,9 @@ public class TalkObjective : QuestObjective
         {
             objectiveDone = true;
             Debug.Log(npcName + " talked to!");
-            GenerateRewards();
+            
+            //GenerateRewards();
+            QuestManager.UpdateQuests();
         }
 
     }
@@ -102,6 +107,7 @@ public class SellObjective : QuestObjective
     
     public override void ActivateObjective()
     {
+        Debug.Log("Activating on sell objective");
         EventManager.OnSell += CheckComplete;
     }
 
@@ -116,7 +122,8 @@ public class SellObjective : QuestObjective
         {
             objectiveDone = true;
             Debug.Log(objectType + " sold!");
-            GenerateRewards();
+            //GenerateRewards();
+            QuestManager.UpdateQuests();
         }
 
     }

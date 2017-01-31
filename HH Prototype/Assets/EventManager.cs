@@ -7,13 +7,13 @@ public class EventManager : MonoBehaviour
 {
 
     public delegate void HarvestAction(string plantType);
-    public static event HarvestAction OnHarvest;
+    public static event HarvestAction OnHarvest = delegate { };
 
     public delegate void TalkAction(string npcName);
-    public static event TalkAction OnTalk;
+    public static event TalkAction OnTalk = delegate { };
 
     public delegate void SellAction(string npcName);
-    public static event SellAction OnSell;
+    public static event SellAction OnSell = delegate { };
     
 	// Use this for initialization
 	void Start ()

@@ -9,6 +9,8 @@ public class Quest : ScriptableObject
     public bool questComplete = false;
     public List<QuestObjective> objectives = new List<QuestObjective>();
     public int currentObjective;
+
+    public string questDescription = "";
     //public List<QuestReward> rewards = new List<QuestReward>();
 
 	// Use this for initialization
@@ -16,19 +18,36 @@ public class Quest : ScriptableObject
     {
         QuestManager.instance.activeQuests.Add(this);
         Debug.Log("Active Quest Size = " + QuestManager.instance.activeQuests.Count);
+
+        //QuestObjective objective = QuestObjective.CreateInstance(objectives[currentObjective].name) as QuestObjective;
+
+        Debug.Log("Number of objectives = " + objectives.Count);
+
+        Debug.Log("calling start Quest");
+        StartQuest();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-		
-	}
+	void Update ()
+    {
+        
+    }
+
+    public void StartQuest()
+    {
+        Debug.Log("inside start quest");
+        objectives[currentObjective].ActivateObjective();
+    }
 
     public void NextObjective()
-    {     
-        //Unsubscribe completed objective
+    {
+        Debug.Log("NextObjective");
+        //Give reward and unsubscribe completed objective
+        objectives[currentObjective].GenerateRewards();
         objectives[currentObjective].DectivateObjective();
         //Activate new objective
         currentObjective++;
+
         if (currentObjective < objectives.Count)
         {
             objectives[currentObjective].ActivateObjective();
@@ -36,6 +55,8 @@ public class Quest : ScriptableObject
         else
         {
             questComplete = true;
+            QuestManager.instance.completedQuests.Add(this);
+            Debug.Log("CONGRATULATIONS! QUEST COMPLETED!");
         }
     }
 }
