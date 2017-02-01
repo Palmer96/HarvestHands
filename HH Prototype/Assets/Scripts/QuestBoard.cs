@@ -5,7 +5,7 @@ using UnityEngine;
 public class QuestBoard : MonoBehaviour
 {
     public List<Quest> potentialQuests = new List<Quest>();
-
+    public List<Quest> acceptedQuests = new List<Quest>();
 
 	// Use this for initialization
 	void Start () {
@@ -29,5 +29,8 @@ public class QuestBoard : MonoBehaviour
         newQuest = potentialQuests[index];
         QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
         newQuest.StartQuest();
+
+        acceptedQuests.Add(potentialQuests[index]);
+        potentialQuests.Remove(potentialQuests[index]);
     }
 }
