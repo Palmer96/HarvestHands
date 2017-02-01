@@ -13,6 +13,7 @@ public class HandTool : MonoBehaviour
     public bool ConstructionMode;
     public GameObject Dirt;
 
+    public bool usingHand;
 
     // Use this for initialization
     void Start()
@@ -27,88 +28,71 @@ public class HandTool : MonoBehaviour
         //      heldItem.transform.rotation =  transform.GetChild(0).rotation;
         // heldItem.transform.rotation = transform.GetChild(0).rotation;
 
+        usingHand = !PlayerInventory.instance.usingTools;
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (!heldItem)
+            if (usingHand)
             {
-                RaycastHit hit;
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                if (!heldItem)
                 {
-                    switch (hit.transform.tag)
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
-                        case "Tool":
-                            PickUp(hit.transform.gameObject);
-                            break;
-                        case "Item":
-                            PickUp(hit.transform.gameObject);
-                            break;
+                        switch (hit.transform.tag)
+                        {
+                            case "Tool":
+                                PlayerInventory.instance.AddTool(hit.transform.gameObject);
+                                //PickUp(hit.transform.gameObject);
+                                break;
+                            case "Item":
+                                PlayerInventory.instance.AddItem(hit.transform.gameObject);
+                                //(hit.transform.gameObject);
+                                break;
 
-                        case "Wood":
-                            PickUp(hit.transform.gameObject);
-                            break;
+                            case "Wood":
+                                PickUp(hit.transform.gameObject);
+                                break;
 
-                        case "Dirt":
-                            PickUp(hit.transform.gameObject);
-                            break;
+                            case "Dirt":
+                                PickUp(hit.transform.gameObject);
+                                break;
 
-                        case "ConstructZone":
-                            ConstructionMode = true;
-                            PickUp(hit.transform.gameObject);
-                            break;
-                        case "StoreItem":
-                            hit.transform.GetComponent<StoreItem>().BuyObject();
-                            Debug.Log("hit.transform.tag = StoreItem" + !heldItem);
-                            break;
-                        case "Bed":
-                            DayNightController.instance.DayJump();
-                            break;
+                            case "ConstructZone":
+                                ConstructionMode = true;
+                                PickUp(hit.transform.gameObject);
+                                break;
+                            case "StoreItem":
+                                hit.transform.GetComponent<StoreItem>().BuyObject();
+                                // PlayerInventory.instance.AddItem(hit.transform.GetComponent<StoreItem>().BuyObject())
+                                Debug.Log("hit.transform.tag = StoreItem" + !heldItem);
+                                break;
+                            case "Bed":
+                                DayNightController.instance.DayJump();
+                                break;
 
-
-
+                        }
                     }
                 }
             }
             else
-            {
-                if (heldItem.tag == "Tool")
+                PlayerInventory.instance.UseTool();
 
-                    if (heldItem.GetComponent<Tool>() != null)
-                    {
-                        heldItem.GetComponent<Tool>().UseTool();
 
-                    }
-
-                    else if (heldItem.tag == "Item")
-                    {
-
-                    }
-                    else
-                    {
-                        switch (heldItem.tag)
-                        {
-                            case "ConstructZone":
-                                if (ConstructionMode)
-                                    ConstructionPlace();
-
-                                break;
-                            default:
-                                // Drop();
-                                break;
-                        }
-                    }
-
-            }
         }
-
-        if (Input.GetMouseButtonDown(1) && heldItem)
+        if (Input.GetMouseButtonDown(1))// && heldItem)
         {
             if (ConstructionMode)
                 ConstructionCancel();
             else
-                Throw();
+                if (usingHand)
+                PlayerInventory.instance.RemoveItem();
+            else
+                PlayerInventory.instance.RemoveTool();
+
+            //Throw();
         }
 
         if (ConstructionMode)
@@ -126,9 +110,7 @@ public class HandTool : MonoBehaviour
                 heldItem.transform.up = hit.normal;
             }
         }
-
     }
-
     Vector3 GridPos(Vector3 pos)
     {
         float x = pos.x;

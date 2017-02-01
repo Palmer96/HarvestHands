@@ -30,7 +30,7 @@ public class StoreItem : MonoBehaviour
         }
     }
 
-    public void BuyObject()
+    public GameObject BuyObject()
     {
         //if (boughtItem != null)
         //    return;
@@ -45,6 +45,7 @@ public class StoreItem : MonoBehaviour
 
             transform.GetChild(0).gameObject.SetActive(false);
             boughtItem = newObject;
+            return newObject;
         }
 
         if (boughtItem != null)
@@ -53,6 +54,8 @@ public class StoreItem : MonoBehaviour
             boughtItem = null;
             transform.GetChild(0).gameObject.SetActive(true);
         }
+
+        return null;
     }
 
     void OnTriggerExit(Collider col)

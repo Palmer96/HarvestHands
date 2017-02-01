@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Building : MonoBehaviour
 {
-    public enum Resource
+    public enum ResourceType
     {
         Wood,
         Water,
@@ -13,7 +13,7 @@ public class Building : MonoBehaviour
     [System.Serializable]
     public class ResourceRequired
     {
-        public Resource resource;
+        public ResourceType resource;
         public int numRequired;
         public int numHave;
     }
@@ -23,8 +23,7 @@ public class Building : MonoBehaviour
     
 
     // Use this for initialization
-    void Start()
-    {
+    void Start() {
 
     }
 
@@ -49,7 +48,7 @@ public class Building : MonoBehaviour
     {
         for (int i = 0; i < resources.Length; i++)
         {
-            if (col.transform.CompareTag(resources[i].resource.ToString()))
+            if (col.transform.GetComponent<Resource>().itemName == resources[i].resource.ToString())
             {
                 if (resources[i].numRequired > resources[i].numHave)
                 {
