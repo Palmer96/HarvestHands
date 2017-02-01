@@ -112,6 +112,8 @@ public class PlayerInventory : MonoBehaviour
                 if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
                 {
                     heldObjects[i].GetComponent<Resource>().IncreaseQuantity();
+
+
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -123,7 +125,16 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] == null)
             {
                 heldObjects[i] = item;
-                item.SetActive(false);
+
+                heldObjects[i] = item;
+                heldObjects[i].transform.SetParent(transform.GetChild(0));
+                heldObjects[i].transform.localPosition = new Vector3(1, 0, 2);
+                heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
+
+                heldObjects[i].layer = 2;
+                
+
+                //item.SetActive(false);
                 return true;
             }
         }
@@ -152,14 +163,28 @@ public class PlayerInventory : MonoBehaviour
                 droppedItem.SetActive(true);
                 droppedItem.GetComponent<Resource>().quantity = 1;
                 heldObjects[selectedItemNum].GetComponent<Resource>().DecreaseQuantity();
+                droppedItem.transform.parent = null;
+                droppedItem.GetComponent<Rigidbody>().isKinematic = false;
+                droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
+                // transform.GetChild(0).DetachChildren();
+                droppedItem.layer = 0;
+
             }
             else
             {
+                heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
+                heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
 
-                GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
-                Destroy(heldObjects[selectedItemNum]);
-                droppedItem.SetActive(true);
+                heldObjects[selectedItemNum].transform.parent = null;
+
+                heldObjects[selectedItemNum].layer = 0;
+
                 heldObjects[selectedItemNum] = null;
+
+                // GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
+                // Destroy(heldObjects[selectedItemNum]);
+                // droppedItem.SetActive(true);
+                // heldObjects[selectedItemNum] = null;
             }
         }
     }
@@ -189,7 +214,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-                itemImage[i].sprite = itemSprites[1];
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
             }
             else
             {
@@ -202,6 +227,8 @@ public class PlayerInventory : MonoBehaviour
             }
             else
                 itemImage[i].color = Color.white;
+
+            // ADD NUMBER TO CHILD TEXT
         }
 
     }
