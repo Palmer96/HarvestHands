@@ -40,7 +40,7 @@ public class HandTool : MonoBehaviour
                         Debug.Log("npc = null");
                     Debug.Log("Talking to " + npc.npcName);
                     
-                    EventManager.TalkTo(npc.npcName);
+                    EventManager.TalkEvent(npc.npcName);
                 }
                 else if (hit.transform.tag == "NoticeBoard")
                 {

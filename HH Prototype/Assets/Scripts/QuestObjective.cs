@@ -119,3 +119,32 @@ public class SellObjective : QuestObjective
 
     }
 }
+
+[CreateAssetMenu(fileName = "Data", menuName = "Quest/Objective/Plant", order = 4)]
+public class PlantObjective : QuestObjective
+{
+    public string plantName = "WhatToPlant";
+
+    public override void ActivateObjective()
+    {
+        Debug.Log("Activating on plant objective");
+        EventManager.OnPlant += CheckComplete;
+    }
+
+    public override void DectivateObjective()
+    {
+        EventManager.OnPlant -= CheckComplete;
+    }
+
+    void CheckComplete(string objectType)
+    {
+        if (plantName == objectType)
+        {
+            objectiveDone = true;
+            Debug.Log(objectType + " planted!");
+            //GenerateRewards();
+            QuestManager.UpdateQuests();
+        }
+
+    }
+}

@@ -70,6 +70,21 @@ public class QuestEditor : Editor
         }
 
         //Add button to inspector
+        if (GUILayout.Button("Add Plant Objective"))
+        {
+            //Create new instance of object
+            var newItem = CreateInstance<PlantObjective>();
+            //Adds new object as child
+            AssetDatabase.AddObjectToAsset(newItem, myQuest);
+
+            myQuest.objectives.Add(newItem);
+            //Rename object (asset)
+            myQuest.objectives[myQuest.objectives.Count - 1].name = myQuest.name + "_" + "Plant" + (myQuest.objectives.Count - 1).ToString() + "_" + "Sell";
+            //Save changes
+            AssetDatabase.SaveAssets();
+        }
+
+        //Add button to inspector
         if (GUILayout.Button("Add Money Reward"))
         {
             //Create new instance of object
