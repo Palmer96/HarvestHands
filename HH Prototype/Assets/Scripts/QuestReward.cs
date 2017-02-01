@@ -30,10 +30,8 @@ public class ItemReward : QuestReward
     public override void GiveReward()
     {
         if (reward == null)
-        {
             Debug.Log("null item reward given");
-        }
         else
-        Instantiate(reward, new Vector3(spawnX, spawnY, spawnZ), Quaternion.identity);
+            Instantiate(reward, new Vector3(spawnX, spawnY, spawnZ), Quaternion.identity);
     }
 }

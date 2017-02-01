@@ -42,6 +42,10 @@ public class HandTool : MonoBehaviour
                     
                     EventManager.TalkTo(npc.npcName);
                 }
+                else if (hit.transform.tag == "NoticeBoard")
+                {
+                    hit.transform.GetComponent<QuestBoard>().GetRandomQuest();
+                }
             }
         }
 

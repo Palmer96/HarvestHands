@@ -14,7 +14,7 @@ public class QuestObjective : ScriptableObject
 
     public ObjectiveType objectiveType;
     public bool objectiveDone = false;
-    public List<QuestReward> rewards = new List<QuestReward>();
+    public string objectiveDescription = "";
                
     public virtual void ActivateObjective()
     {
@@ -25,21 +25,12 @@ public class QuestObjective : ScriptableObject
     {
 
     }
-
-    public void GenerateRewards()
-    {
-        Debug.Log("Giving Reward");
-        foreach (QuestReward reward in rewards)
-        {
-            reward.GiveReward();
-        }
-    }
 }
 
 [CreateAssetMenu(fileName = "Data", menuName = "Quest/Objective/Harvest", order = 1)]
 public class HarvestObjective : QuestObjective
 {
-    public string plantName = "";
+    public string plantName = "WhatToHarvest";
     public int goalAmount = 1;
     public int currentAmount = 0;
 
@@ -73,7 +64,7 @@ public class HarvestObjective : QuestObjective
 [CreateAssetMenu(fileName = "Data", menuName = "Quest/Objective/Talk", order = 2)]
 public class TalkObjective : QuestObjective
 {
-    public string goalName = "";
+    public string goalName = "NPCName";
 
     public override void ActivateObjective()
     {
@@ -103,7 +94,7 @@ public class TalkObjective : QuestObjective
 [CreateAssetMenu(fileName = "Data", menuName = "Quest/Objective/Sell", order = 3)]
 public class SellObjective : QuestObjective
 {
-    public string objectName = "";
+    public string objectName = "WhatToSell";
     
     public override void ActivateObjective()
     {

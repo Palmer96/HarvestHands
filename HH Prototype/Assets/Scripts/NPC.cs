@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class NPC : MonoBehaviour
 {
-    public string npcName = "";
+    public string npcName = "xXxPussySlayer69xXx";
 
 	// Use this for initialization
 	void Start () {

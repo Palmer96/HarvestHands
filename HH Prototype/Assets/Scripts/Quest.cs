@@ -5,10 +5,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "Quest/QuestBase", order = 0)]
 public class Quest : ScriptableObject
 {
+    public string questName = "questName";
     public bool questAccepted = false;
     public bool questComplete = false;
-    public List<QuestObjective> objectives = new List<QuestObjective>();
     public int currentObjective;
+    public List<QuestObjective> objectives = new List<QuestObjective>();
+    public List<QuestReward> rewards = new List<QuestReward>();
 
     public string questDescription = "";
     //public List<QuestReward> rewards = new List<QuestReward>();
@@ -26,12 +28,6 @@ public class Quest : ScriptableObject
         Debug.Log("calling start Quest");
         StartQuest();
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-        
-    }
 
     public void StartQuest()
     {
@@ -42,21 +38,32 @@ public class Quest : ScriptableObject
     public void NextObjective()
     {
         Debug.Log("NextObjective");
-        //Give reward and unsubscribe completed objective
-        objectives[currentObjective].GenerateRewards();
+        //Unsubscribe completed objective
         objectives[currentObjective].DectivateObjective();
         //Activate new objective
         currentObjective++;
 
+        //If quest is completed
         if (currentObjective < objectives.Count)
         {
             objectives[currentObjective].ActivateObjective();
         }
+        //If quest not complete
         else
         {
             questComplete = true;
-            QuestManager.instance.completedQuests.Add(this);
+            GenerateRewards();
+            //QuestManager.instance.completedQuests.Add(this);
             Debug.Log("CONGRATULATIONS! QUEST COMPLETED!");
+        }
+    }
+
+    public void GenerateRewards()
+    {
+        Debug.Log("Giving Reward");
+        foreach (QuestReward reward in rewards)
+        {
+            reward.GiveReward();
         }
     }
 }
