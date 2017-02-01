@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Plant : MonoBehaviour
-{
+{    
     //TODO Make UpdatePlant work with multiple harvests (daysSinceLastHarvest)
     public enum PlantState
     {
@@ -81,6 +81,8 @@ public class Plant : MonoBehaviour
             //if alive
             else
             {
+                EventManager.HarvestEvent(plantName);
+
                 harvestsToRemove--;
 
                 //if creates produce
