@@ -48,7 +48,7 @@ public class Building : MonoBehaviour
     {
         for (int i = 0; i < resources.Length; i++)
         {
-            if (col.transform.GetComponent<Item>().itemName == resources[i].resource.ToString())
+            if (col.transform.GetComponent<Resource>().itemName == resources[i].resource.ToString())
             {
                 if (resources[i].numRequired > resources[i].numHave)
                 {

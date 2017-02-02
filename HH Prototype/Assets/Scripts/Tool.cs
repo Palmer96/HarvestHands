@@ -31,7 +31,13 @@ public class Tool : MonoBehaviour
       //  useTool();
     }
 
-
+    public virtual void UseTool(GameObject gameObj)
+    {
+        Debug.Log("Use Tool");
+        //  ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        //
+        //  useTool();
+    }
 
 
 
