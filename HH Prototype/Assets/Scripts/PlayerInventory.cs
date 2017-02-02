@@ -244,8 +244,16 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
+                //////////////
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
                 itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+
+
+                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
+                /////////////////////
+
             }
             else
             {
