@@ -126,10 +126,14 @@ public class PlayerInventory : MonoBehaviour
                 {
                     heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
                     
 >>>>>>> b9bea30942c7e7b1d6adb0dbaaa64d31bb8fd8f2
+=======
+                    
+>>>>>>> cac66b6f641495d2cee7d68527142394b19a34b1
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -249,10 +253,18 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                //////////////
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
+                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+
+>>>>>>> cac66b6f641495d2cee7d68527142394b19a34b1
 
                 itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
 
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
+                /////////////////////
 
 =======
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
