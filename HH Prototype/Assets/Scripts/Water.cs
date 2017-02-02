@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : Item
+public class Water : Resource
 {
 
     // Use this for initialization
