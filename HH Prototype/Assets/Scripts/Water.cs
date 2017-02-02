@@ -16,4 +16,15 @@ public class Water : Resource
     {
 
     }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Plant"))
+        {
+           if( col.GetComponent<Plant>().WaterPlant())
+            {
+                Destroy(gameObject);
+            }
+        }
+    }
 }
