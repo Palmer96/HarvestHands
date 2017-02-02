@@ -1,0 +1,9 @@
+diff a/HH Prototype/Assets/Scripts/PlayerInventory.cs b/HH Prototype/Assets/Scripts/PlayerInventory.cs	(rejected hunks)
+@@ -122,7 +122,6 @@
+          {
+              if (heldObjects[i] != null)
+              {
+-                 if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
+                  if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
+                  {
+ +<<<<<<< HEAD

@@ -64,6 +64,7 @@ public class DayNightController : MonoBehaviour
         currentTimeOfDay = 0;
         ingameDay++;
         PlantManager.instance.UpdatePlants(ingameDay);
+        SellChest.SellAllChests();
 
         if (Random.Range(1, 5) == 1)
         {

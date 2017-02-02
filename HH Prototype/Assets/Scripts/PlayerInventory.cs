@@ -122,24 +122,15 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-                if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
+                if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
-<<<<<<< HEAD
-                    heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
-                    
->>>>>>> b9bea30942c7e7b1d6adb0dbaaa64d31bb8fd8f2
-=======
-                    
->>>>>>> cac66b6f641495d2cee7d68527142394b19a34b1
-=======
-                    heldObjects[i].GetComponent<Resource>().IncreaseQuantity();
+                    //heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
 
+                    // heldObjects[i].GetComponent<Resource>().IncreaseQuantity();
 
->>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
+                    // heldObjects[i].GetComponent<Item>().IncreaseQuantity();
+
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -196,12 +187,12 @@ public class PlayerInventory : MonoBehaviour
     {
         if (heldObjects[selectedItemNum] != null)
         {
-            if (heldObjects[selectedItemNum].GetComponent<Resource>().quantity > 1)
+            if (heldObjects[selectedItemNum].GetComponent<Item>().quantity > 1)
             {
                 GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
                 droppedItem.SetActive(true);
-                droppedItem.GetComponent<Resource>().quantity = 1;
-                heldObjects[selectedItemNum].GetComponent<Resource>().DecreaseQuantity();
+                droppedItem.GetComponent<Item>().quantity = 1;
+                heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
                 droppedItem.transform.parent = null;
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
@@ -235,14 +226,14 @@ public class PlayerInventory : MonoBehaviour
         {
             if (i != 0)
             {
-            if (heldTools[i] != null)
-            {
-                toolImage[i].sprite = toolSprites[heldTools[i].GetComponent<Tool>().toolID];
-            }
-            else
-            {
-                toolImage[i].sprite = toolSprites[0];
-            }
+                if (heldTools[i] != null)
+                {
+                    toolImage[i].sprite = toolSprites[heldTools[i].GetComponent<Tool>().toolID];
+                }
+                else
+                {
+                    toolImage[i].sprite = toolSprites[0];
+                }
 
             }
 
@@ -258,28 +249,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
                 //////////////
-                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
-
->>>>>>> cac66b6f641495d2cee7d68527142394b19a34b1
-
-                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
-
+                //                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-                /////////////////////
-
-=======
-                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
                 itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
->>>>>>> b9bea30942c7e7b1d6adb0dbaaa64d31bb8fd8f2
-=======
-                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
->>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
+
+                /////////////////////
             }
             else
             {
@@ -294,7 +270,7 @@ public class PlayerInventory : MonoBehaviour
             else
                 itemImage[i].color = Color.white;
 
-        //    if (heldObjects[i] != null)
+            //    if (heldObjects[i] != null)
         }
 
     }

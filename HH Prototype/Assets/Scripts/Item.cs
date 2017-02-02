@@ -4,19 +4,13 @@ using UnityEngine;
 
 public class item : MonoBehaviour
 {
-<<<<<<< HEAD
-=======
-    public enum ItemType
-    {
-        Tool,
-        Seed
-    }
 
-    public ItemType ID;
 
-    public string name;
+    public int itemID;
+    public string itemName;
     public int quantity;
->>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
+    public int value;
+    public bool sellable;
 
     // Use this for initialization
     void Start()
