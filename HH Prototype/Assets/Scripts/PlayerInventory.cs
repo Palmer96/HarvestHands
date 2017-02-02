@@ -60,9 +60,15 @@ public class PlayerInventory : MonoBehaviour
         scrollTimer -= Time.deltaTime;
         toolImage[0].sprite = toolSprites[5];
         if (usingTools)
+        {
             UpdateTools();
+            UpdateToolMesh();
+        }
         else
+        {
             UpdateInventory();
+            UpdateItemMesh();
+        }
 
         UpdateImages();
 
@@ -124,12 +130,8 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
+                    heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
 
-                    //heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
-
-                    // heldObjects[i].GetComponent<Resource>().IncreaseQuantity();
-
-                    // heldObjects[i].GetComponent<Item>().IncreaseQuantity();
 
                     // item.SetActive(false);
                     Destroy(item);
@@ -250,12 +252,9 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
 
-                //////////////
-                //                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
 
-                /////////////////////
             }
             else
             {
@@ -339,5 +338,95 @@ public class PlayerInventory : MonoBehaviour
             heldTools[selectedToolNum].GetComponent<Tool>().UseTool(gameObj);
         }
 
+    }
+
+    void UpdateToolMesh()
+    {
+
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+            if (heldObjects[i] != null)
+            {
+
+                HideObject(heldObjects[i]);
+            }
+        }
+
+
+        for (int i = 0; i < heldTools.Count; i++)
+        {
+            if (heldTools[i] != null)
+            {
+                if (i == selectedToolNum)
+                {
+                    ShowObject(heldTools[i]);
+                }
+                else
+                {
+                    HideObject(heldTools[i]);
+                }
+            }
+        }
+    }
+
+    void UpdateItemMesh()
+    {
+
+        for (int i = 0; i < heldTools.Count; i++)
+        {
+            if (heldTools[i] != null)
+            {
+
+                HideObject(heldTools[i]);
+            }
+        }
+
+
+                for (int i = 0; i < heldObjects.Count; i++)
+        {
+            if (heldObjects[i] != null)
+            {
+                if (i == selectedItemNum)
+                {
+                    ShowObject(heldObjects[i]);
+                }
+                else
+                {
+                    HideObject(heldObjects[i]);
+                }
+            }
+        }
+    }
+
+    void ShowObject(GameObject item)
+    {
+        if (item.GetComponent<MeshRenderer>() != null)
+            item.GetComponent<MeshRenderer>().enabled = true;
+        for (int i = 0; i < item.transform.childCount; i++)
+        {
+            if (item.transform.GetChild(i).GetComponent<MeshRenderer>() != null)
+                item.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = true;
+            for (int j = 0; j < item.transform.GetChild(i).childCount; j++)
+            {
+                if (item.transform.GetChild(i).GetChild(j).GetComponent<MeshRenderer>() != null)
+                    item.transform.GetChild(i).GetChild(j).GetComponent<MeshRenderer>().enabled = true;
+            }
+        }
+
+    }
+    void HideObject(GameObject item)
+    {
+        if (item.GetComponent<MeshRenderer>() != null)
+            item.GetComponent<MeshRenderer>().enabled = false;
+        for (int i = 0; i < item.transform.childCount; i++)
+        {
+            if (item.transform.GetChild(i).GetComponent<MeshRenderer>() != null)
+                item.transform.GetChild(i).GetComponent<MeshRenderer>().enabled = false;
+            for (int j = 0; j < item.transform.GetChild(i).childCount; j++)
+            {
+                if (item.transform.GetChild(i).GetChild(j).GetComponent<MeshRenderer>() != null)
+                    item.transform.GetChild(i).GetChild(j).GetComponent<MeshRenderer>().enabled = false;
+            }
+        }
     }
 }

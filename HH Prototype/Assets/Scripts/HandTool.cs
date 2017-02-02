@@ -62,7 +62,7 @@ public class HandTool : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
-
+                Debug.Log(hit.transform.name);
                 if (hit.transform.CompareTag("StoreItem"))
                 {
                     hit.transform.GetComponent<StoreItem>().BuyObject();
@@ -71,11 +71,12 @@ public class HandTool : MonoBehaviour
 
                 if (usingHand)
                 {
-                    if ((PlayerInventory.instance.selectedToolNum != 0))
+                   // if ((PlayerInventory.instance.selectedToolNum != 0))
                     {
                         switch (hit.transform.tag)
                         {
                             case "Tool":
+                                Debug.Log("Tool");
                                 PlayerInventory.instance.AddTool(hit.transform.gameObject);
                                 //PickUp(hit.transform.gameObject);
                                 break;

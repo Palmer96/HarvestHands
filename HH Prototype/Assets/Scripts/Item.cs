@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class item : MonoBehaviour
+public class Item : MonoBehaviour
 {
 
 
@@ -22,5 +22,23 @@ public class item : MonoBehaviour
     void Update()
     {
 
+    }
+
+    public virtual void IncreaseQuantity()
+    {
+        quantity++;
+    }
+    public virtual void IncreaseQuantity(int amount)
+    {
+        quantity += amount;
+    }
+    public virtual void DecreaseQuantity()
+    {
+        quantity--;
+    }
+
+    public virtual void DecreaseQuantity(int amount)
+    {
+        quantity -= amount;
     }
 }

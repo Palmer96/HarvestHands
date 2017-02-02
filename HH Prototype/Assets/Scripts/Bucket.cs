@@ -34,11 +34,20 @@ public class Bucket : Tool
 
     public override void UseTool()
     {
-        if (currentWaterLevel > 0)
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
-            GameObject drop = Instantiate(waterDrop, (transform.position + transform.parent.forward), transform.rotation);
-            drop.GetComponent<Rigidbody>().AddForce(transform.parent.forward * 100);
-            currentWaterLevel -= waterDrain;
+            if (hit.transform.CompareTag("WaterSource"))
+            {
+                currentWaterLevel = maxWaterLevel;
+            }
+            else if (currentWaterLevel > 0)
+            {
+                GameObject drop = Instantiate(waterDrop, (transform.position + transform.parent.forward), transform.rotation);
+                drop.GetComponent<Rigidbody>().AddForce(transform.parent.forward * 100);
+                currentWaterLevel -= waterDrain;
+            }
         }
     }
 }
