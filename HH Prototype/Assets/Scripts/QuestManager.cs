@@ -40,7 +40,10 @@ public class QuestManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            //Debug.Log("Quest[0] current objective = " + activeQuests[0].currentObjective);
+        }
         if (Input.GetKeyDown(KeyCode.J))
         {
             ChangeActiveQuest();

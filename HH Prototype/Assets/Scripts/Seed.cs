@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Seed : Resource
+public class Seed : Item
 {
     public int NumberOfSeeds = 1;
     public GameObject plantPrefab;

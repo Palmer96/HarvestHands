@@ -229,14 +229,9 @@ public class Plant : MonoBehaviour
         }
     }
 
-    public bool WaterPlant()
+    public void WaterPlant()
     {
-        if (!isWatered)
-        {
         isWatered = true;
         UpdatePlantMat(PlantMaterial.Growing);
-            return true;
-        }
-        return false;
     }
 }

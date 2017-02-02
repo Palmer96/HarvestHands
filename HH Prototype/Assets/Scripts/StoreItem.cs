@@ -41,12 +41,9 @@ public class StoreItem : MonoBehaviour
 
             GameObject newObject = (GameObject)Instantiate(objectToBuy);
             newObject.transform.position = transform.position;
+            GameObject.FindObjectOfType<HandTool>().PickUp(newObject);
 
-            PlayerInventory.instance.AddItem(newObject);
-
-          //  GameObject.FindObjectOfType<HandTool>().PickUp(newObject);
-
-           // transform.GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(0).gameObject.SetActive(false);
             boughtItem = newObject;
             return newObject;
         }

@@ -15,16 +15,7 @@ public class Scythe : Tool {
 
     public override void UseTool()
     {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        Debug.Log("Scythe");
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
-        {
-            if (hit.transform.CompareTag("Plant"))
-            {
-                hit.transform.GetComponent<Plant>().HarvestPlant();
-            }
-        }
+        base.UseTool();
 
     }
 

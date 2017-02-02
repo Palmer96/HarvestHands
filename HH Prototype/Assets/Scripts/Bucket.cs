@@ -26,10 +26,11 @@ public class Bucket : Tool
 
     void OnTriggerEnter(Collider col)
     {
-        if (col.gameObject.CompareTag("WaterSource"))
-        {
-            currentWaterLevel = maxWaterLevel;
-        }
+    
+    //    if (col.gameObject.CompareTag("WaterSource"))
+    //    {
+    //        currentWaterLevel = maxWaterLevel;
+    //    }
     }
 
     public override void UseTool()

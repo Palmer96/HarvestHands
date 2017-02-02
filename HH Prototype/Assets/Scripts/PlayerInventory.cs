@@ -37,8 +37,6 @@ public class PlayerInventory : MonoBehaviour
 
         scrollTimer = 0.1f;
 
-        heldTools[0].transform.SetParent(transform.GetChild(0));
-        heldTools[0].transform.localPosition = new Vector3(1, 0, 2);
 
         UpdateTools();
         UpdateInventory();
@@ -58,7 +56,7 @@ public class PlayerInventory : MonoBehaviour
     void Update()
     {
         scrollTimer -= Time.deltaTime;
-        toolImage[0].sprite = toolSprites[5];
+
         if (usingTools)
             UpdateTools();
         else
@@ -97,18 +95,7 @@ public class PlayerInventory : MonoBehaviour
             if (heldTools[i] == null)
             {
                 heldTools[i] = item;
-
-                heldTools[i] = item;
-                heldTools[i].transform.SetParent(transform.GetChild(0));
-                heldTools[i].transform.localPosition = new Vector3(1, 0, 2);
-                heldTools[i].GetComponent<Rigidbody>().isKinematic = true;
-
-                heldTools[selectedToolNum].GetComponent<Collider>().enabled = false;
-                heldTools[i].layer = 2;
-                //   Collider col = heldObjects[i].GetComponent<Collider>().GetType();
-
-
-                //item.SetActive(false);
+                item.SetActive(false);
                 return true;
             }
         }
@@ -122,10 +109,11 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-                if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
+                if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
-                    heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
-                    
+                    heldObjects[i].GetComponent<Item>().IncreaseQuantity();
+
+
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -144,7 +132,8 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
 
                 heldObjects[i].layer = 2;
-                heldObjects[i].GetComponent<Collider>().enabled = false;
+                
+
                 //item.SetActive(false);
                 return true;
             }
@@ -155,25 +144,11 @@ public class PlayerInventory : MonoBehaviour
 
     public void RemoveTool()
     {
-        if (selectedToolNum != 0)
+        if (heldTools[selectedToolNum] != null)
         {
-            if (heldTools[selectedToolNum] != null)
-            {
-                //  GameObject droppedTool = Instantiate(heldTools[selectedToolNum], (transform.position + transform.forward * 2), transform.rotation);
-                //  droppedTool.SetActive(true);
-                //  heldTools[selectedToolNum] = null;
-                //
-
-                heldTools[selectedToolNum].GetComponent<Rigidbody>().isKinematic = false;
-                heldTools[selectedToolNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-
-                heldTools[selectedToolNum].transform.parent = null;
-
-                heldTools[selectedToolNum].GetComponent<Collider>().enabled = true;
-                heldTools[selectedToolNum].layer = 0;
-
-                heldTools[selectedToolNum] = null;
-            }
+            GameObject droppedTool = Instantiate(heldTools[selectedToolNum], (transform.position + transform.forward * 2), transform.rotation);
+            droppedTool.SetActive(true);
+            heldTools[selectedToolNum] = null;
         }
     }
 
@@ -182,16 +157,15 @@ public class PlayerInventory : MonoBehaviour
     {
         if (heldObjects[selectedItemNum] != null)
         {
-            if (heldObjects[selectedItemNum].GetComponent<Resource>().quantity > 1)
+            if (heldObjects[selectedItemNum].GetComponent<Item>().quantity > 1)
             {
                 GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
                 droppedItem.SetActive(true);
-                droppedItem.GetComponent<Resource>().quantity = 1;
-                heldObjects[selectedItemNum].GetComponent<Resource>().DecreaseQuantity();
+                droppedItem.GetComponent<Item>().quantity = 1;
+                heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
                 droppedItem.transform.parent = null;
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-                droppedItem.GetComponent<Collider>().enabled = true;
                 // transform.GetChild(0).DetachChildren();
                 droppedItem.layer = 0;
 
@@ -200,13 +174,13 @@ public class PlayerInventory : MonoBehaviour
             {
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-                heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
 
                 heldObjects[selectedItemNum].transform.parent = null;
 
                 heldObjects[selectedItemNum].layer = 0;
 
                 heldObjects[selectedItemNum] = null;
+
                 // GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
                 // Destroy(heldObjects[selectedItemNum]);
                 // droppedItem.SetActive(true);
@@ -219,8 +193,6 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < heldTools.Count; i++)
         {
-            if (i != 0)
-            {
             if (heldTools[i] != null)
             {
                 toolImage[i].sprite = toolSprites[heldTools[i].GetComponent<Tool>().toolID];
@@ -228,8 +200,6 @@ public class PlayerInventory : MonoBehaviour
             else
             {
                 toolImage[i].sprite = toolSprites[0];
-            }
-
             }
 
             if (i == selectedToolNum)
@@ -244,13 +214,11 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
             }
             else
             {
                 itemImage[i].sprite = itemSprites[0];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = 0.ToString();
             }
 
             if (i == selectedItemNum)
@@ -260,7 +228,7 @@ public class PlayerInventory : MonoBehaviour
             else
                 itemImage[i].color = Color.white;
 
-        //    if (heldObjects[i] != null)
+            // ADD NUMBER TO CHILD TEXT
         }
 
     }
@@ -318,15 +286,6 @@ public class PlayerInventory : MonoBehaviour
         if (heldTools[selectedToolNum] != null)
         {
             heldTools[selectedToolNum].GetComponent<Tool>().UseTool();
-        }
-
-    }
-
-    public void UseTool(GameObject gameObj)
-    {
-        if (heldTools[selectedToolNum] != null)
-        {
-            heldTools[selectedToolNum].GetComponent<Tool>().UseTool(gameObj);
         }
 
     }
