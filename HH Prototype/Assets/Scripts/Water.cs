@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Water : Item
+public class Water : Resource
 {
 
     // Use this for initialization
@@ -15,5 +15,16 @@ public class Water : Item
     void Update()
     {
 
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Plant"))
+        {
+           if( col.GetComponent<Plant>().WaterPlant())
+            {
+                Destroy(gameObject);
+            }
+        }
     }
 }
