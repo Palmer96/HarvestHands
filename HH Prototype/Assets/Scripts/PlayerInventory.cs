@@ -124,6 +124,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
                 {
+<<<<<<< HEAD
                     heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -134,6 +135,11 @@ public class PlayerInventory : MonoBehaviour
 =======
                     
 >>>>>>> cac66b6f641495d2cee7d68527142394b19a34b1
+=======
+                    heldObjects[i].GetComponent<Resource>().IncreaseQuantity();
+
+
+>>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -254,6 +260,7 @@ public class PlayerInventory : MonoBehaviour
             {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                 //////////////
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
@@ -270,6 +277,9 @@ public class PlayerInventory : MonoBehaviour
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
                 itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
 >>>>>>> b9bea30942c7e7b1d6adb0dbaaa64d31bb8fd8f2
+=======
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
+>>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
             }
             else
             {

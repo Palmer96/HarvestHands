@@ -40,7 +40,14 @@ public class QuestManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
+<<<<<<< HEAD
 
+=======
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Quest[0] current objective = " + activeQuests[0].currentObjective);
+        }
+>>>>>>> parent of 907bae1... Added Sell chest, deleted resource script, made reference to resource script use item script instead, added option to accept/decline quests
         if (Input.GetKeyDown(KeyCode.J))
         {
             ChangeActiveQuest();
