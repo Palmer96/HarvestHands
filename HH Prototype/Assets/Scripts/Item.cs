@@ -4,16 +4,11 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public enum ItemType
-    {
-        Tool,
-        Seed
-    }
-
-    public ItemType ID;
-
-    public string name;
+    public int itemID;
+    public string itemName;
     public int quantity;
+    public int value;
+    public bool sellable;
 
     // Use this for initialization
     void Start()

@@ -42,7 +42,7 @@ public class QuestManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            Debug.Log("Quest[0] current objective = " + activeQuests[0].currentObjective);
+            //Debug.Log("Quest[0] current objective = " + activeQuests[0].currentObjective);
         }
         if (Input.GetKeyDown(KeyCode.J))
         {
