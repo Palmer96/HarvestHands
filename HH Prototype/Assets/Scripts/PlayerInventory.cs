@@ -122,10 +122,10 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
-                if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
+                if (heldObjects[i].GetComponent<Resource>().itemID == item.GetComponent<Resource>().itemID)
                 {
                     heldObjects[i].GetComponent<Resource>().IncreaseQuantity(item.GetComponent<Resource>().quantity);
-
+                    
                     // item.SetActive(false);
                     Destroy(item);
                     return true;
@@ -182,12 +182,12 @@ public class PlayerInventory : MonoBehaviour
     {
         if (heldObjects[selectedItemNum] != null)
         {
-            if (heldObjects[selectedItemNum].GetComponent<Item>().quantity > 1)
+            if (heldObjects[selectedItemNum].GetComponent<Resource>().quantity > 1)
             {
                 GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
                 droppedItem.SetActive(true);
-                droppedItem.GetComponent<Item>().quantity = 1;
-                heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
+                droppedItem.GetComponent<Resource>().quantity = 1;
+                heldObjects[selectedItemNum].GetComponent<Resource>().DecreaseQuantity();
                 droppedItem.transform.parent = null;
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
@@ -244,10 +244,15 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] != null)
             {
+                //////////////
+                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Resource>().itemID];
+                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
+
 
                 itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Resource>().quantity.ToString();
 
                 itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
+                /////////////////////
 
             }
             else
