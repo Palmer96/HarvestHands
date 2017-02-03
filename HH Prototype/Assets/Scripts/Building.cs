@@ -20,10 +20,11 @@ public class Building : MonoBehaviour
 
     public GameObject builtVersion;
     public ResourceRequired[] resources;
-    
+
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
 
     }
 
@@ -48,13 +49,16 @@ public class Building : MonoBehaviour
     {
         for (int i = 0; i < resources.Length; i++)
         {
-            if (col.transform.GetComponent<Resource>().itemName == resources[i].resource.ToString())
+            if (col.transform.GetComponent<Item>() != null)
             {
-                if (resources[i].numRequired > resources[i].numHave)
+                if (col.transform.GetComponent<Item>().itemName == resources[i].resource.ToString())
                 {
-                    resources[i].numHave++;
-                    Destroy(col.gameObject);
+                    if (resources[i].numRequired > resources[i].numHave)
+                    {
+                        resources[i].numHave++;
+                        Destroy(col.gameObject);
 
+                    }
                 }
             }
         }

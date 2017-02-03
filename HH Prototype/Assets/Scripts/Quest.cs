@@ -66,4 +66,43 @@ public class Quest : ScriptableObject
             reward.GiveReward();
         }
     }
+
+    public static Quest LoadQuest(string questPath)
+    {
+        //Debug.Log("Quest path = '" + "Quest/FindMountainMan" + "' Works");
+        //Debug.Log("Quest path = '" + questPath + "' DoesntWork");
+        Object[] assets = Resources.LoadAll(questPath) as Object[];
+        Debug.Log("There are " + assets.Length + " assets");
+        //Quest quest = new Quest();
+        Quest quest = CreateInstance<Quest>();
+        List<QuestReward> rewards = new List<QuestReward>();
+        List<QuestObjective> objectives = new List<QuestObjective>();
+
+        foreach (Object asset in assets)
+        {
+            if (asset is QuestObjective)
+            {
+                objectives.Add(asset as QuestObjective);
+                //Debug.Log("Objective asset loaded");
+            }
+            else if (asset is QuestReward)
+            {
+                rewards.Add(asset as QuestReward);
+                //Debug.Log("Reward asset loaded");
+            }
+            else if (asset is Quest)
+            {
+                quest = asset as Quest;
+                //Debug.Log("Quest asset loaded");
+            }
+        }
+
+        quest.objectives = objectives;
+        quest.rewards = rewards;
+
+        Debug.Log("Recreated questName = " + quest.questName);
+        Debug.Log("Recreated has objectives = " + quest.objectives.Count);
+        Debug.Log("Recreated has rewards = " + quest.rewards.Count);
+        return quest;
+    }
 }

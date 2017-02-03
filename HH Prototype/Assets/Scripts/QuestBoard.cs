@@ -6,6 +6,8 @@ public class QuestBoard : MonoBehaviour
 {
     public List<Quest> potentialQuests = new List<Quest>();
     public List<Quest> acceptedQuests = new List<Quest>();
+    public GameObject questOfferPrefab;
+    public Canvas uiCanvas;
 
 	// Use this for initialization
 	void Start () {
@@ -21,16 +23,29 @@ public class QuestBoard : MonoBehaviour
     {
         if (potentialQuests.Count < 1)
             return;
-
+        //Choose random quest
         int index = Random.Range(0, potentialQuests.Count);
-        //QuestManager.instance.activeQuests.Add(potentialQuests[index]);
+        Debug.Log("RandIndex = " + index.ToString());
+        Quest newQuest = Quest.LoadQuest("Quest/" + potentialQuests[index].questName.ToString());
+        GameObject questOfferObject = Instantiate(questOfferPrefab);
+        QuestOffer questOffer = questOfferObject.GetComponent<QuestOffer>();
+        questOffer.questOffered = newQuest;
+        questOffer.questBoardSource = this;
+        questOffer.questBoardIndex = index;
+        questOfferObject.transform.SetParent(uiCanvas.transform);
+        questOffer.ShowOffer();
 
-        Quest newQuest = Quest.CreateInstance<Quest>();
-        newQuest = potentialQuests[index];
-        QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
-        newQuest.StartQuest();
+        Debug.Log("NoticeBoardVesion " + potentialQuests[index].questName.ToString() + " - has " + potentialQuests[index].objectives.Count + " objectives");
+        Debug.Log("NoticeBoardVesion " + potentialQuests[index].questName.ToString() + " - has " + potentialQuests[index].rewards.Count + " rewards");
+        Debug.Log("QuestOfferVersion " + questOffer.questOffered.questName.ToString() + " - has " + questOffer.questOffered.objectives.Count + " objectives");
+        Debug.Log("QuestOfferVersion " + questOffer.questOffered.questName.ToString() + " - has " + questOffer.questOffered.rewards.Count + " rewards");
 
-        acceptedQuests.Add(potentialQuests[index]);
         potentialQuests.Remove(potentialQuests[index]);
+
+        //QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
+        //newQuest.StartQuest();
+        //acceptedQuests.Add(potentialQuests[index]);
+        //
+        QuestManager.instance.UpdateQuestText();
     }
 }
