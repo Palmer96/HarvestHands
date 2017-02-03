@@ -35,7 +35,7 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += Time.deltaTime / 60;
+        currentTimeOfDay += (Time.deltaTime / 60)*24;
 
         if (currentTimeOfDay >= 24)
             DayJump();

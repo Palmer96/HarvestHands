@@ -25,8 +25,13 @@ public class QuestBoard : MonoBehaviour
             return;
         //Choose random quest
         int index = Random.Range(0, potentialQuests.Count);
-        Quest newQuest = Quest.CreateInstance<Quest>();
-        newQuest = potentialQuests[index];
+        // newQuest = Quest.CreateInstance<Quest>();
+        Quest newQuest = Resources.Load<Quest>("Quest/" + potentialQuests[index].questName.ToString());
+        //Quest newQuest = Resources.Load<Quest>(potentialQuests[index].questName.ToString());
+        // Quest newQuest = (Quest)Resources.Load("Resources/Quest/FindMountainMan");
+        Debug.Log("Potential quest = " + potentialQuests[index].questName.ToString());
+       // Debug.Log("newQuest = " + newQuest.name);
+       // Quest newQuest = potentialQuests[index];
 
         GameObject questOfferObject = Instantiate(questOfferPrefab);
         QuestOffer questOffer = questOfferObject.GetComponent<QuestOffer>();
