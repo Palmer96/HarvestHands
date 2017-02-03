@@ -87,6 +87,11 @@ public class PlayerInventory : MonoBehaviour
                 ItemsBack.color = Color.grey;
             }
         }
+
+        if (!usingTools || selectedToolNum != 0)
+        {
+            heldTools[0].GetComponent<Hand>().Drop();
+        }
     }
 
 
@@ -109,7 +114,7 @@ public class PlayerInventory : MonoBehaviour
                 heldTools[i].transform.localPosition = new Vector3(1, 0, 2);
                 heldTools[i].GetComponent<Rigidbody>().isKinematic = true;
 
-                heldTools[selectedToolNum].GetComponent<Collider>().enabled = false;
+                heldTools[i].GetComponent<Collider>().enabled = false;
                 heldTools[i].layer = 2;
                 //   Collider col = heldObjects[i].GetComponent<Collider>().GetType();
 

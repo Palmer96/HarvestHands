@@ -51,10 +51,10 @@ public class DayNightController : MonoBehaviour
             worldLight.intensity = 1 - (Scale1 - 1);
 
 
-        textDays.text = ingameDay.ToString();
-        textTime.text = ((int)(currentTimeOfDay * 100)).ToString();
+        textDays.text = "Days: " + ingameDay.ToString();
+        textTime.text = "Time: " + ((int)(currentTimeOfDay * 100)).ToString();
 
-        textMoney.text = PlayerInventory.instance.money.ToString();
+        textMoney.text = "$" + PlayerInventory.instance.money.ToString();
       
 
     }

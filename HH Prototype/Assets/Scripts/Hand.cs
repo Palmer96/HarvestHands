@@ -57,4 +57,16 @@ public class Hand : Tool
             heldItem = null;
         }
     }
+
+    public void Drop()
+    {
+        if (heldItem)
+        {
+            heldItem.GetComponent<Rigidbody>().isKinematic = false;
+            heldItem.GetComponent<Rigidbody>().transform.parent = null;
+            heldItem.layer = 0;
+
+            heldItem = null;
+        }
+    }
 }

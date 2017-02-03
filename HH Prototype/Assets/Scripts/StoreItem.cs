@@ -15,7 +15,7 @@ public class StoreItem : MonoBehaviour
     void Start()
     {
         transform.GetChild(1).GetComponent<TextMesh>().text = Name;
-        transform.GetChild(2).GetComponent<TextMesh>().text = price.ToString();
+        transform.GetChild(2).GetComponent<TextMesh>().text = "$" + price.ToString();
     }
 
     void Update()

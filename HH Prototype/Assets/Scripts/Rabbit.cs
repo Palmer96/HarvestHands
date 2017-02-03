@@ -23,6 +23,8 @@ public class Rabbit : MonoBehaviour
             {
                 nav.SetDestination(target.transform.position);
             }
+
+        //if ()
         }
     }
 
