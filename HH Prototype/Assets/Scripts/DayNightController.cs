@@ -16,6 +16,7 @@ public class DayNightController : MonoBehaviour
 
 
     public Light worldLight;
+
     public Material skybox;
     public Gradient gradient1;
 
@@ -36,6 +37,9 @@ public class DayNightController : MonoBehaviour
     void Update()
     {
         currentTimeOfDay += (Time.deltaTime / 60)*24;
+
+        worldLight.transform.rotation = Quaternion.identity;
+        worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);
 
         if (currentTimeOfDay >= 24)
             DayJump();
