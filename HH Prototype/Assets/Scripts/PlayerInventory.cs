@@ -28,6 +28,7 @@ public class PlayerInventory : MonoBehaviour
     public int selectedToolNum;
     public int selectedItemNum;
 
+
     private float scrollTimer;
     // Use this for initialization
     void Start()
