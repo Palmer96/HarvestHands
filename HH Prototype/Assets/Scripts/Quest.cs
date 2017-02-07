@@ -31,7 +31,7 @@ public class Quest : ScriptableObject
 
     public void StartQuest()
     {
-        Debug.Log("inside start quest");
+        Debug.Log("inside start quest - objectives.count = " + objectives.Count);
         objectives[currentObjective].ActivateObjective();
     }
 
@@ -66,4 +66,46 @@ public class Quest : ScriptableObject
             reward.GiveReward();
         }
     }
+<<<<<<< HEAD
+=======
+
+    public static Quest LoadQuest(string questPath)
+    {
+        //Debug.Log("Quest path = '" + "Quest/FindMountainMan" + "' Works");
+        //Debug.Log("Quest path = '" + questPath + "' DoesntWork");
+        Object[] assets = Resources.LoadAll(questPath) as Object[];
+        Debug.Log("There are " + assets.Length + " assets");
+        //Quest quest = new Quest();
+        Quest quest = CreateInstance<Quest>();
+        List<QuestReward> rewards = new List<QuestReward>();
+        List<QuestObjective> objectives = new List<QuestObjective>();
+
+        foreach (Object asset in assets)
+        {
+            if (asset is QuestObjective)
+            {
+                objectives.Add(Instantiate(asset as QuestObjective));
+                //Debug.Log("Objective asset loaded");
+            }
+            else if (asset is QuestReward)
+            {
+                rewards.Add(Instantiate(asset as QuestReward));
+                //Debug.Log("Reward asset loaded");
+            }
+            else if (asset is Quest)
+            {
+                quest = Instantiate(asset as Quest);
+                //Debug.Log("Quest asset loaded");
+            }
+        }
+
+        quest.objectives = objectives;
+        quest.rewards = rewards;
+
+        Debug.Log("Recreated questName = " + quest.questName);
+        Debug.Log("Recreated has objectives = " + quest.objectives.Count);
+        Debug.Log("Recreated has rewards = " + quest.rewards.Count);
+        return quest;
+    }
+>>>>>>> 55027ea... Rip objective system, new objective system made
 }

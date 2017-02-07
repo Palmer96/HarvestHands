@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class QuestOffer : MonoBehaviour
 {
     public Quest questOffered;
-    public QuestBoard questBoardSource;
+    public PrototypeObjectiveBoard questBoardSource;
     public KeyCode acceptButton = KeyCode.Z;
     public KeyCode declineButton = KeyCode.X;
 
@@ -29,25 +29,25 @@ public class QuestOffer : MonoBehaviour
     {
 	    if (Input.GetKeyDown(acceptButton))
         {
-            QuestManager.instance.activeQuests.Add(Instantiate(questOffered));
-            questBoardSource.acceptedQuests.Add(questOffered);
-            questOffered.StartQuest();
-            QuestManager.instance.UpdateQuestText();
-
-
-
-            //QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
-            //newQuest.StartQuest();
-            //
-            //acceptedQuests.Add(potentialQuests[index]);
-            //potentialQuests.Remove(potentialQuests[index]);
+            //PrototypeQuestManager.instance.activeQuests.Add(Instantiate(questOffered));
+            //questBoardSource.acceptedQuests.Add(questOffered);
+            //questOffered.StartQuest();
             //QuestManager.instance.UpdateQuestText();
-            Destroy(gameObject);
+            //
+            //
+            //
+            ////QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
+            ////newQuest.StartQuest();
+            ////
+            ////acceptedQuests.Add(potentialQuests[index]);
+            ////potentialQuests.Remove(potentialQuests[index]);
+            ////QuestManager.instance.UpdateQuestText();
+            //Destroy(gameObject);
         }
         else if (Input.GetKeyDown(declineButton))
         {
-            questBoardSource.potentialQuests.Add(questOffered);
-            Destroy(gameObject);
+            //questBoardSource.potentialQuests.Add(questOffered);
+            //Destroy(gameObject);
         }
     }
 
