@@ -49,7 +49,7 @@ public class HandTool : MonoBehaviour
                 }
                 else if (hit.transform.tag == "NoticeBoard")
                 {
-                    hit.transform.GetComponent<QuestBoard>().GetRandomQuest();
+                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
                 }
             }
         }

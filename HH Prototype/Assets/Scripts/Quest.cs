@@ -31,7 +31,7 @@ public class Quest : ScriptableObject
 
     public void StartQuest()
     {
-        Debug.Log("inside start quest");
+        Debug.Log("inside start quest - objectives.count = " + objectives.Count);
         objectives[currentObjective].ActivateObjective();
     }
 
@@ -82,17 +82,17 @@ public class Quest : ScriptableObject
         {
             if (asset is QuestObjective)
             {
-                objectives.Add(asset as QuestObjective);
+                objectives.Add(Instantiate(asset as QuestObjective));
                 //Debug.Log("Objective asset loaded");
             }
             else if (asset is QuestReward)
             {
-                rewards.Add(asset as QuestReward);
+                rewards.Add(Instantiate(asset as QuestReward));
                 //Debug.Log("Reward asset loaded");
             }
             else if (asset is Quest)
             {
-                quest = asset as Quest;
+                quest = Instantiate(asset as Quest);
                 //Debug.Log("Quest asset loaded");
             }
         }

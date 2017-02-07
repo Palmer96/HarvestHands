@@ -32,6 +32,7 @@ public class Seed : Item
             {
                 soil.PlantSeed(plantPrefab);
                 NumberOfSeeds--;
+                EventManager.PlantEvent(plantPrefab.GetComponent<Plant>().plantName);
 
 
 
