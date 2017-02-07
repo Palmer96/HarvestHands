@@ -4,6 +4,7 @@ using System.Collections;
 public class StoreItem : MonoBehaviour
 {
     public GameObject objectToBuy;
+    public GameObject displayObject;
     public string Name;
     public int price;
     public float respawnTime = 3f;
@@ -14,8 +15,14 @@ public class StoreItem : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (displayObject == null)
+            displayObject = objectToBuy;
+
         transform.GetChild(1).GetComponent<TextMesh>().text = Name;
         transform.GetChild(2).GetComponent<TextMesh>().text = "$" + price.ToString();
+
+
+        transform.GetChild(0).GetComponent<mesh>().ShopDisplay();
     }
 
     void Update()
@@ -37,26 +44,46 @@ public class StoreItem : MonoBehaviour
 
         if (price <= PlayerInventory.instance.money)
         {
-            PlayerInventory.instance.money -= price;
+            GameObject newObject = null;
 
-            GameObject newObject = (GameObject)Instantiate(objectToBuy);
-            newObject.transform.position = transform.position;
+            switch (objectToBuy.tag)
+            {
+                case "Item":
+                    PlayerInventory.instance.money -= price;
+                    //   newObject.transform.position = transform.position;
+                    newObject = (GameObject)Instantiate(objectToBuy);
+                    PlayerInventory.instance.AddItem(newObject);
 
-            PlayerInventory.instance.AddItem(newObject);
+                    break;
+                case "Tool":
+                    PlayerInventory.instance.money -= price;
+                    //   newObject.transform.position = transform.position;
+                    newObject = (GameObject)Instantiate(objectToBuy);
+                    PlayerInventory.instance.AddTool(newObject);
+                    break;
+                case "ConstructZone":
+                    if (PlayerInventory.instance.HasBook())
+                    {
+                        PlayerInventory.instance.money -= price;
+              
+                        PlayerInventory.instance.AddBlueprint(objectToBuy);
+                    }
+                    break;
+            }
 
-          //  GameObject.FindObjectOfType<HandTool>().PickUp(newObject);
+            //  GameObject.FindObjectOfType<HandTool>().PickUp(newObject);
 
-           // transform.GetChild(0).gameObject.SetActive(false);
+            // transform.GetChild(0).gameObject.SetActive(false);
             boughtItem = newObject;
             return newObject;
         }
 
         if (boughtItem != null)
             if (Vector3.Distance(transform.position, boughtItem.transform.position) > 3)
-        {
-            boughtItem = null;
-            transform.GetChild(0).gameObject.SetActive(true);
-        }
+            {
+                boughtItem = null;
+                transform.GetChild(0).gameObject.SetActive(true);
+            }
 
         return null;
     }

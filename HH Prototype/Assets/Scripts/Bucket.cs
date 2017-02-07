@@ -39,14 +39,14 @@ public class Bucket : Tool
         if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
             if (hit.transform.CompareTag("WaterSource"))
-            {
                 currentWaterLevel = maxWaterLevel;
-            }
-            else if (currentWaterLevel > 0)
+            else if (hit.transform.CompareTag("Plant"))
             {
-                GameObject drop = Instantiate(waterDrop, (transform.position + transform.parent.forward), transform.rotation);
-                drop.GetComponent<Rigidbody>().AddForce(transform.parent.forward * 100);
-                currentWaterLevel -= waterDrain;
+                if (currentWaterLevel > 0)
+                {
+                    if (hit.transform.GetComponent<Plant>().WaterPlant())
+                        currentWaterLevel -= waterDrain;
+                }
             }
         }
     }

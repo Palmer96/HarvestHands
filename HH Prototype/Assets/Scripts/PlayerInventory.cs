@@ -97,12 +97,6 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-
-
-
-
-
-
         if (Input.GetKeyDown(KeyCode.F))
         {
             DropAllofItem();
@@ -138,12 +132,6 @@ public class PlayerInventory : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 5))
             {
-                Debug.Log(hit.transform.name);
-                if (hit.transform.CompareTag("StoreItem"))
-                {
-                    hit.transform.GetComponent<StoreItem>().BuyObject();
-                }
-
                 switch (hit.transform.tag)
                 {
                     case "Tool":
@@ -179,9 +167,6 @@ public class PlayerInventory : MonoBehaviour
         }
         if (Input.GetMouseButtonDown(1))// && heldItem)
         {
-            //    if (ConstructionMode)
-            //        ConstructionCancel();
-            //    else
             if (!usingTools)
                 RemoveItem();
             else
@@ -194,14 +179,6 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-
-
-    public void ActivateItem(int number)
-    {
-
-    }
-
-
     public bool AddTool(GameObject item)
     {
         for (int i = 0; i < heldTools.Count; i++)
@@ -209,18 +186,12 @@ public class PlayerInventory : MonoBehaviour
             if (heldTools[i] == null)
             {
                 heldTools[i] = item;
-
-                heldTools[i] = item;
                 heldTools[i].transform.SetParent(transform.GetChild(0));
                 heldTools[i].transform.localPosition = new Vector3(1, 0, 2);
                 heldTools[i].GetComponent<Rigidbody>().isKinematic = true;
-
                 heldTools[i].GetComponent<Collider>().enabled = false;
                 heldTools[i].layer = 2;
-                //   Collider col = heldObjects[i].GetComponent<Collider>().GetType();
-
                 heldTools[i].transform.rotation = transform.GetChild(0).rotation;
-                //item.SetActive(false);
                 return true;
             }
         }
@@ -237,9 +208,6 @@ public class PlayerInventory : MonoBehaviour
                 if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
                     heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
-
-
-                    // item.SetActive(false);
                     Destroy(item);
                     return true;
                 }
@@ -250,18 +218,13 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] == null)
             {
                 heldObjects[i] = item;
-
-                heldObjects[i] = item;
                 heldObjects[i].transform.SetParent(transform.GetChild(0));
                 heldObjects[i].transform.localPosition = new Vector3(1, 0, 2);
                 heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
-
                 heldObjects[i].layer = 2;
                 heldObjects[i].GetComponent<Collider>().enabled = false;
-
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
 
-                //item.SetActive(false);
                 return true;
             }
         }
@@ -275,19 +238,11 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldTools[selectedToolNum] != null)
             {
-                //  GameObject droppedTool = Instantiate(heldTools[selectedToolNum], (transform.position + transform.forward * 2), transform.rotation);
-                //  droppedTool.SetActive(true);
-                //  heldTools[selectedToolNum] = null;
-                //
-
                 heldTools[selectedToolNum].GetComponent<Rigidbody>().isKinematic = false;
                 heldTools[selectedToolNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-
                 heldTools[selectedToolNum].transform.parent = null;
-
                 heldTools[selectedToolNum].GetComponent<Collider>().enabled = true;
                 heldTools[selectedToolNum].layer = 0;
-
                 heldTools[selectedToolNum] = null;
             }
         }
@@ -307,10 +262,9 @@ public class PlayerInventory : MonoBehaviour
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
                 droppedItem.GetComponent<Collider>().enabled = true;
-                // transform.GetChild(0).DetachChildren();
                 droppedItem.layer = 0;
-                heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
 
+                heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
                 heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
                 droppedItem.GetComponent<Item>().UpdateMesh();
             }
@@ -319,16 +273,10 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
                 heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
-
                 heldObjects[selectedItemNum].transform.parent = null;
-
                 heldObjects[selectedItemNum].layer = 0;
                 heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
                 heldObjects[selectedItemNum] = null;
-                // GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], (transform.position + transform.forward * 2), transform.rotation);
-                // Destroy(heldObjects[selectedItemNum]);
-                // droppedItem.SetActive(true);
-                // heldObjects[selectedItemNum] = null;
             }
         }
     }
@@ -336,18 +284,15 @@ public class PlayerInventory : MonoBehaviour
     public void DestroyItem()
     {
         Destroy(heldObjects[selectedItemNum]);
-        heldTools[selectedToolNum] = null;
+        heldObjects[selectedToolNum] = null;
     }
     public void DropAllofItem()
     {
         heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
         heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
         heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
-
         heldObjects[selectedItemNum].transform.parent = null;
-
         heldObjects[selectedItemNum].layer = 0;
-
         heldObjects[selectedItemNum] = null;
     }
 
@@ -360,12 +305,16 @@ public class PlayerInventory : MonoBehaviour
                 if (heldTools[i] != null)
                 {
                     toolImage[i].sprite = toolSprites[heldTools[i].GetComponent<Tool>().toolID];
+                    if (heldTools[i].GetComponent<Bucket>() != null)
+                        toolImage[i].transform.GetComponentInChildren<Text>().text = heldTools[i].GetComponent<Bucket>().currentWaterLevel.ToString();
+                    else
+                        toolImage[i].transform.GetComponentInChildren<Text>().text = "";
                 }
                 else
                 {
                     toolImage[i].sprite = toolSprites[0];
+                    toolImage[i].transform.GetComponentInChildren<Text>().text = "";
                 }
-
             }
 
             if (i == selectedToolNum)
@@ -375,7 +324,7 @@ public class PlayerInventory : MonoBehaviour
             else
                 toolImage[i].color = Color.white;
         }
-
+        /////////////////////////////////////////////////////////////////////////////////////////////
         for (int i = 0; i < heldObjects.Count; i++)
         {
             if (heldObjects[i] != null)
@@ -388,7 +337,7 @@ public class PlayerInventory : MonoBehaviour
             else
             {
                 itemImage[i].sprite = itemSprites[0];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = 0.ToString();
+                itemImage[i].transform.GetComponentInChildren<Text>().text = "";
             }
 
             if (i == selectedItemNum)
@@ -397,10 +346,7 @@ public class PlayerInventory : MonoBehaviour
             }
             else
                 itemImage[i].color = Color.white;
-
-            //    if (heldObjects[i] != null)
         }
-
     }
 
     void UpdateInventory()
@@ -454,60 +400,42 @@ public class PlayerInventory : MonoBehaviour
     public void UseTool()
     {
         if (heldTools[selectedToolNum] != null)
-        {
             heldTools[selectedToolNum].GetComponent<Tool>().UseTool();
-        }
     }
 
     public void UseTool(GameObject gameObj)
     {
         if (heldTools[selectedToolNum] != null)
-        {
             heldTools[selectedToolNum].GetComponent<Tool>().UseTool(gameObj);
-        }
     }
 
     public void UseItem()
     {
         if (heldObjects[selectedItemNum] != null)
-        {
             heldObjects[selectedItemNum].GetComponent<Item>().UseItem();
-        }
     }
 
     public void UseItem(GameObject gameObj)
     {
         if (heldObjects[selectedItemNum] != null)
-        {
             heldObjects[selectedItemNum].GetComponent<Item>().UseItem(gameObj);
-        }
     }
 
     void UpdateToolMesh()
     {
 
         for (int i = 0; i < heldObjects.Count; i++)
-        {
             if (heldObjects[i] != null)
-            {
-
                 HideObject(heldObjects[i]);
-            }
-        }
-
 
         for (int i = 0; i < heldTools.Count; i++)
         {
             if (heldTools[i] != null)
             {
                 if (i == selectedToolNum)
-                {
                     ShowObject(heldTools[i]);
-                }
                 else
-                {
                     HideObject(heldTools[i]);
-                }
             }
         }
     }
@@ -516,13 +444,8 @@ public class PlayerInventory : MonoBehaviour
     {
 
         for (int i = 0; i < heldTools.Count; i++)
-        {
             if (heldTools[i] != null)
-            {
-
                 HideObject(heldTools[i]);
-            }
-        }
 
 
         for (int i = 0; i < heldObjects.Count; i++)
@@ -530,13 +453,9 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
                 if (i == selectedItemNum)
-                {
                     ShowObject(heldObjects[i]);
-                }
                 else
-                {
                     HideObject(heldObjects[i]);
-                }
             }
         }
     }
@@ -572,4 +491,45 @@ public class PlayerInventory : MonoBehaviour
             }
         }
     }
+
+    public bool HasBook()
+    {
+        for (int i = 0; i < heldTools.Count; i++)
+        {
+            if (heldTools[i] != null)
+            {
+                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                {
+                    Debug.Log("Has Book");
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void AddBlueprint(GameObject item)
+    {
+        GameObject bPrint = null;
+        for (int i = 0; i < heldTools.Count; i++)
+        {
+            if (heldTools[i] != null)
+            {
+                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                {
+                    bPrint = heldTools[i];
+                    Debug.Log("Yep, has Book");
+                    break;
+                }
+            }
+        }
+
+        if (bPrint != null)
+        {
+            Debug.Log("Add Blueprint");
+            bPrint.GetComponent<Blueprint>().AddBuild(item);
+        }
+    }
+
 }
