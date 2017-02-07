@@ -5,32 +5,33 @@ using UnityEngine;
 public class Blueprint : Tool
 {
     public GameObject currentConstruct;
-    public float constructionMaxDist = 10;
+    public float constructionMaxDist = 20;
     public float GridDist = 1;
     public bool inUse;
     public int selectedConstruct;
     public List<GameObject> Constructs;
 
-
+    float scrollTimer;
 
     // Use this for initialization
     void Start()
     {
         toolID = 5;
-        currentConstruct = Instantiate(Constructs[0]);
+        scrollTimer = 0.1f;
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        Scroll();
         if (inUse)
         {
             transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
         }
 
         if(currentConstruct != null)
-            { 
+            {
+            currentConstruct.SetActive(true);
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, constructionMaxDist))
@@ -66,13 +67,13 @@ public class Blueprint : Tool
         currentConstruct = Instantiate(Constructs[selectedConstruct]);
             currentConstruct.SetActive(true);
         }
+        else
+        {
+            ConstructionPlace();
+        }
 
 
     }
-
-
-
-
 
     public bool AddBuild(GameObject item)
     {
@@ -92,9 +93,48 @@ public class Blueprint : Tool
 
         Constructs.Add(item);
         return false;
+    }
 
+    void ConstructionPlace()
+    {
+        if (currentConstruct.GetComponent<Construct>().canBuild)
+        {
+            currentConstruct.GetComponent<Construct>().Place();
+            currentConstruct = null;
+        }
+    }
+
+    void ConstructionCancel()
+    {
+       // ConstructionMode = false;
+      //  transform.GetChild(0).DetachChildren();
+      //  heldItem.layer = 0;
+     //   heldItem = null;
     }
 
 
+    void Scroll()
+    {
+      //  if (scrollTimer < 0)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                if (selectedConstruct < Constructs.Count - 1)
+                {
+                    selectedConstruct++;
+       //             scrollTimer = 0.1f;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                if (selectedConstruct > 0)
+                {
+                    selectedConstruct--;
+                  //  scrollTimer = 0.1f;
+                }
+            }
+        }
+    }
 
 }

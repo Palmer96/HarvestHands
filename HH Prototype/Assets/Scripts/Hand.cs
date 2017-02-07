@@ -5,7 +5,7 @@ using UnityEngine;
 public class Hand : Tool
 {
 
-    GameObject heldItem;
+   public GameObject heldItem;
     // Use this for initialization
     void Start()
     {
@@ -20,7 +20,10 @@ public class Hand : Tool
 
     public override void UseTool(GameObject item)
     {
-        PickUp(item);
+        if (heldItem == null)
+            PickUp(item);
+        else
+            Drop();
     }
 
     
@@ -60,7 +63,7 @@ public class Hand : Tool
 
     public void Drop()
     {
-        if (heldItem)
+        if (heldItem != null)
         {
             heldItem.GetComponent<Rigidbody>().isKinematic = false;
             heldItem.GetComponent<Rigidbody>().transform.parent = null;

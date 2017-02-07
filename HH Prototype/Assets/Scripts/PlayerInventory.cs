@@ -120,7 +120,7 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else if (hit.transform.tag == "NoticeBoard")
                 {
-                    hit.transform.GetComponent<QuestBoard>().GetRandomQuest();
+                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
                 }
             }
         }
@@ -140,7 +140,7 @@ public class PlayerInventory : MonoBehaviour
                             if (selectedToolNum != 0)
                                 AddTool(hit.transform.gameObject);
                             else
-                                heldTools[0].GetComponent<Hand>().PickUp(hit.transform.gameObject);
+                                heldTools[0].GetComponent<Hand>().UseTool(hit.transform.gameObject);
                         }
                         break;
                     case "Item":

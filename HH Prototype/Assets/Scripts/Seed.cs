@@ -38,7 +38,7 @@ public class Seed : Item
                 {
                     quantity--;
                     soil.PlantSeed(plantPrefab);
-
+                    EventManager.PlantEvent(plantPrefab.GetComponent<Plant>().plantName);
                     //TODO: if 0 seeds, play staff animation
                 }
             }

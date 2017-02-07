@@ -23,7 +23,7 @@ public class QuestBoard : MonoBehaviour
 
     public void GetRandomQuest()
     {
-<<<<<<< HEAD
+
         if (potentialQuests.Count < 1)
             return;
         //Choose random quest
@@ -39,7 +39,7 @@ public class QuestBoard : MonoBehaviour
         GameObject questOfferObject = Instantiate(questOfferPrefab);
         QuestOffer questOffer = questOfferObject.GetComponent<QuestOffer>();
         questOffer.questOffered = newQuest;
-        questOffer.questBoardSource = this;
+       // questOffer.questBoardSource = this;
         questOffer.questBoardIndex = index;
         potentialQuests.Remove(potentialQuests[index]);
         questOfferObject.transform.SetParent(uiCanvas.transform);
@@ -50,7 +50,7 @@ public class QuestBoard : MonoBehaviour
         //newQuest.StartQuest();
         //acceptedQuests.Add(potentialQuests[index]);
         //
-=======
+
         //if (potentialQuests.Count < 1)
         //    return;
         ////Choose random quest
@@ -76,7 +76,7 @@ public class QuestBoard : MonoBehaviour
         ////newQuest.StartQuest();
         ////acceptedQuests.Add(potentialQuests[index]);
         ////
->>>>>>> 55027ea... Rip objective system, new objective system made
+
         //QuestManager.instance.UpdateQuestText();
     }
 }

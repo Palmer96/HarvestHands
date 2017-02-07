@@ -66,8 +66,6 @@ public class Quest : ScriptableObject
             reward.GiveReward();
         }
     }
-<<<<<<< HEAD
-=======
 
     public static Quest LoadQuest(string questPath)
     {
@@ -107,5 +105,5 @@ public class Quest : ScriptableObject
         Debug.Log("Recreated has rewards = " + quest.rewards.Count);
         return quest;
     }
->>>>>>> 55027ea... Rip objective system, new objective system made
+
 }
