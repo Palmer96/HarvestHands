@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+#if UNITY_EDITOR
 using UnityEditor;
+
 
 [CustomEditor(typeof(Quest))]
 public class QuestEditor : Editor
@@ -270,3 +272,5 @@ public class ItemRewardEditor : Editor
         }
     }
 }
+
+#endif

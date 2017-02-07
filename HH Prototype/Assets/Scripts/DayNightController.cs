@@ -16,6 +16,7 @@ public class DayNightController : MonoBehaviour
 
 
     public Light worldLight;
+
     public Material skybox;
     public Gradient gradient1;
 
@@ -35,7 +36,10 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += Time.deltaTime / 60;
+        currentTimeOfDay += (Time.deltaTime / 60)*24;
+
+        worldLight.transform.rotation = Quaternion.identity;
+        worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);
 
         if (currentTimeOfDay >= 24)
             DayJump();
@@ -51,10 +55,10 @@ public class DayNightController : MonoBehaviour
             worldLight.intensity = 1 - (Scale1 - 1);
 
 
-        textDays.text = ingameDay.ToString();
-        textTime.text = ((int)(currentTimeOfDay * 100)).ToString();
+        textDays.text = "Days: " + ingameDay.ToString();
+        textTime.text = "Time: " + ((int)(currentTimeOfDay * 100)).ToString();
 
-        textMoney.text = PlayerInventory.instance.money.ToString();
+        textMoney.text = "$" + PlayerInventory.instance.money.ToString();
       
 
     }
@@ -64,6 +68,7 @@ public class DayNightController : MonoBehaviour
         currentTimeOfDay = 0;
         ingameDay++;
         PlantManager.instance.UpdatePlants(ingameDay);
+        SellChest.SellAllChests();
 
         if (Random.Range(1, 5) == 1)
         {
