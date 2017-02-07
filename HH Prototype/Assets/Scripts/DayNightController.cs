@@ -15,11 +15,22 @@ public class DayNightController : MonoBehaviour
     public Text textTime;
 
 
-    public Light worldLight;
 
     public Material skybox;
-    public Gradient gradient1;
 
+    [Header("Lighting")]
+    public Light worldLight;
+    public float lightMaxIs = 1;
+    public Gradient lightColour;
+    public AnimationCurve lighting;
+
+    [Header("Fog")]
+    public float fogMaxIs = 1;
+    public Gradient fogColour;
+    public AnimationCurve fogDensity;
+
+    public AnimationCurve fogStartDistance;
+    public AnimationCurve fogEndDistance;
 
     [Range(0, 24f)]
     public float currentTimeOfDay = 0;
@@ -36,7 +47,7 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += (Time.deltaTime / 60)*24;
+        currentTimeOfDay += (Time.deltaTime / 60) * 24;
 
         worldLight.transform.rotation = Quaternion.identity;
         worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);
@@ -45,21 +56,34 @@ public class DayNightController : MonoBehaviour
             DayJump();
 
 
-        skybox.SetColor("_SkyTint", gradient1.Evaluate(currentTimeOfDay / 24));
+        skybox.SetColor("_SkyTint", lightColour.Evaluate(currentTimeOfDay / 24));
         //  worldLight.color = gradient1.Evaluate(currentTimeOfDay / 24);
         float Scale1 = currentTimeOfDay / 12;
 
-        if (Scale1 < 1)
-            worldLight.intensity = Scale1;
-        else
-            worldLight.intensity = 1 - (Scale1 - 1);
+        worldLight.intensity = lighting.Evaluate(currentTimeOfDay / 24) * lightMaxIs;
 
+        RenderSettings.fogDensity = fogDensity.Evaluate(currentTimeOfDay / 24) * fogMaxIs;
+        RenderSettings.fogColor = fogColour.Evaluate(currentTimeOfDay / 24);
+        RenderSettings.fogStartDistance = fogStartDistance.Evaluate(currentTimeOfDay / 24);
+        RenderSettings.fogEndDistance = fogEndDistance.Evaluate(currentTimeOfDay / 24);
 
         textDays.text = "Days: " + ingameDay.ToString();
-        textTime.text = "Time: " + ((int)(currentTimeOfDay * 100)).ToString();
+
+        int time = (int)(currentTimeOfDay * 100);
+
+        if (currentTimeOfDay > 12)
+        {
+            textTime.text = "Time: " + (Mathf.Floor(currentTimeOfDay)).ToString() + ":" + (time % 60).ToString() + " PM";
+
+        }
+        else
+            textTime.text = "Time: " + (Mathf.Floor(time / 60)).ToString() + ":" + (time % 60).ToString() + " AM";
+
+
+
 
         textMoney.text = "$" + PlayerInventory.instance.money.ToString();
-      
+
 
     }
 

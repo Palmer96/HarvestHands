@@ -24,13 +24,11 @@ public class Blueprint : Tool
     void Update()
     {
         Scroll();
-        if (inUse)
-        {
-            transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
-        }
 
-        if(currentConstruct != null)
-            {
+        transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
+
+        if (currentConstruct != null)
+        {
             currentConstruct.SetActive(true);
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -64,7 +62,7 @@ public class Blueprint : Tool
     {
         if (currentConstruct == null)
         {
-        currentConstruct = Instantiate(Constructs[selectedConstruct]);
+            currentConstruct = Instantiate(Constructs[selectedConstruct]);
             currentConstruct.SetActive(true);
         }
         else
@@ -106,23 +104,23 @@ public class Blueprint : Tool
 
     void ConstructionCancel()
     {
-       // ConstructionMode = false;
-      //  transform.GetChild(0).DetachChildren();
-      //  heldItem.layer = 0;
-     //   heldItem = null;
+        // ConstructionMode = false;
+        //  transform.GetChild(0).DetachChildren();
+        //  heldItem.layer = 0;
+        //   heldItem = null;
     }
 
 
     void Scroll()
     {
-      //  if (scrollTimer < 0)
+        //  if (scrollTimer < 0)
         {
             if (Input.GetKeyDown(KeyCode.X))
             {
                 if (selectedConstruct < Constructs.Count - 1)
                 {
                     selectedConstruct++;
-       //             scrollTimer = 0.1f;
+                    //             scrollTimer = 0.1f;
                 }
             }
 
@@ -131,7 +129,7 @@ public class Blueprint : Tool
                 if (selectedConstruct > 0)
                 {
                     selectedConstruct--;
-                  //  scrollTimer = 0.1f;
+                    //  scrollTimer = 0.1f;
                 }
             }
         }
