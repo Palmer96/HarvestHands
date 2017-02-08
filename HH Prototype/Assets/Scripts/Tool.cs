@@ -39,6 +39,11 @@ public class Tool : MonoBehaviour
         //  useTool();
     }
 
+    public virtual void SecondaryToolUse()
+    {
+        PlayerInventory.instance.RemoveTool();
+    }
+
 
 
 }

@@ -6,6 +6,9 @@ public class Construct : MonoBehaviour
     public GameObject selfObject;
     public bool canBuild;
     public Material[] mat;
+
+   public bool colliding;
+   public bool upRight;
     // Use this for initialization
     void Start()
     {
@@ -26,12 +29,21 @@ public class Construct : MonoBehaviour
               transform.eulerAngles.z > 10 &&
               transform.eulerAngles.z < 350)
         {
-            canBuild = false;
+            upRight = false;
         }
         else
         {
-            canBuild = true;
+            upRight = true;
         }
+
+
+
+
+        if (colliding && upRight)
+            canBuild = true;
+        else
+            canBuild = false;
+
 
 
         if (canBuild)
@@ -52,24 +64,32 @@ public class Construct : MonoBehaviour
         Destroy(gameObject);
     }
 
-    void OnCollisionStay(Collision col)
+    void OnTriggerStay(Collider col)
     {
-            if (!col.transform.CompareTag("Ground"))
-            canBuild = false;
-        else if (col.transform.CompareTag("Ground"))
-        {
-            if (transform.eulerAngles.x > 10 &&
-                transform.eulerAngles.x < 350 ||
-                transform.eulerAngles.z > 10 &&
-                transform.eulerAngles.z < 350)
-            {
-                canBuild = false;
-            }
-            else
-            {
-                canBuild = true;
-            }
-        }
+            colliding = false;
+
+        if (col.transform.CompareTag("Ground"))
+            colliding = true;
+            
+    //  else if (col.transform.CompareTag("Ground"))
+    //  {
+    //      if (transform.eulerAngles.x > 10 &&
+    //          transform.eulerAngles.x < 350 ||
+    //          transform.eulerAngles.z > 10 &&
+    //          transform.eulerAngles.z < 350)
+    //      {
+    //          canBuild = false;
+    //      }
+    //      else
+    //      {
+    //          canBuild = true;
+    //      }
+    //  }
 
     }
+    void OnTriggerExit(Collider col)
+    {
+        colliding = true;
+    }
+
 }

@@ -12,30 +12,48 @@ public class Blueprint : Tool
     public List<GameObject> Constructs;
 
     float scrollTimer;
+    int rotations;
+
+    public bool held;
 
     // Use this for initialization
     void Start()
     {
+        held = false;
         toolID = 5;
         scrollTimer = 0.1f;
     }
 
+
     // Update is called once per frame
     void Update()
     {
-        Scroll();
+       if (Input.GetKeyDown(KeyCode.R))
+        {
+            rotations++;
+        }
+        ChangeSelect();
 
+        if (held)
         transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
+           else
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
 
         if (currentConstruct != null)
-        {
+        { 
+            
             currentConstruct.SetActive(true);
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, constructionMaxDist))
             {
+                if (!hit.transform.CompareTag("Ground"))
+                {
+                    currentConstruct.GetComponent<Construct>().canBuild = false;
+                }
                 currentConstruct.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 currentConstruct.transform.up = hit.normal;
+                currentConstruct.transform.Rotate(0, 90*rotations, 0);
             }
             else if (Physics.Raycast(currentConstruct.transform.position, -transform.up, out hit, constructionMaxDist))
             {
@@ -43,8 +61,28 @@ public class Blueprint : Tool
                 currentConstruct.transform.up = hit.normal;
             }
         }
+        held = false;
 
+    }
+    public override void UseTool()
+    {
+        if (currentConstruct == null)
+        {
+            currentConstruct = Instantiate(Constructs[selectedConstruct]);
+            currentConstruct.SetActive(true);
+        }
+        else
+        {
+            ConstructionPlace();
+        }
+    }
 
+    public override void SecondaryToolUse()
+    {
+        if (currentConstruct != null)
+        ConstructionCancel();
+        else
+        base.SecondaryToolUse();
     }
 
     Vector3 GridPos(Vector3 pos)
@@ -58,20 +96,6 @@ public class Blueprint : Tool
         return new Vector3(x, pos.y, z);
     }
 
-    public override void UseTool()
-    {
-        if (currentConstruct == null)
-        {
-            currentConstruct = Instantiate(Constructs[selectedConstruct]);
-            currentConstruct.SetActive(true);
-        }
-        else
-        {
-            ConstructionPlace();
-        }
-
-
-    }
 
     public bool AddBuild(GameObject item)
     {
@@ -102,37 +126,30 @@ public class Blueprint : Tool
         }
     }
 
-    void ConstructionCancel()
+   public void ConstructionCancel()
     {
-        // ConstructionMode = false;
-        //  transform.GetChild(0).DetachChildren();
-        //  heldItem.layer = 0;
-        //   heldItem = null;
+        Destroy(currentConstruct);
     }
 
 
-    void Scroll()
+    void ChangeSelect()
     {
-        //  if (scrollTimer < 0)
+
+        if (Input.GetKeyDown(KeyCode.X))
         {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
                 if (selectedConstruct < Constructs.Count - 1)
                 {
-                    selectedConstruct++;
-                    //             scrollTimer = 0.1f;
+                selectedConstruct++;
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
                 if (selectedConstruct > 0)
                 {
-                    selectedConstruct--;
-                    //  scrollTimer = 0.1f;
+                selectedConstruct--;
                 }
             }
-        }
     }
 
 }

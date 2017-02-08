@@ -21,11 +21,11 @@ public class Building : MonoBehaviour
     public GameObject builtVersion;
     public ResourceRequired[] resources;
 
-
+    TextMesh text;
     // Use this for initialization
     void Start()
     {
-
+        text = transform.GetChild(0).GetComponent<TextMesh>();
     }
 
     // Update is called once per frame
@@ -43,6 +43,8 @@ public class Building : MonoBehaviour
         {
             Build();
         }
+
+        text.text = GetText();
     }
 
     void OnCollisionEnter(Collision col)
@@ -70,4 +72,13 @@ public class Building : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public string GetText()
+    {
+        string line = "";
+        for (int i = 0; i < resources.Length; i++)
+        {
+            line += resources[i].resource + ": " + resources[i].numHave.ToString() + "/" + resources[i].numRequired.ToString() + "\n";
+        }
+   return line;
+    }
 }

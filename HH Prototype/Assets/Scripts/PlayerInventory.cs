@@ -96,6 +96,21 @@ public class PlayerInventory : MonoBehaviour
             heldTools[0].GetComponent<Hand>().Drop();
         }
 
+        if (HasBook())
+        {
+            heldTools[BlueprintIndex()].GetComponent<Blueprint>().held = true;
+            if (!usingTools)
+            {
+                heldTools[BlueprintIndex()].GetComponent<Blueprint>().ConstructionCancel();
+            }
+            else
+            {
+                if (selectedToolNum != BlueprintIndex())
+                    heldTools[BlueprintIndex()].GetComponent<Blueprint>().ConstructionCancel();
+
+            }
+        }
+
 
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -104,27 +119,27 @@ public class PlayerInventory : MonoBehaviour
         }
 
         // added by nick
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit, 5))
-            {
-                if (hit.transform.tag == "NPC")
-                {
-                    NPC npc = hit.transform.GetComponent<NPC>();
-                    if (npc == null)
-                        Debug.Log("npc = null");
-                    Debug.Log("Talking to " + npc.npcName);
-
-                    EventManager.TalkEvent(npc.npcName);
-                }
-                else if (hit.transform.tag == "NoticeBoard")
-                {
-                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
-                }
-            }
-        }
+  //     if (Input.GetKeyDown(KeyCode.E))
+  //     {
+  //         RaycastHit hit;
+  //         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+  //         if (Physics.Raycast(ray, out hit, 5))
+  //         {
+  //             if (hit.transform.tag == "NPC")
+  //             {
+  //                 NPC npc = hit.transform.GetComponent<NPC>();
+  //                 if (npc == null)
+  //                     Debug.Log("npc = null");
+  //                 Debug.Log("Talking to " + npc.npcName);
+  //
+  //                 EventManager.TalkEvent(npc.npcName);
+  //             }
+  //             else if (hit.transform.tag == "NoticeBoard")
+  //             {
+  //                 hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+  //             }
+  //         }
+  //     }
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -137,12 +152,10 @@ public class PlayerInventory : MonoBehaviour
                 {
                     case "Tool":
                         if (usingTools)
-                        {
                             if (selectedToolNum != 0)
                                 AddTool(hit.transform.gameObject);
                             else
                                 heldTools[0].GetComponent<Hand>().UseTool(hit.transform.gameObject);
-                        }
                         break;
                     case "Item":
                         if (!usingTools)
@@ -165,18 +178,20 @@ public class PlayerInventory : MonoBehaviour
                         break;
                 }
             }
+            else
+            {
+                if (!usingTools)
+                    UseItem();
+                else
+                    UseTool();
+            }
         }
         if (Input.GetMouseButtonDown(1))// && heldItem)
         {
             if (!usingTools)
                 RemoveItem();
             else
-            {
-                if (selectedToolNum != 0)
-                    RemoveTool();
-                else
-                    heldTools[0].GetComponent<Hand>().Throw();
-            }
+                heldTools[selectedToolNum].GetComponent<Tool>().SecondaryToolUse();
         }
     }
 
@@ -249,14 +264,13 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-
     public void RemoveItem()
     {
         if (heldObjects[selectedItemNum] != null)
         {
             if (heldObjects[selectedItemNum].GetComponent<Item>().quantity > 1)
             {
-                GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position, transform.rotation);
+                GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), transform.rotation);
                 droppedItem.SetActive(true);
                 droppedItem.GetComponent<Item>().quantity = 1;
                 droppedItem.transform.parent = null;
@@ -287,6 +301,7 @@ public class PlayerInventory : MonoBehaviour
         Destroy(heldObjects[selectedItemNum]);
         heldObjects[selectedToolNum] = null;
     }
+
     public void DropAllofItem()
     {
         heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
@@ -477,6 +492,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
     }
+
     void HideObject(GameObject item)
     {
         if (item.GetComponent<MeshRenderer>() != null)
@@ -491,6 +507,21 @@ public class PlayerInventory : MonoBehaviour
                     item.transform.GetChild(i).GetChild(j).GetComponent<MeshRenderer>().enabled = false;
             }
         }
+    }
+
+    public int BlueprintIndex()
+    {
+        for (int i = 0; i < heldTools.Count; i++)
+        {
+            if (heldTools[i] != null)
+            {
+                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                {
+                    return i;
+                }
+            }
+        }
+        return 0;
     }
 
     public bool HasBook()

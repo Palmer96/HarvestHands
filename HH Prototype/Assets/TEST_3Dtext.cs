@@ -14,6 +14,8 @@ public class TEST_3Dtext : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-       transform.rotation = GameObject.FindGameObjectWithTag("MainCamera").transform.rotation;
+         transform.rotation = Quaternion.identity;
+         transform.Rotate(0,GameObject.FindGameObjectWithTag("MainCamera").transform.eulerAngles.y, 0);
+       // transform.LookAt(GameObject.FindGameObjectWithTag("MainCamera").transform);
     }
 }

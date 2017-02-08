@@ -47,7 +47,7 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += (Time.deltaTime / 60) * 24;
+        currentTimeOfDay += (Time.deltaTime / 60);
 
         worldLight.transform.rotation = Quaternion.identity;
         worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);

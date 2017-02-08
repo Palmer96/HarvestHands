@@ -26,7 +26,11 @@ public class Hand : Tool
             Drop();
     }
 
-    
+    public override void SecondaryToolUse()
+    {
+        Throw();
+    }
+
     public void PickUp(GameObject item)
     {
         if (!heldItem)
