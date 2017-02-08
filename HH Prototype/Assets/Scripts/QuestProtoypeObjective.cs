@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class QuestProtoypeObjective : MonoBehaviour
 {
+    [System.Serializable]
     public enum objectiveType
     {
         NONE = -1,
@@ -21,4 +23,13 @@ public class QuestProtoypeObjective : MonoBehaviour
 
     public virtual void DectivateObjective(){}
 
+    public void CompleteObjective()
+    {
+        VirtualompleteObjective();
+    }
+    public virtual void VirtualompleteObjective()
+    {
+        objectiveDone = true;
+        PrototypeQuestManager.UpdateQuests();
+    }
 }

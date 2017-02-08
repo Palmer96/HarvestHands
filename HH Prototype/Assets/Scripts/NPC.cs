@@ -15,4 +15,12 @@ public class NPC : MonoBehaviour
 	void Update () {
 		
 	}
+
+    public void ChangeConversationStartNode(int i)
+    {
+        if (GetComponent<VIDE_Assign>() != null)
+        {
+            GetComponent<VIDE_Assign>().overrideStartNode = i;
+        }
+    }
 }

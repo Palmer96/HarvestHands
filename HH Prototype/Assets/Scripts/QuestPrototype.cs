@@ -29,25 +29,28 @@ public class QuestPrototype : MonoBehaviour
 
     public void NextObjective()
     {
-        Debug.Log("NextObjective");
         //Unsubscribe completed objective
+        objectives[currentObjective].objectiveDone = true;
         objectives[currentObjective].DectivateObjective();
+        
         //Activate new objective
         currentObjective++;
 
-        //If quest is completed
+        //If quest not completed
         if (currentObjective < objectives.Count)
         {
             objectives[currentObjective].ActivateObjective();
         }
-        //If quest not complete
+        //If quest is complete
         else
         {
             questComplete = true;
             GenerateRewards();
-            //QuestManager.instance.completedQuests.Add(this);
+            //QuestManager.instance.completedQuests.Add(this);            
             Debug.Log("CONGRATULATIONS! QUEST COMPLETED!");
         }
+        //PrototypeQuestManager.UpdateQuests();
+        //PrototypeQuestManager.instance.UpdateQuestText();
     }
 
     public void GenerateRewards()
@@ -56,6 +59,20 @@ public class QuestPrototype : MonoBehaviour
         foreach (PrototypeQuestReward reward in rewards)
         {
             reward.GenerateReward();
+        }
+    }
+
+    public void CompleteTalkObjective()
+    {
+        //Check for objectives to talk to people
+        if (objectives[currentObjective].type == QuestProtoypeObjective.objectiveType.Talk)
+        {
+            PrototypeTalkObjective objective = (PrototypeTalkObjective)objectives[currentObjective];
+            if (objective != null)
+            {
+                objective.objectiveDone = true;
+                PrototypeQuestManager.UpdateQuests();
+            }
         }
     }
 }

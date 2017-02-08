@@ -32,19 +32,9 @@ public class PrototypeObjectiveBoard : MonoBehaviour
         questOffer.questBoardSource = this;
         questOffer.questBoardIndex = index;
         questOfferObject.transform.SetParent(uiCanvas.transform);
-        questOffer.ShowOffer();
-
-        Debug.Log("NoticeBoardVesion " + potentialQuests[index].questName.ToString() + " - has " + potentialQuests[index].objectives.Count + " objectives");
-        Debug.Log("NoticeBoardVesion " + potentialQuests[index].questName.ToString() + " - has " + potentialQuests[index].rewards.Count + " rewards");
-        Debug.Log("QuestOfferVersion " + questOffer.questOffered.questName.ToString() + " - has " + questOffer.questOffered.objectives.Count + " objectives");
-        Debug.Log("QuestOfferVersion " + questOffer.questOffered.questName.ToString() + " - has " + questOffer.questOffered.rewards.Count + " rewards");
-
+        questOffer.ShowOffer();       
         potentialQuests.Remove(potentialQuests[index]);
-
-        //QuestManager.instance.activeQuests.Add(Instantiate(newQuest));
-        //newQuest.StartQuest();
-        //acceptedQuests.Add(potentialQuests[index]);
-        //
+        
         PrototypeQuestManager.instance.UpdateQuestText();
     }
 }

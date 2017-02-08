@@ -27,22 +27,45 @@ public class HandTool : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
+            Debug.Log("Inside handtool E Pressed");
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
-                if (hit.transform.tag == "NPC")
-                {
-                    NPC npc = hit.transform.GetComponent<NPC>();
-                    if (npc == null)
-                        Debug.Log("npc = null");
-                    Debug.Log("Talking to " + npc.npcName);
-
-                    EventManager.TalkEvent(npc.npcName);
-                }
-                else if (hit.transform.tag == "NoticeBoard")
+                //Debug.Log("Inside hit has hit");
+                //if (hit.transform.tag == "NPC")
+                //{
+                //    NPC npc = hit.transform.GetComponent<NPC>();
+                //    if (npc == null)
+                //        Debug.Log("npc = null");
+                //    Debug.Log("Talking to " + npc.npcName);
+                //
+                //    EventManager.TalkEvent(npc.npcName);
+                //}
+                if (hit.transform.tag == "NoticeBoard")
                 {
                     hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+                }
+                if (hit.transform.GetComponent<VIDE_Assign>())
+                {
+                    //Lets grab the NPC's DialogueAssign script... if there's any
+                    VIDE_Assign assigned;
+                    if (hit.collider.GetComponent<VIDE_Assign>() != null)
+                        assigned = hit.collider.GetComponent<VIDE_Assign>();
+                    else return;
+                                        
+                    if (!Conversation.instance.dialogue.isLoaded)
+                    {
+                        //Check if have quest to talk to NPC, returns -1 if no
+                        int startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
+                        //... and use NPC's DialogueAssign to begin the conversation
+                        Conversation.instance.BeginConversation(assigned, startNode);
+                    }
+                    else
+                    {
+                        //If conversation already began, let's just progress through it
+                        Conversation.instance.NextNode();
+                    }
                 }
             }
         }
