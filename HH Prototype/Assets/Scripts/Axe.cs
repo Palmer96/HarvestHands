@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Axe : Tool
+public class Axe : Item
 {
 
     public GameObject wood;
@@ -10,7 +10,8 @@ public class Axe : Tool
     // Use this for initialization
     void Start()
     {
-        toolID = 1;
+        itemID = 3;
+        itemCap = 1;
     }
 
     // Update is called once per frame
@@ -19,7 +20,7 @@ public class Axe : Tool
 
     }
 
-    public override void UseTool()
+    public override void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 

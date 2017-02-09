@@ -53,19 +53,13 @@ public class StoreItem : MonoBehaviour
                     //   newObject.transform.position = transform.position;
                     newObject = (GameObject)Instantiate(objectToBuy);
                     PlayerInventory.instance.AddItem(newObject);
+                    break;
 
-                    break;
-                case "Tool":
-                    PlayerInventory.instance.money -= price;
-                    //   newObject.transform.position = transform.position;
-                    newObject = (GameObject)Instantiate(objectToBuy);
-                    PlayerInventory.instance.AddTool(newObject);
-                    break;
                 case "ConstructZone":
                     if (PlayerInventory.instance.HasBook())
                     {
                         PlayerInventory.instance.money -= price;
-              
+
                         PlayerInventory.instance.AddBlueprint(objectToBuy);
                     }
                     break;

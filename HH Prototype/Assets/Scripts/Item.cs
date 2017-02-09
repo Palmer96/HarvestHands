@@ -11,7 +11,7 @@ public class Item : MonoBehaviour
     public int quantity;
     public int value;
     public bool sellable;
-
+    public int itemCap;
 
     public float rayMaxDist = 5;
 
@@ -24,17 +24,22 @@ public class Item : MonoBehaviour
     public Material singleMaterial;
     public Material multiMaterial;
 
+    public bool dontUpdate;
+
     // Use this for initialization
     void Start()
     {
-        if (singleMesh == null)
-            singleMesh = GetComponent<MeshFilter>().mesh;
-        if (multiMesh == null)
-            multiMesh = GetComponent<MeshFilter>().mesh;
-        if (singleMaterial == null)
-            singleMaterial = GetComponent<MeshRenderer>().material;
-        if (multiMaterial == null)
-            multiMaterial = GetComponent<MeshRenderer>().material;
+        if (!dontUpdate)
+        {
+            if (singleMesh == null)
+                singleMesh = GetComponent<MeshFilter>().mesh;
+            if (multiMesh == null)
+                multiMesh = GetComponent<MeshFilter>().mesh;
+            if (singleMaterial == null)
+                singleMaterial = GetComponent<MeshRenderer>().material;
+            if (multiMaterial == null)
+                multiMaterial = GetComponent<MeshRenderer>().material;
+        }
     }
 
     // Update is called once per frame
@@ -44,42 +49,54 @@ public class Item : MonoBehaviour
     }
 
 
-    public virtual void UseItem()
+    public virtual void PrimaryUse()
     {
         Debug.Log("Use Item");
     }
 
-    public virtual void UseItem(GameObject gameObj)
+    public virtual void PrimaryUse(GameObject gameObj)
     {
         Debug.Log("Use Item");
     }
+
+    public virtual void SecondaryUse()
+    {
+        Debug.Log("Use Item");
+    }
+
+    public virtual void SecondaryUse(GameObject gameObj)
+    {
+        Debug.Log("Use Item");
+    }
+
+
 
     public virtual void UpdateMesh()
     {
-        if (quantity > 1)
+        if (!dontUpdate)
         {
-            GetComponent<MeshFilter>().mesh = multiMesh;
-            GetComponent<MeshRenderer>().material = multiMaterial;
-            if (GetComponent<MeshCollider>() != null)
-                GetComponent<MeshCollider>().sharedMesh = multiMesh;
-        }
-        else
-        {
-            GetComponent<MeshFilter>().mesh = singleMesh;
-            GetComponent<MeshRenderer>().material = singleMaterial;
-            if (GetComponent<MeshCollider>() != null)
-                GetComponent<MeshCollider>().sharedMesh = singleMesh;
+            if (quantity > 1)
+            {
+                GetComponent<MeshFilter>().mesh = multiMesh;
+                GetComponent<MeshRenderer>().material = multiMaterial;
+                if (GetComponent<MeshCollider>() != null)
+                    GetComponent<MeshCollider>().sharedMesh = multiMesh;
+            }
+            else
+            {
+                GetComponent<MeshFilter>().mesh = singleMesh;
+                GetComponent<MeshRenderer>().material = singleMaterial;
+                if (GetComponent<MeshCollider>() != null)
+                    GetComponent<MeshCollider>().sharedMesh = singleMesh;
+            }
         }
     }
 
     public virtual void IncreaseQuantity()
     {
         quantity++;
-        GetComponent<MeshFilter>().mesh = multiMesh;
-        GetComponent<MeshRenderer>().material = multiMaterial;
 
-        if (GetComponent<MeshCollider>() != null)
-            GetComponent<MeshCollider>().sharedMesh = multiMesh;
+        UpdateMesh();
 
         GetComponent<Collider>().enabled = false;
     }
@@ -87,11 +104,8 @@ public class Item : MonoBehaviour
     public virtual void IncreaseQuantity(int amount)
     {
         quantity += amount;
-        GetComponent<MeshFilter>().mesh = multiMesh;
-        GetComponent<MeshRenderer>().material = multiMaterial;
 
-        if (GetComponent<MeshCollider>() != null)
-            GetComponent<MeshCollider>().sharedMesh = multiMesh;
+        UpdateMesh();
 
         GetComponent<Collider>().enabled = false;
     }
@@ -101,13 +115,14 @@ public class Item : MonoBehaviour
         quantity--;
         if (quantity == 1)
         {
-            GetComponent<MeshFilter>().mesh = singleMesh;
-            GetComponent<MeshRenderer>().material = singleMaterial;
-
-            if (GetComponent<MeshCollider>() != null)
-                GetComponent<MeshCollider>().sharedMesh = singleMesh;
+            UpdateMesh();
 
             GetComponent<Collider>().enabled = false;
+        }
+
+        if (quantity < 0)
+        {
+            Destroy(gameObject);
         }
     }
 
@@ -116,13 +131,14 @@ public class Item : MonoBehaviour
         quantity -= amount;
         if (quantity == 1)
         {
-            GetComponent<MeshFilter>().mesh = singleMesh;
-            GetComponent<MeshRenderer>().material = singleMaterial;
-
-            if (GetComponent<MeshCollider>() != null)
-                GetComponent<MeshCollider>().sharedMesh = singleMesh;
+            UpdateMesh();
 
             GetComponent<Collider>().enabled = false;
+        }
+
+        if (quantity < 0)
+        {
+            Destroy(gameObject);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Bucket : Tool
+public class Bucket : Item
 {
     public int currentWaterLevel = 10;
     public int maxWaterLevel = 10;
@@ -14,7 +14,8 @@ public class Bucket : Tool
     // Use this for initialization
     void Start()
     {
-        toolID = 3;
+        itemID = 5;
+        itemCap = 1;
     }
 
     // Update is called once per frame
@@ -32,7 +33,7 @@ public class Bucket : Tool
         }
     }
 
-    public override void UseTool()
+    public override void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 

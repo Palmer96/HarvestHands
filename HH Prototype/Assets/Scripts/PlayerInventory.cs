@@ -9,23 +9,23 @@ public class PlayerInventory : MonoBehaviour
     public int money = 0;
 
 
-    public GameObject ToolHotbar;
+    //  public GameObject ItemHotbar;
     public GameObject ItemHotbar;
 
 
-    public List<GameObject> heldTools = new List<GameObject>();
+    //  public List<GameObject> heldObjects = new List<GameObject>();
     public List<GameObject> heldObjects = new List<GameObject>();
-    public List<Sprite> toolSprites = new List<Sprite>();
+    //   public List<Sprite> itemSprites = new List<Sprite>();
     public List<Sprite> itemSprites = new List<Sprite>();
 
-    public List<Image> toolImage = new List<Image>();
 
-    public List<Image> itemImage = new List<Image>();
+    //  public List<Image> itemImage = new List<Image>();
+    public List<Text> itemText = new List<Text>();
+
 
     public bool usingTools;
 
     public float scroll;
-    public int selectedToolNum;
     public int selectedItemNum;
 
 
@@ -40,77 +40,35 @@ public class PlayerInventory : MonoBehaviour
 
         scrollTimer = 0.1f;
 
-        heldTools[0].transform.SetParent(transform.GetChild(0));
-        heldTools[0].transform.localPosition = new Vector3(1, 0, 2);
+        heldObjects[0].transform.SetParent(transform.GetChild(0));
+        heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
 
-        UpdateTools();
+        //   heldObjects[1].transform.SetParent(transform.GetChild(1));
+        //   heldObjects[1].transform.localPosition = new Vector3(1, 0, 2);
+
         UpdateInventory();
-        if (usingTools)
-        {
-            ToolHotbar.SetActive(true);
-            ItemHotbar.SetActive(false);
-        }
-        else
-        {
-            ToolHotbar.SetActive(false);
-            ItemHotbar.SetActive(true);
-        }
     }
 
     // Update is called once per frame
     void Update()
     {
         scrollTimer -= Time.deltaTime;
-        toolImage[0].sprite = toolSprites[5];
-        if (usingTools)
-        {
-            UpdateTools();
-            UpdateToolMesh();
-        }
-        else
-        {
-            UpdateInventory();
-            UpdateItemMesh();
-        }
+        //   itemImage[0].sprite = itemSprites[5];
+
+        UpdateInventory();
+        UpdateItemMesh();
 
         UpdateImages();
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            if (usingTools)
-            {
-                usingTools = false;
-                ToolHotbar.SetActive(false);
-                ItemHotbar.SetActive(true);
-            }
-            else
-            {
-                usingTools = true;
-                ToolHotbar.SetActive(true);
-                ItemHotbar.SetActive(false);
-            }
+            RemoveItem();
         }
 
-        if (!usingTools || selectedToolNum != 0)
+        if (selectedItemNum != 0)
         {
-            heldTools[0].GetComponent<Hand>().Drop();
+            heldObjects[0].GetComponent<Blueprint>().ConstructionCancel();
         }
-
-        if (HasBook())
-        {
-            heldTools[BlueprintIndex()].GetComponent<Blueprint>().held = true;
-            if (!usingTools)
-            {
-                heldTools[BlueprintIndex()].GetComponent<Blueprint>().ConstructionCancel();
-            }
-            else
-            {
-                if (selectedToolNum != BlueprintIndex())
-                    heldTools[BlueprintIndex()].GetComponent<Blueprint>().ConstructionCancel();
-
-            }
-        }
-
 
 
         if (Input.GetKeyDown(KeyCode.F))
@@ -118,102 +76,59 @@ public class PlayerInventory : MonoBehaviour
             DropAllofItem();
         }
 
-        // added by nick
-  //     if (Input.GetKeyDown(KeyCode.E))
-  //     {
-  //         RaycastHit hit;
-  //         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-  //         if (Physics.Raycast(ray, out hit, 5))
-  //         {
-  //             if (hit.transform.tag == "NPC")
-  //             {
-  //                 NPC npc = hit.transform.GetComponent<NPC>();
-  //                 if (npc == null)
-  //                     Debug.Log("npc = null");
-  //                 Debug.Log("Talking to " + npc.npcName);
-  //
-  //                 EventManager.TalkEvent(npc.npcName);
-  //             }
-  //             else if (hit.transform.tag == "NoticeBoard")
-  //             {
-  //                 hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
-  //             }
-  //         }
-  //     }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(KeyCode.E))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
             if (Physics.Raycast(ray, out hit, 5))
             {
+                if (hit.transform.CompareTag("Item"))
+                {
+                    AddItem(hit.transform.gameObject);
+                }
+            }
+        }
+
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            RaycastHit hit;
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(ray, out hit, 5))
+            {
                 switch (hit.transform.tag)
                 {
-                    case "Tool":
-                        if (usingTools)
-                            if (selectedToolNum != 0)
-                                AddTool(hit.transform.gameObject);
-                            else
-                                heldTools[0].GetComponent<Hand>().UseTool(hit.transform.gameObject);
-                        break;
-                    case "Item":
-                        if (!usingTools)
-                            AddItem(hit.transform.gameObject);
-                        else if (selectedToolNum == 0)
-                            heldTools[0].GetComponent<Hand>().PickUp(hit.transform.gameObject);
-                        break;
                     case "StoreItem":
                         hit.transform.GetComponent<StoreItem>().BuyObject();
                         break;
                     case "Bed":
-                        DayNightController.instance.DayJump();
+                        DayNightController.instance.BedDayJump();
+                        break;
+
+                    case "Rabbit":
+                        if (selectedItemNum == 0)
+                            heldObjects[0].GetComponent<Hand>().PrimaryUse(hit.transform.gameObject);
                         break;
 
                     default:
-                        if (!usingTools)
-                            UseItem();
-                        else
-                            UseTool();
+                        if (heldObjects[selectedItemNum] != null)
+                        {
+                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
+                        }
+
                         break;
                 }
             }
-            else
-            {
-                if (!usingTools)
-                    UseItem();
-                else
-                    UseTool();
-            }
         }
-        if (Input.GetMouseButtonDown(1))// && heldItem)
+        if (Input.GetMouseButtonDown(1))
         {
-            if (!usingTools)
-                RemoveItem();
-            else
-                heldTools[selectedToolNum].GetComponent<Tool>().SecondaryToolUse();
+            if (heldObjects[selectedItemNum] != null)
+                heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
         }
     }
 
-    public bool AddTool(GameObject item)
-    {
-        for (int i = 0; i < heldTools.Count; i++)
-        {
-            if (heldTools[i] == null)
-            {
-                heldTools[i] = item;
-                heldTools[i].transform.SetParent(transform.GetChild(0));
-                heldTools[i].transform.localPosition = new Vector3(1, 0, 2);
-                heldTools[i].GetComponent<Rigidbody>().isKinematic = true;
-                heldTools[i].GetComponent<Collider>().enabled = false;
-                heldTools[i].layer = 2;
-                heldTools[i].transform.rotation = transform.GetChild(0).rotation;
-                return true;
-            }
-        }
-        return false;
-
-    }
 
     public bool AddItem(GameObject item)
     {
@@ -248,22 +163,6 @@ public class PlayerInventory : MonoBehaviour
 
     }
 
-    public void RemoveTool()
-    {
-        if (selectedToolNum != 0)
-        {
-            if (heldTools[selectedToolNum] != null)
-            {
-                heldTools[selectedToolNum].GetComponent<Rigidbody>().isKinematic = false;
-                heldTools[selectedToolNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-                heldTools[selectedToolNum].transform.parent = null;
-                heldTools[selectedToolNum].GetComponent<Collider>().enabled = true;
-                heldTools[selectedToolNum].layer = 0;
-                heldTools[selectedToolNum] = null;
-            }
-        }
-    }
-
     public void RemoveItem()
     {
         if (heldObjects[selectedItemNum] != null)
@@ -280,8 +179,10 @@ public class PlayerInventory : MonoBehaviour
                 droppedItem.layer = 0;
 
                 heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
-                heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
-                droppedItem.GetComponent<Item>().UpdateMesh();
+                if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
+                    heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
+                if (droppedItem.GetComponent<Item>().itemID < 10)
+                    droppedItem.GetComponent<Item>().UpdateMesh();
             }
             else
             {
@@ -290,7 +191,8 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
                 heldObjects[selectedItemNum].transform.parent = null;
                 heldObjects[selectedItemNum].layer = 0;
-                heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
+                if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
+                    heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
                 heldObjects[selectedItemNum] = null;
             }
         }
@@ -299,7 +201,7 @@ public class PlayerInventory : MonoBehaviour
     public void DestroyItem()
     {
         Destroy(heldObjects[selectedItemNum]);
-        heldObjects[selectedToolNum] = null;
+        heldObjects[selectedItemNum] = null;
     }
 
     public void DropAllofItem()
@@ -314,54 +216,33 @@ public class PlayerInventory : MonoBehaviour
 
     void UpdateImages()
     {
-        for (int i = 0; i < heldTools.Count; i++)
-        {
-            if (i != 0)
-            {
-                if (heldTools[i] != null)
-                {
-                    toolImage[i].sprite = toolSprites[heldTools[i].GetComponent<Tool>().toolID];
-                    if (heldTools[i].GetComponent<Bucket>() != null)
-                        toolImage[i].transform.GetComponentInChildren<Text>().text = heldTools[i].GetComponent<Bucket>().currentWaterLevel.ToString();
-                    else
-                        toolImage[i].transform.GetComponentInChildren<Text>().text = "";
-                }
-                else
-                {
-                    toolImage[i].sprite = toolSprites[0];
-                    toolImage[i].transform.GetComponentInChildren<Text>().text = "";
-                }
-            }
-
-            if (i == selectedToolNum)
-            {
-                toolImage[i].color = Color.blue;
-            }
-            else
-                toolImage[i].color = Color.white;
-        }
-        /////////////////////////////////////////////////////////////////////////////////////////////
         for (int i = 0; i < heldObjects.Count; i++)
         {
-            if (heldObjects[i] != null)
-            {
-
-                itemImage[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
-
-            }
-            else
-            {
-                itemImage[i].sprite = itemSprites[0];
-                itemImage[i].transform.GetComponentInChildren<Text>().text = "";
-            }
 
             if (i == selectedItemNum)
             {
-                itemImage[i].color = Color.blue;
+                itemText[i].color = Color.yellow;
             }
             else
-                itemImage[i].color = Color.white;
+                itemText[i].color = Color.white;
+
+
+            if (heldObjects[i] != null)
+            {
+                // itemText[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
+
+                itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
+                if (heldObjects[i].GetComponent<Item>().quantity > 1)
+                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
+                else
+                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
+            else
+            {
+                //  itemText[i].sprite = itemSprites[0];
+                itemText[i].transform.GetComponentInChildren<Text>().text = "Blank";
+                itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
         }
     }
 
@@ -371,11 +252,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0.05f)
             {
-                if (selectedItemNum < itemImage.Count - 1)
+                if (selectedItemNum < itemText.Count - 1)
                 {
                     selectedItemNum++;
                     scrollTimer = 0.1f;
                 }
+                else
+                    selectedItemNum = 0;
             }
 
             if (Input.GetAxis("Mouse ScrollWheel") < -0.05f)
@@ -385,83 +268,34 @@ public class PlayerInventory : MonoBehaviour
                     selectedItemNum--;
                     scrollTimer = 0.1f;
                 }
-            }
-        }
-    }
-
-    void UpdateTools()
-    {
-        if (scrollTimer < 0)
-        {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0.05f)
-            {
-                if (selectedToolNum < toolImage.Count - 1)
+                else
                 {
-                    selectedToolNum++;
-                    scrollTimer = 0.1f;
-                }
-            }
-
-            if (Input.GetAxis("Mouse ScrollWheel") < -0.05f)
-            {
-                if (selectedToolNum > 0)
-                {
-                    selectedToolNum--;
-                    scrollTimer = 0.1f;
+                    selectedItemNum = heldObjects.Capacity;
                 }
             }
         }
     }
 
-    public void UseTool()
-    {
-        if (heldTools[selectedToolNum] != null)
-            heldTools[selectedToolNum].GetComponent<Tool>().UseTool();
-    }
-
-    public void UseTool(GameObject gameObj)
-    {
-        if (heldTools[selectedToolNum] != null)
-            heldTools[selectedToolNum].GetComponent<Tool>().UseTool(gameObj);
-    }
 
     public void UseItem()
     {
         if (heldObjects[selectedItemNum] != null)
-            heldObjects[selectedItemNum].GetComponent<Item>().UseItem();
+            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
     }
 
     public void UseItem(GameObject gameObj)
     {
         if (heldObjects[selectedItemNum] != null)
-            heldObjects[selectedItemNum].GetComponent<Item>().UseItem(gameObj);
+            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(gameObj);
     }
 
-    void UpdateToolMesh()
+
+    void UpdateItemMesh()
     {
 
         for (int i = 0; i < heldObjects.Count; i++)
             if (heldObjects[i] != null)
                 HideObject(heldObjects[i]);
-
-        for (int i = 0; i < heldTools.Count; i++)
-        {
-            if (heldTools[i] != null)
-            {
-                if (i == selectedToolNum)
-                    ShowObject(heldTools[i]);
-                else
-                    HideObject(heldTools[i]);
-            }
-        }
-    }
-
-    void UpdateItemMesh()
-    {
-
-        for (int i = 0; i < heldTools.Count; i++)
-            if (heldTools[i] != null)
-                HideObject(heldTools[i]);
 
 
         for (int i = 0; i < heldObjects.Count; i++)
@@ -511,11 +345,11 @@ public class PlayerInventory : MonoBehaviour
 
     public int BlueprintIndex()
     {
-        for (int i = 0; i < heldTools.Count; i++)
+        for (int i = 0; i < heldObjects.Count; i++)
         {
-            if (heldTools[i] != null)
+            if (heldObjects[i] != null)
             {
-                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                if (heldObjects[i].GetComponent<Item>().itemID == 5)
                 {
                     return i;
                 }
@@ -526,11 +360,11 @@ public class PlayerInventory : MonoBehaviour
 
     public bool HasBook()
     {
-        for (int i = 0; i < heldTools.Count; i++)
+        for (int i = 0; i < heldObjects.Count; i++)
         {
-            if (heldTools[i] != null)
+            if (heldObjects[i] != null)
             {
-                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                if (heldObjects[i].GetComponent<Item>().itemID == 5)
                 {
                     Debug.Log("Has Book");
                     return true;
@@ -544,13 +378,13 @@ public class PlayerInventory : MonoBehaviour
     public void AddBlueprint(GameObject item)
     {
         GameObject bPrint = null;
-        for (int i = 0; i < heldTools.Count; i++)
+        for (int i = 0; i < heldObjects.Count; i++)
         {
-            if (heldTools[i] != null)
+            if (heldObjects[i] != null)
             {
-                if (heldTools[i].GetComponent<Tool>().toolID == 5)
+                if (heldObjects[i].GetComponent<Item>().itemID == 5)
                 {
-                    bPrint = heldTools[i];
+                    bPrint = heldObjects[i];
                     Debug.Log("Yep, has Book");
                     break;
                 }

@@ -24,7 +24,7 @@ public class Seed : Item
 
     }
 
-    public override void UseItem()
+    public override void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
@@ -49,7 +49,7 @@ public class Seed : Item
         }
     }
 
-    public override void UseItem(GameObject gameObj)
+    public override void PrimaryUse(GameObject gameObj)
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 

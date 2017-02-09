@@ -6,16 +6,16 @@ public class SellChest : MonoBehaviour
 {
     public static List<SellChest> sellChests = new List<SellChest>();
     public int valueOfItems = 0;
-    
-	// Use this for initialization
-	void Start ()
+
+    // Use this for initialization
+    void Start()
     {
         SellChest.sellChests.Add(this);
-	}
+    }
 
     void OnTriggerEnter(Collider col)
     {
-        if(col.CompareTag("Item"))
+        if (col.CompareTag("Item") || col.CompareTag("Rabbit"))
         {
             Item item = col.GetComponent<Item>();
             if (item.sellable == true)

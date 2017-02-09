@@ -47,7 +47,7 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += (Time.deltaTime / 60);
+        currentTimeOfDay += (Time.deltaTime / 60) * 24;
 
         worldLight.transform.rotation = Quaternion.identity;
         worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);
@@ -69,7 +69,7 @@ public class DayNightController : MonoBehaviour
 
         textDays.text = "Days: " + ingameDay.ToString();
 
-        int time = (int)(currentTimeOfDay * 100);
+        int time = (int)(currentTimeOfDay * 60);
 
         if (currentTimeOfDay > 12)
         {
@@ -77,7 +77,7 @@ public class DayNightController : MonoBehaviour
 
         }
         else
-            textTime.text = "Time: " + (Mathf.Floor(time / 60)).ToString() + ":" + (time % 60).ToString() + " AM";
+            textTime.text = "Time: " + (Mathf.Floor(currentTimeOfDay)).ToString() + ":" + (time % 60).ToString() + " AM";
 
 
 
@@ -85,6 +85,26 @@ public class DayNightController : MonoBehaviour
         textMoney.text = "$" + PlayerInventory.instance.money.ToString();
 
 
+    }
+
+
+    public void BedDayJump()
+    {
+        if (currentTimeOfDay > 18)
+        {
+            currentTimeOfDay = 6;
+            ingameDay++;
+            PlantManager.instance.UpdatePlants(ingameDay);
+            SellChest.SellAllChests();
+
+            if (Random.Range(1, 5) == 1)
+            {
+                Rain.SetActive(true);
+                PlantManager.instance.WaterPlants();
+            }
+            else
+                Rain.SetActive(false);
+        }
     }
 
     public void DayJump()

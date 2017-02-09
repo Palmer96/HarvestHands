@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blueprint : Tool
+public class Blueprint : Item
 {
     public GameObject currentConstruct;
     public float constructionMaxDist = 20;
@@ -20,7 +20,8 @@ public class Blueprint : Tool
     void Start()
     {
         held = false;
-        toolID = 5;
+        itemID = 2;
+        itemCap = 1;
         scrollTimer = 0.1f;
     }
 
@@ -28,20 +29,22 @@ public class Blueprint : Tool
     // Update is called once per frame
     void Update()
     {
-       if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R))
         {
             rotations++;
         }
-        ChangeSelect();
 
-        if (held)
+
+        if (PlayerInventory.instance.selectedItemNum == 0 && currentConstruct == null)
+            ChangeSelect();
+
+
         transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
-           else
-            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+
 
         if (currentConstruct != null)
-        { 
-            
+        {
+
             currentConstruct.SetActive(true);
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -53,7 +56,7 @@ public class Blueprint : Tool
                 }
                 currentConstruct.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 currentConstruct.transform.up = hit.normal;
-                currentConstruct.transform.Rotate(0, 90*rotations, 0);
+                currentConstruct.transform.Rotate(0, 90 * rotations, 0);
             }
             else if (Physics.Raycast(currentConstruct.transform.position, -transform.up, out hit, constructionMaxDist))
             {
@@ -61,10 +64,9 @@ public class Blueprint : Tool
                 currentConstruct.transform.up = hit.normal;
             }
         }
-        held = false;
 
     }
-    public override void UseTool()
+    public override void PrimaryUse()
     {
         if (currentConstruct == null)
         {
@@ -77,12 +79,12 @@ public class Blueprint : Tool
         }
     }
 
-    public override void SecondaryToolUse()
+    public override void SecondaryUse()
     {
         if (currentConstruct != null)
-        ConstructionCancel();
+            ConstructionCancel();
         else
-        base.SecondaryToolUse();
+            base.SecondaryUse();
     }
 
     Vector3 GridPos(Vector3 pos)
@@ -126,7 +128,7 @@ public class Blueprint : Tool
         }
     }
 
-   public void ConstructionCancel()
+    public void ConstructionCancel()
     {
         Destroy(currentConstruct);
     }
@@ -134,22 +136,24 @@ public class Blueprint : Tool
 
     void ChangeSelect()
     {
-
-        if (Input.GetKeyDown(KeyCode.X))
+        if (inUse)
         {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
                 if (selectedConstruct < Constructs.Count - 1)
                 {
-                selectedConstruct++;
+                    selectedConstruct++;
                 }
             }
 
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
                 if (selectedConstruct > 0)
                 {
-                selectedConstruct--;
+                    selectedConstruct--;
                 }
             }
+        }
     }
 
 }

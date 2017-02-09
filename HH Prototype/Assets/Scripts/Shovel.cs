@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Shovel : Tool
+public class Shovel : Item
 {
     public GameObject dirt;
     
     // Use this for initialization
     void Start()
     {
-        toolID = 2;
+        itemID = 4;
+        itemCap = 1;
     }
 
     // Update is called once per frame
@@ -18,7 +19,7 @@ public class Shovel : Tool
 
     }
 
-    public override void  UseTool() 
+    public override void PrimaryUse() 
     {
      //   base.UseTool();
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));

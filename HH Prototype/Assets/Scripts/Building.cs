@@ -58,8 +58,19 @@ public class Building : MonoBehaviour
                 {
                     if (resources[i].numRequired > resources[i].numHave)
                     {
-                        resources[i].numHave++;
+                        int num = resources[i].numRequired - resources[i].numHave;
+
+                        if (num < col.transform.GetComponent<Item>().quantity)
+                        {
+                        resources[i].numHave += num;
+                        col.transform.GetComponent<Item>().DecreaseQuantity(num);
+                        }
+                        else
+                        {
+                            resources[i].numHave += col.transform.GetComponent<Item>().quantity;
+                            col.transform.GetComponent<Item>().DecreaseQuantity(col.transform.GetComponent<Item>().quantity);
                         Destroy(col.gameObject);
+                        }
 
                     }
                 }

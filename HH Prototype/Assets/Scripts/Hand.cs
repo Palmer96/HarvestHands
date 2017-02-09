@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Hand : Tool
+public class Hand : Item
 {
 
-   public GameObject heldItem;
+    public GameObject heldItem;
     // Use this for initialization
     void Start()
     {
-
+        itemID = 1;
+        itemCap = 1;
     }
 
     // Update is called once per frame
@@ -18,15 +19,26 @@ public class Hand : Tool
 
     }
 
-    public override void UseTool(GameObject item)
+    public override void PrimaryUse(GameObject item)
     {
-        if (heldItem == null)
-            PickUp(item);
-        else
+        if (heldItem != null)
+        {
             Drop();
+        }
+        else
+        {
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.CompareTag("Item"))
+                {
+                    PickUp(item);
+                }
+            }
+        }
     }
 
-    public override void SecondaryToolUse()
+    public override void SecondaryUse()
     {
         Throw();
     }
@@ -52,7 +64,7 @@ public class Hand : Tool
         }
     }
 
-   public void Throw()
+    public void Throw()
     {
         if (heldItem)
         {

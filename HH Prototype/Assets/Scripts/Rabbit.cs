@@ -26,6 +26,10 @@ public class Rabbit : MonoBehaviour
 
         //if ()
         }
+        else
+        {
+           // GetComponent<Item>().enabled = true;
+        }
     }
 
     GameObject FindPlant()
@@ -46,5 +50,20 @@ public class Rabbit : MonoBehaviour
         }
         return closest;
 
+    }
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (!nav.isActiveAndEnabled)
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
+                transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
+
+            }
+                transform.DetachChildren();
+                Destroy(gameObject);
+        }
     }
 }
