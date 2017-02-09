@@ -86,6 +86,7 @@ public class Conversation : MonoBehaviour
         //First step is to call BeginDialogue, passing the required VIDE_Assign component 
         //This will store the first Node data in dialogue.nodeData
         dialogue.BeginDialogue(diagToLoad);
+        PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = false;
 
         //if given a node to start on
         if (startNode != -1)
@@ -97,6 +98,7 @@ public class Conversation : MonoBehaviour
         if (dialogue.assigned == null)
         {
             dialogue.EndDialogue();
+            PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
             return;
         }
 
@@ -154,6 +156,7 @@ public class Conversation : MonoBehaviour
         {
             //This is called when we have reached the end of the conversation
             dialogue.EndDialogue(); //VIDE_Data will get reset along with nodeData.
+            PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
             return;
         }
 
@@ -173,6 +176,9 @@ public class Conversation : MonoBehaviour
                 }
 
             npcName.text = data.tag;
+            //if (otherObj != null)
+            //    if (otherObj.GetComponent<NPC>() != null)
+            //        npcName.text = otherObj.GetComponent<NPC>().npcName;
         }
     }
 

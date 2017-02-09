@@ -18,6 +18,7 @@ public class Building : MonoBehaviour
         public int numHave;
     }
 
+    public string constructName = "";
     public GameObject builtVersion;
     public ResourceRequired[] resources;
 
@@ -69,6 +70,8 @@ public class Building : MonoBehaviour
     void Build()
     {
         Instantiate(builtVersion, transform.position, transform.rotation);
+        EventManager.ConstructEvent(constructName);
+        Debug.Log("Construcing event - passing in = " + constructName);
         Destroy(gameObject);
     }
 

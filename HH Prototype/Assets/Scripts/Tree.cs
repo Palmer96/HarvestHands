@@ -20,10 +20,11 @@ public class Tree : MonoBehaviour
 
     public void Harvest()
     {
-//Instantiate(Wood, transform.position, transform.rotation);
+    Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
 
         woodAvaliable--;
         if (woodAvaliable == 0)
             Destroy(gameObject);
     }
+
 }

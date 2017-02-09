@@ -13,6 +13,8 @@ public class QuestProtoypeObjective : MonoBehaviour
         Plant = 1,
         Harvest = 2,
         Sell = 3,    
+        Buy = 4,
+        Construct = 5,
     }
     public objectiveType type = objectiveType.NONE;
     public bool objectiveDone = false;

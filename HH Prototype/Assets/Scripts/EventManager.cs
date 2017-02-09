@@ -18,6 +18,9 @@ public class EventManager : MonoBehaviour
     public delegate void PlantAction(string plantName);
     public static event PlantAction OnPlant = delegate { };
 
+    public delegate void ConstructAction(string buildingName);
+    public static event ConstructAction OnConstruct = delegate { };
+
     // Use this for initialization
     void Start ()
     {
@@ -46,5 +49,11 @@ public class EventManager : MonoBehaviour
     {
         Debug.Log("Planting to " + name);
         OnPlant(name);
+    }
+
+    public static void ConstructEvent(string name = "")
+    {
+        Debug.Log("Constructed " + name);
+        OnConstruct(name);
     }
 }

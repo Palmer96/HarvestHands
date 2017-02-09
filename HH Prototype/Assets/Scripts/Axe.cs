@@ -29,7 +29,8 @@ public class Axe : Tool
             if (hit.transform.CompareTag("Tree"))
             {
                 hit.transform.GetComponent<Tree>().Harvest();
-                Instantiate(wood, hit.point, transform.rotation);
+
+            //    Instantiate(wood, hit.point, transform.rotation);
             }
         }
 

@@ -32,6 +32,7 @@ public class PrototypeObjectiveBoard : MonoBehaviour
         questOffer.questBoardSource = this;
         questOffer.questBoardIndex = index;
         questOfferObject.transform.SetParent(uiCanvas.transform);
+        questOfferObject.transform.localPosition = new Vector3(0, 0, 0);
         questOffer.ShowOffer();       
         potentialQuests.Remove(potentialQuests[index]);
         
