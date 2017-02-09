@@ -32,16 +32,6 @@ public class HandTool : MonoBehaviour
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
-                //Debug.Log("Inside hit has hit");
-                //if (hit.transform.tag == "NPC")
-                //{
-                //    NPC npc = hit.transform.GetComponent<NPC>();
-                //    if (npc == null)
-                //        Debug.Log("npc = null");
-                //    Debug.Log("Talking to " + npc.npcName);
-                //
-                //    EventManager.TalkEvent(npc.npcName);
-                //}
                 if (hit.transform.tag == "NoticeBoard")
                 {
                     hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
@@ -53,7 +43,7 @@ public class HandTool : MonoBehaviour
                     if (hit.collider.GetComponent<VIDE_Assign>() != null)
                         assigned = hit.collider.GetComponent<VIDE_Assign>();
                     else return;
-                                        
+
                     if (!Conversation.instance.dialogue.isLoaded)
                     {
                         //Check if have quest to talk to NPC, returns -1 if no
@@ -66,6 +56,29 @@ public class HandTool : MonoBehaviour
                         //If conversation already began, let's just progress through it
                         Conversation.instance.NextNode();
                     }
+                }
+                if (hit.transform.tag == "CraftingBenchButton")
+                {
+                    hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
+                    Debug.Log("Hitting craftingbenchbutton");
+                }
+                if (hit.transform.tag == "CraftingBench")
+                {
+                    hit.transform.GetComponent<CraftingBench>().MakeItem();
+                    Debug.Log("Raycast hit Crafting Bench");
+                }
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log("Inside handtool F Pressed");
+            RaycastHit hit;
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.tag == "CraftingBench")
+                {
+                    hit.transform.GetComponent<CraftingBench>().NextRecipeChoice();
                 }
             }
         }
