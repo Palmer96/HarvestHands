@@ -50,10 +50,10 @@ public class Blueprint : Item
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, constructionMaxDist))
             {
-                if (!hit.transform.CompareTag("Ground"))
-                {
-                    currentConstruct.GetComponent<Construct>().canBuild = false;
-                }
+                //if (!hit.transform.CompareTag("Ground"))
+                //{
+                //    currentConstruct.GetComponent<Construct>().canBuild = false;
+                //}
                 currentConstruct.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 currentConstruct.transform.up = hit.normal;
                 currentConstruct.transform.Rotate(0, 90 * rotations, 0);
@@ -83,8 +83,6 @@ public class Blueprint : Item
     {
         if (currentConstruct != null)
             ConstructionCancel();
-        else
-            base.SecondaryUse();
     }
 
     Vector3 GridPos(Vector3 pos)

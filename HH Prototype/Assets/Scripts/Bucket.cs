@@ -21,7 +21,7 @@ public class Bucket : Item
     // Update is called once per frame
     void Update()
     {
-
+        transform.GetChild(1).GetComponent<TextMesh>().text = currentWaterLevel.ToString();
     }
 
 

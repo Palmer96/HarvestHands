@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Plant : MonoBehaviour
-{    
+{
     //TODO Make UpdatePlant work with multiple harvests (daysSinceLastHarvest)
     public enum PlantState
     {
@@ -11,7 +11,7 @@ public class Plant : MonoBehaviour
         Grown,
         Dead,
     }
-    
+
     public enum PlantMaterial
     {
         Dry,
@@ -24,7 +24,7 @@ public class Plant : MonoBehaviour
 
     public bool isWatered = false;
     public bool isAlive = true;
-    public bool readyToHarvest = false;    
+    public bool readyToHarvest = false;
 
     //Stuff to do with growing
     public int dayPlanted = 0;
@@ -56,15 +56,16 @@ public class Plant : MonoBehaviour
     public Material deadMaterial;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         PlantManager.instance.AddPlant(this);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void HarvestPlant()
     {
@@ -147,7 +148,7 @@ public class Plant : MonoBehaviour
         {
             dryStreak++;
             dryDays++;
-            
+
             //check if plant died
             if (dryStreak >= dryDaysToDie)
             {
@@ -203,7 +204,7 @@ public class Plant : MonoBehaviour
             case PlantMaterial.Dead:
                 {
                     renderer.material = deadMaterial;
-                    
+
                 }
                 break;
             case PlantMaterial.Dry:
@@ -231,11 +232,15 @@ public class Plant : MonoBehaviour
 
     public bool WaterPlant()
     {
-        if (!isWatered)
+        if (isAlive)
         {
-        isWatered = true;
-        UpdatePlantMat(PlantMaterial.Growing);
-            return true;
+            if (!isWatered)
+            {
+                isWatered = true;
+                // UpdatePlantMat(PlantMaterial.Growing);
+                GetComponent<Renderer>().material.color = Color.green;
+                return true;
+            }
         }
         return false;
     }

@@ -13,6 +13,11 @@ public class SellChest : MonoBehaviour
         SellChest.sellChests.Add(this);
     }
 
+    void Update()
+    {
+        transform.GetChild(0).GetComponent<TextMesh>().text = "$" + valueOfItems.ToString();
+    }
+
     void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("Item") || col.CompareTag("Rabbit"))
@@ -26,6 +31,7 @@ public class SellChest : MonoBehaviour
                 Destroy(col.gameObject);
             }
         }
+
     }
 
     public static void SellAllChests()

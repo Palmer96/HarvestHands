@@ -48,6 +48,37 @@ public class Building : MonoBehaviour
         text.text = GetText();
     }
 
+
+   public void AddResource(GameObject item)
+    {
+        for (int i = 0; i < resources.Length; i++)
+        {
+            if (item.GetComponent<Item>() != null)
+            {
+                if (item.GetComponent<Item>().itemName == resources[i].resource.ToString())
+                {
+                    if (resources[i].numRequired > resources[i].numHave)
+                    {
+                        int num = resources[i].numRequired - resources[i].numHave;
+
+                        if (num < item.GetComponent<Item>().quantity)
+                        {
+                            resources[i].numHave += num;
+                            item.GetComponent<Item>().DecreaseQuantity(num);
+                        }
+                        else
+                        {
+                            resources[i].numHave += item.GetComponent<Item>().quantity;
+                            item.GetComponent<Item>().DecreaseQuantity(item.GetComponent<Item>().quantity);
+                            Destroy(item);
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
     void OnCollisionEnter(Collision col)
     {
         for (int i = 0; i < resources.Length; i++)

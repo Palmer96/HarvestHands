@@ -11,7 +11,9 @@ public class PlayerInventory : MonoBehaviour
 
     //  public GameObject ItemHotbar;
     public GameObject ItemHotbar;
+    public GameObject book;
 
+    public bool bookOpen;
 
     //  public List<GameObject> heldObjects = new List<GameObject>();
     public List<GameObject> heldObjects = new List<GameObject>();
@@ -28,6 +30,7 @@ public class PlayerInventory : MonoBehaviour
     public float scroll;
     public int selectedItemNum;
 
+    int oldnum;
 
     private float scrollTimer;
     // Use this for initialization
@@ -40,8 +43,8 @@ public class PlayerInventory : MonoBehaviour
 
         scrollTimer = 0.1f;
 
-        heldObjects[0].transform.SetParent(transform.GetChild(0));
-        heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
+        //  heldObjects[0].transform.SetParent(transform.GetChild(0));
+        //  heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
 
         //   heldObjects[1].transform.SetParent(transform.GetChild(1));
         //   heldObjects[1].transform.localPosition = new Vector3(1, 0, 2);
@@ -53,79 +56,93 @@ public class PlayerInventory : MonoBehaviour
     void Update()
     {
         scrollTimer -= Time.deltaTime;
-        //   itemImage[0].sprite = itemSprites[5];
 
-        UpdateInventory();
         UpdateItemMesh();
-
         UpdateImages();
 
-        if (Input.GetKeyDown(KeyCode.Q))
+
+        if (Input.GetKeyDown(KeyCode.B))
         {
-            RemoveItem();
-        }
-
-        if (selectedItemNum != 0)
-        {
-            heldObjects[0].GetComponent<Blueprint>().ConstructionCancel();
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            DropAllofItem();
-        }
-
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-            if (Physics.Raycast(ray, out hit, 5))
+            if (bookOpen)
             {
-                if (hit.transform.CompareTag("Item"))
-                {
-                    AddItem(hit.transform.gameObject);
-                }
+                bookOpen = false;
+                book.SetActive(false);
+                selectedItemNum = oldnum;
+                book.GetComponent<Blueprint>().ConstructionCancel();
+            }
+            else
+            {
+                bookOpen = true;
+                book.SetActive(true);
+                selectedItemNum = 10;
             }
         }
 
-
-        if (Input.GetMouseButtonDown(0))
+        if (!bookOpen)
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit, 5))
+            UpdateInventory();
+
+            if (Input.GetKeyDown(KeyCode.Q)) // Drop
             {
-                switch (hit.transform.tag)
+                // if (selectedItemNum != 0)
+                RemoveItem();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F)) // Drop Stack
+            {
+                // if (selectedItemNum != 0)
+                DropAllofItem();
+            }
+
+
+            if (Input.GetKeyDown(KeyCode.E)) // Interact
+            {
+                RaycastHit hit;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                if (Physics.Raycast(ray, out hit, 5))
                 {
-                    case "StoreItem":
-                        hit.transform.GetComponent<StoreItem>().BuyObject();
-                        break;
-                    case "Bed":
-                        DayNightController.instance.BedDayJump();
-                        break;
+                    switch (hit.transform.tag)
+                    {
+                        case "StoreItem":
+                            hit.transform.GetComponent<StoreItem>().BuyObject();
+                            break;
+                        case "Bed":
+                            DayNightController.instance.BedDayJump();
+                            break;
+                    }
+                }
+            }
 
-                    case "Rabbit":
-                        if (selectedItemNum == 0)
-                            heldObjects[0].GetComponent<Hand>().PrimaryUse(hit.transform.gameObject);
-                        break;
+            if (Input.GetMouseButtonDown(0)) // Primary Use
+            {
+                if (heldObjects[selectedItemNum] != null)
+                {
+                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
+                }
+            }
+            if (Input.GetMouseButtonDown(1)) // Pickup
+            {
+                RaycastHit hit;
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                    default:
-                        if (heldObjects[selectedItemNum] != null)
-                        {
-                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
-                        }
-
-                        break;
+                if (Physics.Raycast(ray, out hit, 5))
+                {
+                    if (hit.transform.CompareTag("Item"))
+                        AddItem(hit.transform.gameObject);
                 }
             }
         }
-        if (Input.GetMouseButtonDown(1))
+        else
         {
-            if (heldObjects[selectedItemNum] != null)
-                heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
+            if (Input.GetMouseButtonDown(0)) // Primary Use
+            {
+                book.GetComponent<Blueprint>().PrimaryUse();
+            }
+            if (Input.GetMouseButtonDown(1)) // Pickup
+            {
+                book.GetComponent<Blueprint>().SecondaryUse();
+            }
         }
     }
 
@@ -222,9 +239,13 @@ public class PlayerInventory : MonoBehaviour
             if (i == selectedItemNum)
             {
                 itemText[i].color = Color.yellow;
+                itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.yellow;
             }
             else
+            {
                 itemText[i].color = Color.white;
+                itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.grey;
+            }
 
 
             if (heldObjects[i] != null)
@@ -240,7 +261,7 @@ public class PlayerInventory : MonoBehaviour
             else
             {
                 //  itemText[i].sprite = itemSprites[0];
-                itemText[i].transform.GetComponentInChildren<Text>().text = "Blank";
+                itemText[i].transform.GetComponentInChildren<Text>().text = "-";
                 itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
         }
@@ -273,6 +294,7 @@ public class PlayerInventory : MonoBehaviour
                     selectedItemNum = heldObjects.Capacity;
                 }
             }
+            oldnum = selectedItemNum;
         }
     }
 

@@ -52,11 +52,34 @@ public class Item : MonoBehaviour
     public virtual void PrimaryUse()
     {
         Debug.Log("Use Item");
+
+        Debug.Log("Use Item");
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        Debug.Log("Axe");
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            if (hit.transform.CompareTag("Building"))
+            {
+                hit.transform.GetComponent<Building>().AddResource(gameObject);
+            }
+        }
+
     }
 
     public virtual void PrimaryUse(GameObject gameObj)
     {
         Debug.Log("Use Item");
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        Debug.Log("Axe");
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            if (hit.transform.CompareTag("Building"))
+            {
+                hit.transform.GetComponent<Building>().AddResource(gameObject);
+            }
+        }
     }
 
     public virtual void SecondaryUse()
