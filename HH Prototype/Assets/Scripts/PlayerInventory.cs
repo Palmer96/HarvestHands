@@ -223,7 +223,7 @@ public class PlayerInventory : MonoBehaviour
 
     public void DropAllofItem()
     {
-        heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
+ 
         heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
         heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
         heldObjects[selectedItemNum].transform.parent = null;
