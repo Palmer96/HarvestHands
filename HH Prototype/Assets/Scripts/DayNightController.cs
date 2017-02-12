@@ -74,14 +74,14 @@ public class DayNightController : MonoBehaviour
         string ampm;
         if (currentTimeOfDay > 12)
         {
-           ampm = " PM";
+            ampm = " PM";
 
         }
         else
             ampm = " AM";
 
         if (currentTimeOfDay > 13)
-            textTime.text = "Time: " + (Mathf.Floor(currentTimeOfDay-12)).ToString() + ":" + (time % 60).ToString() + ampm;
+            textTime.text = "Time: " + (Mathf.Floor(currentTimeOfDay - 12)).ToString() + ":" + (time % 60).ToString() + ampm;
         else
             textTime.text = "Time: " + (Mathf.Floor(currentTimeOfDay)).ToString() + ":" + (time % 60).ToString() + ampm;
 
@@ -93,6 +93,14 @@ public class DayNightController : MonoBehaviour
 
     }
 
+    void UpdateTree()
+    {
+        GameObject[] trees = GameObject.FindGameObjectsWithTag("Stump");
+        for (int i = 0; i < trees.Length; i++)
+        {
+            trees[i].GetComponent<RespawnNode>().UpdateTree();
+        }
+    }
 
     public void BedDayJump()
     {
@@ -101,6 +109,7 @@ public class DayNightController : MonoBehaviour
             currentTimeOfDay = 6;
             ingameDay++;
             PlantManager.instance.UpdatePlants(ingameDay);
+            UpdateTree();
             SellChest.SellAllChests();
 
             if (Random.Range(1, 5) == 1)
@@ -119,6 +128,8 @@ public class DayNightController : MonoBehaviour
         ingameDay++;
         PlantManager.instance.UpdatePlants(ingameDay);
         SellChest.SellAllChests();
+
+        UpdateTree();
 
         if (Random.Range(1, 5) == 1)
         {
