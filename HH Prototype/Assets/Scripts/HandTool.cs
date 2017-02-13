@@ -59,13 +59,15 @@ public class HandTool : MonoBehaviour
                 }
                 if (hit.transform.tag == "CraftingBenchButton")
                 {
-                    hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
+                    //hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
                     Debug.Log("Hitting craftingbenchbutton");
+                    CraftingMenu.instance.ActivateMenu();
                 }
                 if (hit.transform.tag == "CraftingBench")
                 {
-                    hit.transform.GetComponent<CraftingBench>().MakeItem();
+                    //hit.transform.GetComponent<CraftingBench>().MakeItem();
                     Debug.Log("Raycast hit Crafting Bench");
+                    CraftingMenu.instance.ActivateMenu();
                 }
             }
         }

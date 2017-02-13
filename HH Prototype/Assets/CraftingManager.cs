@@ -27,6 +27,6 @@ public class CraftingManager : MonoBehaviour
 	void Update ()
     {
         Debug.Log("crafting manager is on " + gameObject.name);
-	}
+	}        
 
 }
