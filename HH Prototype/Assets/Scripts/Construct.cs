@@ -9,6 +9,7 @@ public class Construct : MonoBehaviour
 
    public bool colliding;
    public bool upRight;
+    public bool onGround;
     // Use this for initialization
     void Start()
     {
@@ -70,6 +71,7 @@ public class Construct : MonoBehaviour
 
         if (col.transform.CompareTag("Ground"))
             colliding = true;
+
             
     //  else if (col.transform.CompareTag("Ground"))
     //  {
@@ -89,7 +91,8 @@ public class Construct : MonoBehaviour
     }
     void OnTriggerExit(Collider col)
     {
-        colliding = true;
+        if (col.transform.CompareTag("Ground"))
+            colliding = true;
     }
 
 }

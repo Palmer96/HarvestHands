@@ -7,7 +7,9 @@ public class TestManager : MonoBehaviour
     public GameObject Object1;
     public GameObject Object2;
 
+    public Camera cam;
 
+    public GameObject tool;
 
    // public Text Display;
    // public string Name;

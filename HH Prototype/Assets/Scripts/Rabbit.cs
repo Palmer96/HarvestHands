@@ -5,12 +5,13 @@ public class Rabbit : MonoBehaviour
 {
 
     public UnityEngine.AI.NavMeshAgent nav;
+    GameObject Player;
     // Use this for initialization
     void Start()
     {
         if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
-
+        Player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
@@ -30,6 +31,8 @@ public class Rabbit : MonoBehaviour
         {
             // GetComponent<Item>().enabled = true;
         }
+
+     //   nav.avoidancePriority
     }
 
     GameObject FindPlant()

@@ -60,6 +60,7 @@ public class PlayerInventory : MonoBehaviour
         UpdateItemMesh();
         UpdateImages();
 
+        Hotkeys();
 
         if (Input.GetKeyDown(KeyCode.B))
         {
@@ -93,6 +94,7 @@ public class PlayerInventory : MonoBehaviour
                 // if (selectedItemNum != 0)
                 DropAllofItem();
             }
+
 
 
             if (Input.GetKeyDown(KeyCode.E)) // Interact
@@ -172,8 +174,8 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[i].layer = 2;
                 heldObjects[i].GetComponent<Collider>().enabled = false;
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
-                if(heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-                heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false ;
+                if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                    heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
 
                 return true;
             }
@@ -225,7 +227,11 @@ public class PlayerInventory : MonoBehaviour
 
     public void DropAllofItem()
     {
- 
+
+
+        heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
+
+
         heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
         heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
         heldObjects[selectedItemNum].transform.parent = null;
@@ -293,7 +299,7 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else
                 {
-                    selectedItemNum = heldObjects.Capacity-1;
+                    selectedItemNum = heldObjects.Capacity - 1;
                 }
             }
             oldnum = selectedItemNum;
@@ -420,6 +426,26 @@ public class PlayerInventory : MonoBehaviour
             Debug.Log("Add Blueprint");
             bPrint.GetComponent<Blueprint>().AddBuild(item);
         }
+    }
+
+    public void Hotkeys()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+            selectedItemNum = 0;
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+            selectedItemNum = 1;
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+            selectedItemNum = 2;
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+            selectedItemNum = 3;
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+            selectedItemNum = 4;
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+            selectedItemNum = 5;
+        if (Input.GetKeyDown(KeyCode.Alpha7))
+            selectedItemNum = 6;
+
+     
     }
 
 }
