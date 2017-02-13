@@ -41,7 +41,7 @@ public class EventManager : MonoBehaviour
 
     public static void SellEvent(string name = "")
     {
-        Debug.Log("Selling to " + name);
+      //  Debug.Log("Selling to " + name);
         OnSell(name);
     }
 

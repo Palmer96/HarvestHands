@@ -172,6 +172,8 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[i].layer = 2;
                 heldObjects[i].GetComponent<Collider>().enabled = false;
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
+                if(heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false ;
 
                 return true;
             }
@@ -291,7 +293,7 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else
                 {
-                    selectedItemNum = heldObjects.Capacity;
+                    selectedItemNum = heldObjects.Capacity-1;
                 }
             }
             oldnum = selectedItemNum;

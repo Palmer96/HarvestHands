@@ -24,11 +24,11 @@ public class Rabbit : MonoBehaviour
                 nav.SetDestination(target.transform.position);
             }
 
-        //if ()
+            //if ()
         }
         else
         {
-           // GetComponent<Item>().enabled = true;
+            // GetComponent<Item>().enabled = true;
         }
     }
 
@@ -56,14 +56,22 @@ public class Rabbit : MonoBehaviour
     {
         if (!nav.isActiveAndEnabled)
         {
+        GetComponent<BoxCollider>().enabled = false;
+            GameObject[] parts = new GameObject[transform.childCount];
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                parts[i] = transform.GetChild(i).gameObject;
+            }
+
             for (int i = 0; i < transform.childCount; i++)
             {
                 transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
                 transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
 
+                transform.GetChild(i).GetComponent<Rigidbody>().AddForce((transform.position - transform.GetChild(0).position).normalized * 1000);
             }
-                transform.DetachChildren();
-                Destroy(gameObject);
+            transform.DetachChildren();
+            Destroy(gameObject);
         }
     }
 }
