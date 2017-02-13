@@ -67,7 +67,7 @@ public class DayNightController : MonoBehaviour
         RenderSettings.fogStartDistance = fogStartDistance.Evaluate(currentTimeOfDay / 24);
         RenderSettings.fogEndDistance = fogEndDistance.Evaluate(currentTimeOfDay / 24);
 
-        textDays.text = "Days: " + ingameDay.ToString();
+        textDays.text = "Day: " + ingameDay.ToString();
 
         int time = (int)(currentTimeOfDay * 60);
 
@@ -111,6 +111,7 @@ public class DayNightController : MonoBehaviour
             PlantManager.instance.UpdatePlants(ingameDay);
             UpdateTree();
             SellChest.SellAllChests();
+            WaveManager.instance.StartWave();
 
             if (Random.Range(1, 5) == 1)
             {
@@ -127,9 +128,9 @@ public class DayNightController : MonoBehaviour
         currentTimeOfDay = 0;
         ingameDay++;
         PlantManager.instance.UpdatePlants(ingameDay);
-        SellChest.SellAllChests();
-
         UpdateTree();
+        SellChest.SellAllChests();
+        WaveManager.instance.StartWave();
 
         if (Random.Range(1, 5) == 1)
         {
