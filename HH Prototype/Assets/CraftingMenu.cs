@@ -35,6 +35,8 @@ public class CraftingMenu : MonoBehaviour
 
 
     public List<CraftingRecipe> recipes = new List<CraftingRecipe>();
+    private List<CraftingRecipe> haveResourceList = new List<CraftingRecipe>();
+    private List<CraftingRecipe> dontHaveResourceList = new List<CraftingRecipe>();
 
     // Use this for initialization
     void Start()
@@ -140,18 +142,37 @@ public class CraftingMenu : MonoBehaviour
 
     public void AddButtons(List<CraftingRecipe> recipes)
     {
+        haveResourceList = new List<CraftingRecipe>();
+        dontHaveResourceList = new List<CraftingRecipe>();
         int recipeIndex = 0;
-
-        CraftingManager.instance.knownRecipes.Sort(delegate (CraftingRecipe a, CraftingRecipe b)
+        //Sort alphabetically
+        recipes.Sort(delegate (CraftingRecipe a, CraftingRecipe b)
         {
             return a.recipeName.CompareTo(b.recipeName);
         }
         );
+        //Sort to have resource and dont have resources
+        foreach (CraftingRecipe recipe in CraftingManager.instance.knownRecipes)
+        {
+            if (recipe.HaveResources())
+                haveResourceList.Add(recipe);
+            else
+                dontHaveResourceList.Add(recipe);
+        }        
+        //create ui buttons for each
+        foreach (CraftingRecipe recipe in haveResourceList)
+        {
+            GameObject menuButton = Instantiate(recipeListButtonPrefab);
+            CraftingMenuButton craftingButton = menuButton.GetComponent<CraftingMenuButton>();
+            menuButton.transform.SetParent(contentPanel);
+            craftingButtons.Add(craftingButton);
+            craftingButton.recipeIndex = recipeIndex;
+            recipeIndex++;
+            craftingButton.recipe = recipe;
 
-        List<CraftingRecipe> sortedList = CraftingManager.instance.knownRecipes;
-        //sortedList.Sort(CraftingRecipe.SortByName());
-      //  sortedList = sortedList.Sort((IComparer<CraftingRecipe>)new CraftingRecipe.RecipeSort());
-        foreach (CraftingRecipe recipe in recipes)
+            craftingButton.UpdateDisplay();
+        }
+        foreach (CraftingRecipe recipe in dontHaveResourceList)
         {
             GameObject menuButton = Instantiate(recipeListButtonPrefab);
             CraftingMenuButton craftingButton = menuButton.GetComponent<CraftingMenuButton>();

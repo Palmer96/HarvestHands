@@ -5,7 +5,7 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     public string npcName = "xXxPussySlayer69xXx";
-    public int relationValue = 0;
+    public int arousalValue = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -25,8 +25,8 @@ public class NPC : MonoBehaviour
         }
     }
 
-    public void AddRelation(int value)
+    public void AddArousal(int value)
     {
-        relationValue += value;
+        arousalValue += value;
     }
 }

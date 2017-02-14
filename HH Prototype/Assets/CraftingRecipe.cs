@@ -75,26 +75,36 @@ public class CraftingRecipe : MonoBehaviour
         return newObject;
     }
 
-    //public static string SortByName(CraftingRecipe recipe1, CraftingRecipe recipe2)
-    //{
-    //    return recipe1.recipeName.CompareTo(recipe2.recipeName);
-    //}
-    public class RecipeSort : IComparer<CraftingRecipe>
+    public bool HaveResources()
     {
-        int IComparer<CraftingRecipe>.Compare(CraftingRecipe _objA, CraftingRecipe _objB)
+        foreach (CraftingManager.ResourceRequirement requirement in requiredItems)
         {
-            string t1 = _objA.GetComponent<CraftingRecipe>().recipeName;
-            string t2 = _objB.GetComponent<CraftingRecipe>().recipeName;
-            return t1.CompareTo(t2);
-        }
-    }
-}
+            bool hasItem = false;
+            foreach (GameObject loadedObject in PlayerInventory.instance.heldObjects)
+            {
+                if (loadedObject == null)
+                    continue;
+                Item loadedItem = loadedObject.GetComponent<Item>();
+                if (loadedItem == null)
+                    continue;
 
-//class RecipeSort : IComparer<CraftingRecipe>
-//{    int IComparer<CraftingRecipe>.Compare(CraftingRecipe _objA, CraftingRecipe _objB)
-//    {
-//        string t1 = _objA.GetComponent<CraftingRecipe>().recipeName;
-//        string t2 = _objB.GetComponent<CraftingRecipe>().recipeName;
-//        return t1.CompareTo(t2);
-//    }
-//}
+                //If have the item
+                if (loadedItem.itemName == requirement.resourceName)
+                {
+                    hasItem = true;
+                    //If dont have enough, return
+                    if (loadedItem.quantity < requirement.numRequired)
+                    {
+                        return false;
+                    }
+                }
+            }
+            //If have 0 of the resources
+            if (hasItem == false)
+                return false;
+        }
+        return true;
+    }
+    
+    
+}
