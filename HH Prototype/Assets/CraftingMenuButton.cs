@@ -19,21 +19,43 @@ public class CraftingMenuButton : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	public void SetMenuIndex ()
+	public void UpdateSelectedButton ()
     {
-        craftingMenu.selectedButton = this;
+        if (CraftingMenu.instance.selectedButton != null)
+            CraftingMenu.instance.selectedButton.UnselectButton();
+        CraftingMenu.instance.selectedButton = this;
+        CraftingMenu.instance.UpdateSelectedItemInfo();
+        SelectButton();
 	}
+
+    public void UnselectButton()
+    {
+        nameText.text = recipe.recipeName;
+    }
+
+    public void SelectButton()
+    {
+        nameText.text = "-> " + recipe.recipeName + " <-";
+    }
 
     public void UpdateDisplay()
     {
-        string recipeName = recipe.recipeName;
+        string recipeName = "";
         string recipeResources = "";
+        if (CraftingMenu.instance.selectedButton == this)
+        {
+            recipeName += "-> " + recipe.recipeName + " <-";
+        }
+        else
+            recipeName = recipe.recipeName;
         bool hasResource = false;
 
         foreach (CraftingManager.ResourceRequirement requirement in recipe.requiredItems)
         {
             foreach (GameObject heldItem in PlayerInventory.instance.heldObjects)
             {
+                if (heldItem == null)
+                    continue;
                 Item item = heldItem.GetComponent<Item>();
                 if (item == null)
                     continue;
@@ -41,20 +63,27 @@ public class CraftingMenuButton : MonoBehaviour
                     if (item.quantity >= requirement.numRequired)
                     {
                         hasResource = true;
-                        recipeResources += "<color = sufficientResourceColour>" + requirement.numRequired + requirement.resourceName + ", </color>";
+                        recipeResources += requirement.numRequired + requirement.resourceName + ", ";
+                        //recipeResources += "<color = sufficientResourceColour>" + requirement.numRequired + requirement.resourceName + ", </color>";
                         break;
                     }
 
             }
             if (!hasResource)
-                recipeResources += "<color = insufficientResourceColour>" + requirement.numRequired + requirement.resourceName + ", </color>";
+                recipeResources += requirement.numRequired + requirement.resourceName + ", ";
         }
         //Display list prefab thing
         nameText.text = recipeName;
         requirementText.text = recipeResources;
         if (hasResource)
+        {
             nameText.color = CraftingMenu.instance.canMakeColor;
+            requirementText.color = CraftingMenu.instance.sufficientResourceColour;
+        }
         else
+        {
             nameText.color = CraftingMenu.instance.cantMakeColor;
+            requirementText.color = CraftingMenu.instance.insufficientResourceColour;
+        }
     }
 }

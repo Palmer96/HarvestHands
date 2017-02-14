@@ -5,6 +5,7 @@ using UnityEngine;
 public class NPC : MonoBehaviour
 {
     public string npcName = "xXxPussySlayer69xXx";
+    public int relationValue = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -22,5 +23,10 @@ public class NPC : MonoBehaviour
         {
             GetComponent<VIDE_Assign>().overrideStartNode = i;
         }
+    }
+
+    public void AddRelation(int value)
+    {
+        relationValue += value;
     }
 }

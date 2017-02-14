@@ -26,7 +26,7 @@ public class CraftingManager : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-        Debug.Log("crafting manager is on " + gameObject.name);
+        //Debug.Log("crafting manager is on " + gameObject.name);
 	}        
 
 }
