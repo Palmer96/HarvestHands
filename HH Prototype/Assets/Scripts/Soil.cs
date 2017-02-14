@@ -25,6 +25,6 @@ public class Soil : MonoBehaviour
 
         occupied = true;
 
-        WaveManager.instance.plantsLeft++;
+      //  WaveManager.instance.plantsLeft++;
     }
 }

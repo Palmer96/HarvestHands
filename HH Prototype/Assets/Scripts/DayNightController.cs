@@ -111,7 +111,7 @@ public class DayNightController : MonoBehaviour
             PlantManager.instance.UpdatePlants(ingameDay);
             UpdateTree();
             SellChest.SellAllChests();
-            WaveManager.instance.StartWave();
+        //    WaveManager.instance.StartWave();
 
             if (Random.Range(1, 5) == 1)
             {
@@ -130,7 +130,7 @@ public class DayNightController : MonoBehaviour
         PlantManager.instance.UpdatePlants(ingameDay);
         UpdateTree();
         SellChest.SellAllChests();
-        WaveManager.instance.StartWave();
+     //   WaveManager.instance.StartWave();
 
         if (Random.Range(1, 5) == 1)
         {

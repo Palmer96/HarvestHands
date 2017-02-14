@@ -57,6 +57,14 @@ public class Blueprint : Item
                 currentConstruct.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
                 currentConstruct.transform.up = hit.normal;
                 currentConstruct.transform.Rotate(0, 90 * rotations, 0);
+                if (hit.transform.CompareTag("Ground"))
+                {
+                    currentConstruct.GetComponent<Construct>().onGround = true;
+                }
+                else
+                {
+                    currentConstruct.GetComponent<Construct>().onGround = false;
+                }
             }
             else if (Physics.Raycast(currentConstruct.transform.position, -transform.up, out hit, constructionMaxDist))
             {

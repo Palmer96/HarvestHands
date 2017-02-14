@@ -13,11 +13,18 @@ public class Construct : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (transform.GetComponent<Renderer>() != null)
+        {
         mat = new Material[transform.childCount + 1];
+            mat[transform.childCount] = transform.GetComponent<Renderer>().material;
+        }
+        else
+            mat = new Material[transform.childCount];
         for (int i = 0; i < transform.childCount; i++)
         {
             mat[i] = transform.GetChild(i).GetComponent<Renderer>().material;
         }
+        if (transform.GetComponent<Renderer>() != null)
         mat[transform.childCount] = transform.GetComponent<Renderer>().material;
     }
 
@@ -38,25 +45,21 @@ public class Construct : MonoBehaviour
         }
 
 
-
-
-        if (colliding && upRight)
-            canBuild = true;
-        else
-            canBuild = false;
-
-
-
-        if (canBuild)
+        
+        if (onGround && upRight && !colliding)
         {
+            canBuild = true;
             for (int i = 0; i < mat.Length; i++)
                 mat[i].color = new Color(0, 1, 0, 0.5f);
         }
         else
         {
+            canBuild = false;
             for (int i = 0; i < mat.Length; i++)
                 mat[i].color = new Color(1, 0, 0, 0.5f);
         }
+
+      //  colliding = false;
     }
 
     public void Place()
@@ -67,32 +70,12 @@ public class Construct : MonoBehaviour
 
     void OnTriggerStay(Collider col)
     {
-            colliding = false;
-
-        if (col.transform.CompareTag("Ground"))
+        if (!col.transform.CompareTag("Ground"))
             colliding = true;
-
-            
-    //  else if (col.transform.CompareTag("Ground"))
-    //  {
-    //      if (transform.eulerAngles.x > 10 &&
-    //          transform.eulerAngles.x < 350 ||
-    //          transform.eulerAngles.z > 10 &&
-    //          transform.eulerAngles.z < 350)
-    //      {
-    //          canBuild = false;
-    //      }
-    //      else
-    //      {
-    //          canBuild = true;
-    //      }
-    //  }
-
     }
     void OnTriggerExit(Collider col)
     {
-        if (col.transform.CompareTag("Ground"))
-            colliding = true;
+        colliding = false;
     }
 
 }
