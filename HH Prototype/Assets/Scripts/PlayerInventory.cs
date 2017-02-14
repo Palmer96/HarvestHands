@@ -30,6 +30,7 @@ public class PlayerInventory : MonoBehaviour
     public float scroll;
     public int selectedItemNum;
 
+    public bool inMenu;
     int oldnum;
 
     private float scrollTimer;
@@ -43,6 +44,7 @@ public class PlayerInventory : MonoBehaviour
 
         scrollTimer = 0.1f;
 
+        inMenu = true;
         //  heldObjects[0].transform.SetParent(transform.GetChild(0));
         //  heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
 
@@ -79,7 +81,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        if (!bookOpen)
+        if (!bookOpen || !inMenu)
         {
             UpdateInventory();
 
@@ -158,6 +160,9 @@ public class PlayerInventory : MonoBehaviour
                 if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
                     heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
+                    if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                        WaveManager.instance.rabbitsLeft--;
+
                     Destroy(item);
                     return true;
                 }
@@ -175,7 +180,10 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[i].GetComponent<Collider>().enabled = false;
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
                 if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                {
                     heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+                    WaveManager.instance.rabbitsLeft--;
+                }
 
                 return true;
             }
@@ -281,17 +289,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0.05f)
             {
-                if (selectedItemNum < itemText.Count - 1)
-                {
-                    selectedItemNum++;
-                    scrollTimer = 0.1f;
-                }
-                else
-                    selectedItemNum = 0;
-            }
-
-            if (Input.GetAxis("Mouse ScrollWheel") < -0.05f)
-            {
+               
                 if (selectedItemNum > 0)
                 {
                     selectedItemNum--;
@@ -301,6 +299,17 @@ public class PlayerInventory : MonoBehaviour
                 {
                     selectedItemNum = heldObjects.Capacity - 1;
                 }
+            }
+
+            if (Input.GetAxis("Mouse ScrollWheel") < -0.05f)
+            {
+                if (selectedItemNum < itemText.Count - 1)
+                {
+                    selectedItemNum++;
+                    scrollTimer = 0.1f;
+                }
+                else
+                    selectedItemNum = 0;
             }
             oldnum = selectedItemNum;
         }
@@ -445,7 +454,7 @@ public class PlayerInventory : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha7))
             selectedItemNum = 6;
 
-     
+
     }
 
 }
