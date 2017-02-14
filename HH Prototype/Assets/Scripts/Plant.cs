@@ -22,6 +22,8 @@ public class Plant : MonoBehaviour
 
     public string plantName = "";
 
+    public int strengthTimer;
+
     public bool isWatered = false;
     public bool isAlive = true;
     public bool readyToHarvest = false;
@@ -45,6 +47,7 @@ public class Plant : MonoBehaviour
 
     public Renderer renderer;
     public MeshFilter meshFilter;
+    public MeshCollider meshCollider;
     public Mesh saplingMesh;
     public Mesh growingMesh;
     public Mesh grownMesh;
@@ -71,6 +74,7 @@ public class Plant : MonoBehaviour
     {
         if (readyToHarvest)
         {
+            WaveManager.instance.plantsLeft--;
             //If dead
             if (!isAlive)
             {
@@ -169,21 +173,25 @@ public class Plant : MonoBehaviour
             case PlantState.Dead:
                 {
                     meshFilter.mesh = deadMesh;
+                    meshCollider.sharedMesh = deadMesh;
                 }
                 break;
             case PlantState.Growing:
                 {
                     meshFilter.mesh = growingMesh;
+                    meshCollider.sharedMesh = growingMesh;
                 }
                 break;
             case PlantState.Grown:
                 {
                     meshFilter.mesh = grownMesh;
+                    meshCollider.sharedMesh = grownMesh;
                 }
                 break;
             case PlantState.Sapling:
                 {
                     meshFilter.mesh = saplingMesh;
+                    meshCollider.sharedMesh = saplingMesh;
                 }
                 break;
             default:

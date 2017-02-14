@@ -1,18 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class WaveManager : MonoBehaviour
 {
     public static WaveManager instance = null;
 
-
+    public Text rabbitText;
+    public Text plantText;
     public GameObject rabbit;
 
     public int waveNum;
     public int perWave;
 
     public bool inWave;
+
+    public int rabbitsLeft;
+    public int plantsLeft;
     // Use this for initialization
     void Start()
     {
@@ -25,7 +30,8 @@ public class WaveManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        rabbitText.text = "Rabbits left: " + rabbitsLeft.ToString();
+        plantText.text = "Plants Remaining: " + plantsLeft.ToString();
     }
 
 
@@ -41,6 +47,8 @@ public class WaveManager : MonoBehaviour
             }
             waveNum++;
         }
+
+        rabbitsLeft += perWave * waveNum;
 
     }
 

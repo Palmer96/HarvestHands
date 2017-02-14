@@ -81,7 +81,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        if (!bookOpen || !inMenu)
+        if (!bookOpen)
         {
             UpdateInventory();
 
@@ -139,7 +139,9 @@ public class PlayerInventory : MonoBehaviour
         }
         else
         {
-            if (Input.GetMouseButtonDown(0)) // Primary Use
+            book.GetComponent<Blueprint>().ChangeSelect();
+
+                if (Input.GetMouseButtonDown(0)) // Primary Use
             {
                 book.GetComponent<Blueprint>().PrimaryUse();
             }
@@ -226,6 +228,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
     }
+
 
     public void DestroyItem()
     {

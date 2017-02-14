@@ -42,16 +42,8 @@ public class Item : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
     public virtual void PrimaryUse()
     {
-        Debug.Log("Use Item");
 
         Debug.Log("Use Item");
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));

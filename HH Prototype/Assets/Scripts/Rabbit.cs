@@ -1,14 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Rabbit : MonoBehaviour
 {
 
     public UnityEngine.AI.NavMeshAgent nav;
     GameObject Player;
+
+    public float timer;
+    public float timerRate;
+    public bool eating;
+    public GameObject plant;
+
+    public bool isAlive;
     // Use this for initialization
     void Start()
     {
+        timer = timerRate;
         if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
         Player = GameObject.FindGameObjectWithTag("Player");
@@ -17,6 +26,21 @@ public class Rabbit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (eating)
+        {
+            timer -= Time.deltaTime;
+            if (timer < 0)
+            {
+                if (plant != null)
+                {
+                    plant.GetComponent<Plant>().readyToHarvest = true;
+                    plant.GetComponent<Plant>().isAlive = false;
+                    plant.GetComponent<Plant>().HarvestPlant();
+                    plant.transform.GetComponentInParent<Soil>().occupied = false;
+                    eating = false;
+                }
+            }
+        }
         if (nav.isActiveAndEnabled)
         {
             GameObject target = FindPlant();
@@ -24,15 +48,11 @@ public class Rabbit : MonoBehaviour
             {
                 nav.SetDestination(target.transform.position);
             }
-
-            //if ()
         }
         else
         {
-            // GetComponent<Item>().enabled = true;
+            eating = false;
         }
-
-     //   nav.avoidancePriority
     }
 
     GameObject FindPlant()
@@ -55,11 +75,52 @@ public class Rabbit : MonoBehaviour
 
     }
 
+    GameObject FindDecoy()
+    {
+        GameObject[] Plants = GameObject.FindGameObjectsWithTag("Decoy");
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 position = transform.position;
+        foreach (GameObject plt in Plants)
+        {
+            Vector3 diff = plt.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = plt;
+                distance = curDistance;
+            }
+        }
+        if (Vector3.Distance(closest.transform.position, position) < 10)
+            return closest;
+        else
+            return null;
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("Plant"))
+        {
+            eating = true;
+            timer = timerRate;
+            plant = col.gameObject;
+        }
+    }
+
+    void OnTriggerExit(Collider col)
+    {
+        if (col.CompareTag("Plant"))
+        {
+            eating = false;
+            timer = timerRate;
+        }
+    }
+
     void OnCollisionEnter(Collision col)
     {
         if (!nav.isActiveAndEnabled)
         {
-        GetComponent<BoxCollider>().enabled = false;
+            GetComponent<BoxCollider>().enabled = false;
             GameObject[] parts = new GameObject[transform.childCount];
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -71,7 +132,7 @@ public class Rabbit : MonoBehaviour
                 transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
                 transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
 
-                transform.GetChild(i).GetComponent<Rigidbody>().AddForce((transform.position - transform.GetChild(0).position).normalized * 1000);
+                // transform.GetChild(i).GetComponent<Rigidbody>().AddForce(/*(col.transform.position - transform.position).normalized*/ col.transform.up * 1000);
             }
             transform.DetachChildren();
             Destroy(gameObject);

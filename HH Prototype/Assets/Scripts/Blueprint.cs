@@ -132,7 +132,7 @@ public class Blueprint : Item
     }
 
 
-    void ChangeSelect()
+   public void ChangeSelect()
     {
         if (inUse)
         {

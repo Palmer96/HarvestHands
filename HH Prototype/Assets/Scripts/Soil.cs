@@ -24,5 +24,7 @@ public class Soil : MonoBehaviour
         plant.soil = this;
 
         occupied = true;
+
+        WaveManager.instance.plantsLeft++;
     }
 }
