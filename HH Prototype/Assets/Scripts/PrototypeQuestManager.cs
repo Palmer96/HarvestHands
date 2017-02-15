@@ -50,15 +50,11 @@ public class PrototypeQuestManager : MonoBehaviour
             //Skip completed quests
             if (quest.questComplete)
             {
-                Debug.Log("Inside if (quest.questcomplete");
                 newCompletedQuests.Add(quest);
                 continue;
-            }
-
-            Debug.Log("outside currentobjective done");
+            }            
         }
-
-        Debug.Log("activequests After = " + instance.activeQuests.Count);
+        
         foreach (QuestPrototype quest in newCompletedQuests)
         {
             instance.completedQuests.Add(quest);

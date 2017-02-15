@@ -93,6 +93,7 @@ public class CraftingMenu : MonoBehaviour
     public void ActivateMenu()
     {
         Debug.Log("Inside ActivateMenu");
+        ResetDisplay();
         scrollView.gameObject.SetActive(true);
         PlayerInventory.instance.enabled = false;
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = false;
@@ -104,7 +105,6 @@ public class CraftingMenu : MonoBehaviour
         selectedItemName.gameObject.SetActive(true);
         selectedItemDescription.gameObject.SetActive(true);
         selectedItemResources.gameObject.SetActive(true);
-        ResetDisplay();
         SelectButton(0);
     }
 
@@ -158,7 +158,9 @@ public class CraftingMenu : MonoBehaviour
                 haveResourceList.Add(recipe);
             else
                 dontHaveResourceList.Add(recipe);
-        }        
+        }
+
+
         //create ui buttons for each
         foreach (CraftingRecipe recipe in haveResourceList)
         {

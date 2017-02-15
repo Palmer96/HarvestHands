@@ -141,7 +141,7 @@ public class PlayerInventory : MonoBehaviour
         {
             book.GetComponent<Blueprint>().ChangeSelect();
 
-                if (Input.GetMouseButtonDown(0)) // Primary Use
+            if (Input.GetMouseButtonDown(0)) // Primary Use
             {
                 book.GetComponent<Blueprint>().PrimaryUse();
             }
@@ -163,7 +163,7 @@ public class PlayerInventory : MonoBehaviour
                 {
                     if (heldObjects[i].GetComponent<Item>().quantity >= heldObjects[i].GetComponent<Item>().itemCap)
                         continue;
-                        heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
+                    heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
                     if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
                         WaveManager.instance.rabbitsLeft--;
 
@@ -238,6 +238,21 @@ public class PlayerInventory : MonoBehaviour
         heldObjects[selectedItemNum] = null;
     }
 
+    public void DestroyItem(GameObject item)
+    {
+        int itemDroppedNum = 0;
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+            if (heldObjects[i] == item)
+            {
+                itemDroppedNum = i;
+                break;
+            }
+        }
+        Destroy(heldObjects[itemDroppedNum]);
+        heldObjects[itemDroppedNum] = null;
+    }
+
     public void DropAllofItem()
     {
 
@@ -272,7 +287,8 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
                 // itemText[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-
+                //Debug.Log("Item text = " + itemText[i].text);
+                //Debug.Log("Item name = " + heldObjects[i].GetComponent<Item>().itemName);
                 itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
                 if (heldObjects[i].GetComponent<Item>().quantity > 1)
                     itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
@@ -294,7 +310,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if (Input.GetAxis("Mouse ScrollWheel") > 0.05f)
             {
-               
+
                 if (selectedItemNum > 0)
                 {
                     selectedItemNum--;
