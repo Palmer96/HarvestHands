@@ -18,6 +18,10 @@ public class Item : MonoBehaviour
     public RaycastHit hit;
     public Ray ray;
 
+    Mesh ownMesh;
+    Material ownMaterial;
+    MeshCollider ownMeshCollider;
+
     public Mesh singleMesh;
     public Mesh multiMesh;
 
@@ -29,17 +33,39 @@ public class Item : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (GetComponent<MeshFilter>().mesh != null)
+            ownMesh = GetComponent<MeshFilter>().mesh;
+        if (ownMesh == null)
+            ownMesh = transform.GetChild(0).GetComponent<MeshFilter>().mesh;
+
+        if (GetComponent<MeshRenderer>().material != null)
+            ownMaterial = GetComponent<MeshRenderer>().material;
+        if (ownMaterial == null)
+            ownMaterial = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+
+        if (GetComponent<MeshCollider>() != null)
+            ownMeshCollider = GetComponent<MeshCollider>();
+        if (ownMeshCollider == null)
+            ownMeshCollider = transform.GetChild(0).GetComponent<MeshCollider>();
+
         if (!dontUpdate)
         {
             if (singleMesh == null)
-                singleMesh = GetComponent<MeshFilter>().mesh;
+                singleMesh = ownMesh;
             if (multiMesh == null)
-                multiMesh = GetComponent<MeshFilter>().mesh;
+                multiMesh = ownMesh;
             if (singleMaterial == null)
-                singleMaterial = GetComponent<MeshRenderer>().material;
+                singleMaterial = ownMaterial;
             if (multiMaterial == null)
-                multiMaterial = GetComponent<MeshRenderer>().material;
+                multiMaterial = ownMaterial;
         }
+
+        if (itemCap == 0)
+        {
+            itemCap = 20;
+        }
+
+
     }
 
     public virtual void PrimaryUse()
@@ -92,17 +118,17 @@ public class Item : MonoBehaviour
         {
             if (quantity > 1)
             {
-                GetComponent<MeshFilter>().mesh = multiMesh;
-                GetComponent<MeshRenderer>().material = multiMaterial;
-                if (GetComponent<MeshCollider>() != null)
-                    GetComponent<MeshCollider>().sharedMesh = multiMesh;
+                ownMesh = multiMesh;
+                ownMaterial = multiMaterial;
+                if (ownMeshCollider != null)
+                    ownMeshCollider.sharedMesh = multiMesh;
             }
             else
             {
-                GetComponent<MeshFilter>().mesh = singleMesh;
-                GetComponent<MeshRenderer>().material = singleMaterial;
-                if (GetComponent<MeshCollider>() != null)
-                    GetComponent<MeshCollider>().sharedMesh = singleMesh;
+                ownMesh = singleMesh;
+                ownMaterial = singleMaterial;
+                if (ownMeshCollider != null)
+                    ownMeshCollider.sharedMesh = singleMesh;
             }
         }
     }

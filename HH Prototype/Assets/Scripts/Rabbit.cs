@@ -129,7 +129,7 @@ public class Rabbit : MonoBehaviour
 
             for (int i = 0; i < transform.childCount; i++)
             {
-                transform.GetChild(i).GetComponent<BoxCollider>().enabled = true;
+                transform.GetChild(i).GetComponent<Collider>().enabled = true;
                 transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
 
                 // transform.GetChild(i).GetComponent<Rigidbody>().AddForce(/*(col.transform.position - transform.position).normalized*/ col.transform.up * 1000);

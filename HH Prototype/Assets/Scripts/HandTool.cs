@@ -47,18 +47,6 @@ public class HandTool : MonoBehaviour
                     {
                         //Check if have quest to talk to NPC, returns -1 if no
                         int startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
-                        //else Check if npc has new potential quest
-                        if (startNode == -1)
-                        {
-                            NPC npc = hit.transform.GetComponent<NPC>();
-                            if (npc != null)
-                            {
-                                npc.CheckForNewPotentialQuests();
-                                npc.AcceptQuest();
-                                startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
-                            }
-                        }
-
                         //... and use NPC's DialogueAssign to begin the conversation
                         Conversation.instance.BeginConversation(assigned, startNode);
                     }
@@ -68,13 +56,31 @@ public class HandTool : MonoBehaviour
                         Conversation.instance.NextNode();
                     }
                 }
-
+                if (hit.transform.tag == "CraftingBenchButton")
+                {
+                    //hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
+                    CraftingMenu.instance.ActivateMenu();
+                }
                 if (hit.transform.tag == "CraftingBench")
                 {
+                    //hit.transform.GetComponent<CraftingBench>().MakeItem();
                     CraftingMenu.instance.ActivateMenu();
                 }
             }
-        }       
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Debug.Log("Inside handtool F Pressed");
+            RaycastHit hit;
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.tag == "CraftingBench")
+                {
+                    hit.transform.GetComponent<CraftingBench>().NextRecipeChoice();
+                }
+            }
+        }
     }
     //       if (Input.GetMouseButtonDown(0))
     //       {

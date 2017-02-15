@@ -178,11 +178,19 @@ public class PlayerInventory : MonoBehaviour
             {
                 heldObjects[i] = item;
                 heldObjects[i].transform.SetParent(transform.GetChild(0));
-                heldObjects[i].transform.localPosition = new Vector3(1, 0, 2);
+                heldObjects[i].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
                 heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
                 heldObjects[i].layer = 2;
                 heldObjects[i].GetComponent<Collider>().enabled = false;
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
+
+                if (heldObjects[i].GetComponent<Item>().itemID == 21)
+                    heldObjects[i].transform.Rotate(0, 0, -60);
+                else if (heldObjects[i].GetComponent<Item>().itemID == 6)
+                    heldObjects[i].transform.Rotate(-90, 80, 0);
+                else
+                    heldObjects[i].transform.Rotate(0, 0, 30);
+
                 if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
                 {
                     heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
@@ -202,7 +210,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[selectedItemNum].GetComponent<Item>().quantity > 1)
             {
-                GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), transform.rotation);
+                GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[selectedItemNum].transform.rotation);
                 droppedItem.SetActive(true);
                 droppedItem.GetComponent<Item>().quantity = 1;
                 droppedItem.transform.parent = null;
@@ -219,6 +227,8 @@ public class PlayerInventory : MonoBehaviour
             }
             else
             {
+                heldObjects[selectedItemNum].transform.position = transform.GetChild(0).position + (transform.GetChild(0).forward * 2);
+              //  heldObjects[selectedItemNum].transform.rotation = transform.rotation;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
                 heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
@@ -236,21 +246,6 @@ public class PlayerInventory : MonoBehaviour
     {
         Destroy(heldObjects[selectedItemNum]);
         heldObjects[selectedItemNum] = null;
-    }
-
-    public void DestroyItem(GameObject item)
-    {
-        int itemDroppedNum = 0;
-        for (int i = 0; i < heldObjects.Count; i++)
-        {
-            if (heldObjects[i] == item)
-            {
-                itemDroppedNum = i;
-                break;
-            }
-        }
-        Destroy(heldObjects[itemDroppedNum]);
-        heldObjects[itemDroppedNum] = null;
     }
 
     public void DropAllofItem()
@@ -287,8 +282,7 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
                 // itemText[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-                //Debug.Log("Item text = " + itemText[i].text);
-                //Debug.Log("Item name = " + heldObjects[i].GetComponent<Item>().itemName);
+
                 itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
                 if (heldObjects[i].GetComponent<Item>().quantity > 1)
                     itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
