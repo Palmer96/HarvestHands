@@ -111,7 +111,7 @@ public class DayNightController : MonoBehaviour
             PlantManager.instance.UpdatePlants(ingameDay);
             UpdateTree();
             SellChest.SellAllChests();
-        //    WaveManager.instance.StartWave();
+            //    WaveManager.instance.StartWave();
 
             if (Random.Range(1, 5) == 1)
             {
@@ -130,7 +130,7 @@ public class DayNightController : MonoBehaviour
         PlantManager.instance.UpdatePlants(ingameDay);
         UpdateTree();
         SellChest.SellAllChests();
-     //   WaveManager.instance.StartWave();
+        //   WaveManager.instance.StartWave();
 
         if (Random.Range(1, 5) == 1)
         {
@@ -139,5 +139,11 @@ public class DayNightController : MonoBehaviour
         }
         else
             Rain.SetActive(false);
+    }
+
+
+    void OnApplicationQuit()
+    {
+        skybox.SetColor("_SkyTint", new Color(76.0f/255, 91.0f / 255, 128.0f / 255));
     }
 }
