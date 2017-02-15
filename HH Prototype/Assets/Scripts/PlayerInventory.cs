@@ -161,7 +161,9 @@ public class PlayerInventory : MonoBehaviour
             {
                 if (heldObjects[i].GetComponent<Item>().itemID == item.GetComponent<Item>().itemID)
                 {
-                    heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
+                    if (heldObjects[i].GetComponent<Item>().quantity >= heldObjects[i].GetComponent<Item>().itemCap)
+                        continue;
+                        heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
                     if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
                         WaveManager.instance.rabbitsLeft--;
 

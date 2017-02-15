@@ -21,29 +21,29 @@ public class CraftingBench : MonoBehaviour
 
     }	
 
-    void OnTriggerEnter(Collider col)
-    {
-        Item item = col.GetComponent<Item>();
-        if (item != null)
-        {
-            //Check if some of the item is stored already
-            foreach (Item storedItem in loadedResources)
-            {
-                if (item.itemID == storedItem.itemID)
-                {
-                    storedItem.quantity += item.quantity;
-                    Destroy(item.gameObject);
-                    DisplayRecipeChoice();
-                    return;
-                }
-            }
-            //if not already stored add to list
-            loadedResources.Add(item);
-            item.gameObject.SetActive(false);
-            DisplayRecipeChoice();
-            //Destroy(item.gameObject);
-        }
-    }
+ //  void OnTriggerEnter(Collider col)
+ //  {
+ //      Item item = col.GetComponent<Item>();
+ //      if (item != null)
+ //      {
+ //          //Check if some of the item is stored already
+ //          foreach (Item storedItem in loadedResources)
+ //          {
+ //              if (item.itemID == storedItem.itemID)
+ //              {
+ //                  storedItem.quantity += item.quantity;
+ //                  Destroy(item.gameObject);
+ //                  DisplayRecipeChoice();
+ //                  return;
+ //              }
+ //          }
+ //          //if not already stored add to list
+ //          loadedResources.Add(item);
+ //          item.gameObject.SetActive(false);
+ //          DisplayRecipeChoice();
+ //          //Destroy(item.gameObject);
+ //      }
+ //  }
 
 
     public void DisplayRecipeChoice()

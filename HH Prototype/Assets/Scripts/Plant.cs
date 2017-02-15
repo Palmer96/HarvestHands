@@ -62,6 +62,7 @@ public class Plant : MonoBehaviour
     void Start()
     {
         PlantManager.instance.AddPlant(this);
+        UpdatePlant(1);
     }
 
     // Update is called once per frame
