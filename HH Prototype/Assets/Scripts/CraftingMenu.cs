@@ -94,7 +94,7 @@ public class CraftingMenu : MonoBehaviour
     {
         Debug.Log("Inside ActivateMenu");
         scrollView.gameObject.SetActive(true);
-     //   PlayerInventory.instance.enabled = false;
+        PlayerInventory.instance.enabled = false;
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -111,7 +111,7 @@ public class CraftingMenu : MonoBehaviour
     public void DeactivateMenu()
     {
         scrollView.gameObject.SetActive(false);
-        //   PlayerInventory.instance.enabled = true;
+        PlayerInventory.instance.enabled = true;
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -204,6 +204,31 @@ public class CraftingMenu : MonoBehaviour
         if (newObj != null)
             PlayerInventory.instance.AddItem(newObj);
         //CraftingManager.instance.knownRecipes[selectedButton.recipeIndex].Craft();
+        ResortLists();
         UpdateDisplay(); // TODO Change this so it updates the list objects with the reduced player amounts, instead of destroying and recreating the entire list
+    }
+
+    public void ResortLists()
+    {
+        Debug.Log("In resort Lists");
+        List<CraftingMenuButton> haveResourceButtonList = new List<CraftingMenuButton>();
+        List<CraftingMenuButton> dontHaveResourceButtonList = new List<CraftingMenuButton>();
+      //  scrollView.
+
+        foreach (CraftingMenuButton menuButton in craftingButtons)
+        {
+            if (menuButton.recipe.HaveResources())
+                haveResourceButtonList.Add(menuButton);
+            else
+                dontHaveResourceButtonList.Add(menuButton);
+        }
+        for (int i = dontHaveResourceButtonList.Count; i > 0; --i)
+        {
+            dontHaveResourceButtonList[i - 1].transform.SetSiblingIndex(0);
+        }
+        for (int i = haveResourceButtonList.Count; i > 0; --i)
+        {
+            haveResourceButtonList[i - 1].transform.SetSiblingIndex(0);
+        }
     }
 }

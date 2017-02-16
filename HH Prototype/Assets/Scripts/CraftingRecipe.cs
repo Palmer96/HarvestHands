@@ -79,6 +79,7 @@ public class CraftingRecipe : MonoBehaviour
     {
         foreach (CraftingManager.ResourceRequirement requirement in requiredItems)
         {
+            int haveAmount = 0;
             bool hasItem = false;
             foreach (GameObject loadedObject in PlayerInventory.instance.heldObjects)
             {
@@ -91,11 +92,16 @@ public class CraftingRecipe : MonoBehaviour
                 //If have the item
                 if (loadedItem.itemName == requirement.resourceName)
                 {
-                    hasItem = true;
-                    //If dont have enough, return
+                    hasItem = true;                    
                     if (loadedItem.quantity < requirement.numRequired)
                     {
-                        return false;
+                        haveAmount += loadedItem.quantity;
+                    }
+                    //check if have enough
+                    if (haveAmount >= requirement.numRequired)
+                    {
+                        hasItem = true;
+                        break;
                     }
                 }
             }

@@ -48,10 +48,13 @@ public class CraftingMenuButton : MonoBehaviour
         }
         else
             recipeName = recipe.recipeName;
-        bool hasResource = false;
+        bool hasResource = true;
 
         foreach (CraftingManager.ResourceRequirement requirement in recipe.requiredItems)
         {
+            int haveAmount = 0;
+            recipeResources += requirement.numRequired + requirement.resourceName + ", ";
+
             foreach (GameObject heldItem in PlayerInventory.instance.heldObjects)
             {
                 if (heldItem == null)
@@ -60,17 +63,16 @@ public class CraftingMenuButton : MonoBehaviour
                 if (item == null)
                     continue;
                 if (item.itemName == requirement.resourceName)
-                    if (item.quantity >= requirement.numRequired)
-                    {
-                        hasResource = true;
-                        recipeResources += requirement.numRequired + requirement.resourceName + ", ";
-                        //recipeResources += "<color = sufficientResourceColour>" + requirement.numRequired + requirement.resourceName + ", </color>";
-                        break;
-                    }
+                {
+                    haveAmount += item.quantity;
 
+                    if (haveAmount >= requirement.numRequired)
+                        break;
+                }
             }
-            if (!hasResource)
-                recipeResources += requirement.numRequired + requirement.resourceName + ", ";
+            if (haveAmount < requirement.numRequired)
+                hasResource = false;
+
         }
         //Display list prefab thing
         nameText.text = recipeName;
