@@ -18,16 +18,16 @@ public class SellChest : MonoBehaviour
         transform.GetChild(0).GetComponent<TextMesh>().text = "$" + valueOfItems.ToString();
     }
 
-    void OnTriggerEnter(Collider col)
+    void OnCollisionEnter(Collision col)
     {
-        if (col.CompareTag("Item") || col.CompareTag("Rabbit"))
+        if (col.transform.CompareTag("Item") || col.transform.CompareTag("Rabbit"))
         {
-            Item item = col.GetComponent<Item>();
+            Item item = col.transform.GetComponent<Item>();
             if (item.sellable == true)
             {
                 if (item.GetComponent<Item>())
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
-                Debug.Log(col.name);
+                Debug.Log(col.transform.name);
                 valueOfItems += item.value * item.quantity;
                 Destroy(col.gameObject);
             }

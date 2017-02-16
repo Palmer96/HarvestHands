@@ -94,7 +94,8 @@ public class CraftingMenu : MonoBehaviour
     {
         Debug.Log("Inside ActivateMenu");
         scrollView.gameObject.SetActive(true);
-        PlayerInventory.instance.enabled = false;
+        //  PlayerInventory.instance.enabled = false;
+        PlayerInventory.instance.inMenu = false;
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
@@ -111,7 +112,8 @@ public class CraftingMenu : MonoBehaviour
     public void DeactivateMenu()
     {
         scrollView.gameObject.SetActive(false);
-        PlayerInventory.instance.enabled = true;
+        //   PlayerInventory.instance.enabled = true;
+        PlayerInventory.instance.inMenu = false;
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
