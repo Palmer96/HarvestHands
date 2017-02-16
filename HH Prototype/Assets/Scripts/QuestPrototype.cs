@@ -12,6 +12,7 @@ public class QuestPrototype : MonoBehaviour
 
     public List<QuestProtoypeObjective> objectives = new List<QuestProtoypeObjective>();
     public List<PrototypeQuestReward> rewards = new List<PrototypeQuestReward>();
+    public List<PrototypeQuestPrerequisite> prerequisites = new List<PrototypeQuestPrerequisite>();
 
     public void StartQuest(int atObjective = 0)
     {
@@ -74,5 +75,15 @@ public class QuestPrototype : MonoBehaviour
                 PrototypeQuestManager.UpdateQuests();
             }
         }
+    }
+
+    public bool CheckPrerequisitesMet()
+    {
+        foreach (PrototypeQuestPrerequisite requirement in prerequisites)
+        {
+            if (!requirement.CheckPrerequisiteMet())
+                return false;
+        }
+        return true;
     }
 }

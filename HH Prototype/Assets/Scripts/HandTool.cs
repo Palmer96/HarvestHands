@@ -47,6 +47,18 @@ public class HandTool : MonoBehaviour
                     {
                         //Check if have quest to talk to NPC, returns -1 if no
                         int startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
+                        //else check if npc has new potential quest
+                        if (startNode == -1)
+                        {
+                            NPC npc = hit.transform.GetComponent<NPC>();
+                            if (npc != null)
+                            {
+                                npc.CheckForNewPotentialQuests();
+                                npc.AcceptQuest();
+                                startNode = PrototypeQuestManager.instance.CheckTalkChat(npc.npcName);
+                            }
+                        }
+
                         //... and use NPC's DialogueAssign to begin the conversation
                         Conversation.instance.BeginConversation(assigned, startNode);
                     }
