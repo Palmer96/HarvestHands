@@ -44,7 +44,7 @@ public class PlayerInventory : MonoBehaviour
 
         scrollTimer = 0.1f;
 
-        inMenu = true;
+        inMenu = false;
         //  heldObjects[0].transform.SetParent(transform.GetChild(0));
         //  heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
 
@@ -62,96 +62,101 @@ public class PlayerInventory : MonoBehaviour
         UpdateItemMesh();
         UpdateImages();
 
-        Hotkeys();
 
-        if (Input.GetKeyDown(KeyCode.B))
+        if (!inMenu)
         {
-            if (bookOpen)
+
+
+            Hotkeys();
+
+            if (Input.GetKeyDown(KeyCode.B))
             {
-                bookOpen = false;
-                book.SetActive(false);
-                selectedItemNum = oldnum;
-                book.GetComponent<Blueprint>().ConstructionCancel();
-            }
-            else
-            {
-                bookOpen = true;
-                book.SetActive(true);
-                selectedItemNum = 10;
-            }
-        }
-
-        if (!bookOpen)
-        {
-            UpdateInventory();
-
-            if (Input.GetKeyDown(KeyCode.Q)) // Drop
-            {
-                // if (selectedItemNum != 0)
-                RemoveItem();
-            }
-
-            if (Input.GetKeyDown(KeyCode.F)) // Drop Stack
-            {
-                // if (selectedItemNum != 0)
-                DropAllofItem();
-            }
-
-
-
-            if (Input.GetKeyDown(KeyCode.E)) // Interact
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                if (Physics.Raycast(ray, out hit, 5))
+                if (bookOpen)
                 {
-                    switch (hit.transform.tag)
+                    bookOpen = false;
+                    book.SetActive(false);
+                    selectedItemNum = oldnum;
+                    book.GetComponent<Blueprint>().ConstructionCancel();
+                }
+                else
+                {
+                    bookOpen = true;
+                    book.SetActive(true);
+                    selectedItemNum = 10;
+                }
+            }
+
+            if (!bookOpen)
+            {
+                UpdateInventory();
+
+                if (Input.GetKeyDown(KeyCode.Q)) // Drop
+                {
+                    // if (selectedItemNum != 0)
+                    RemoveItem();
+                }
+
+                if (Input.GetKeyDown(KeyCode.F)) // Drop Stack
+                {
+                    // if (selectedItemNum != 0)
+                    DropAllofItem();
+                }
+
+
+
+                if (Input.GetKeyDown(KeyCode.E)) // Interact
+                {
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    if (Physics.Raycast(ray, out hit, 5))
                     {
-                        case "StoreItem":
-                            hit.transform.GetComponent<StoreItem>().BuyObject();
-                            break;
-                        case "Bed":
-                            DayNightController.instance.BedDayJump();
-                            break;
+                        switch (hit.transform.tag)
+                        {
+                            case "StoreItem":
+                                hit.transform.GetComponent<StoreItem>().BuyObject();
+                                break;
+                            case "Bed":
+                                DayNightController.instance.BedDayJump();
+                                break;
+                        }
+                    }
+                }
+
+                if (Input.GetMouseButtonDown(0)) // Primary Use
+                {
+                    if (heldObjects[selectedItemNum] != null)
+                    {
+                        heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
+                    }
+                }
+                if (Input.GetMouseButtonDown(1)) // Pickup
+                {
+                    RaycastHit hit;
+                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    if (Physics.Raycast(ray, out hit, 5))
+                    {
+                        if (hit.transform.CompareTag("Item"))
+                            AddItem(hit.transform.gameObject);
                     }
                 }
             }
-
-            if (Input.GetMouseButtonDown(0)) // Primary Use
+            else
             {
-                if (heldObjects[selectedItemNum] != null)
+                book.GetComponent<Blueprint>().ChangeSelect();
+
+                if (Input.GetMouseButtonDown(0)) // Primary Use
                 {
-                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
+                    book.GetComponent<Blueprint>().PrimaryUse();
                 }
-            }
-            if (Input.GetMouseButtonDown(1)) // Pickup
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                if (Physics.Raycast(ray, out hit, 5))
+                if (Input.GetMouseButtonDown(1)) // Pickup
                 {
-                    if (hit.transform.CompareTag("Item"))
-                        AddItem(hit.transform.gameObject);
+                    book.GetComponent<Blueprint>().SecondaryUse();
                 }
-            }
-        }
-        else
-        {
-            book.GetComponent<Blueprint>().ChangeSelect();
-
-            if (Input.GetMouseButtonDown(0)) // Primary Use
-            {
-                book.GetComponent<Blueprint>().PrimaryUse();
-            }
-            if (Input.GetMouseButtonDown(1)) // Pickup
-            {
-                book.GetComponent<Blueprint>().SecondaryUse();
             }
         }
     }
-
 
     public bool AddItem(GameObject item)
     {
@@ -164,8 +169,8 @@ public class PlayerInventory : MonoBehaviour
                     if (heldObjects[i].GetComponent<Item>().quantity >= heldObjects[i].GetComponent<Item>().itemCap)
                         continue;
                     heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
-                    if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-                        WaveManager.instance.rabbitsLeft--;
+                    // if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                    //  WaveManager.instance.rabbitsLeft--;
 
                     Destroy(item);
                     return true;
@@ -191,11 +196,11 @@ public class PlayerInventory : MonoBehaviour
                 else
                     heldObjects[i].transform.Rotate(0, 0, 30);
 
-                if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-                {
-                    heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-                    WaveManager.instance.rabbitsLeft--;
-                }
+                // if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                // {
+                //     heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+                //   WaveManager.instance.rabbitsLeft--;
+                // }
 
                 return true;
             }
@@ -217,6 +222,8 @@ public class PlayerInventory : MonoBehaviour
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
                 droppedItem.GetComponent<Collider>().enabled = true;
+                if (droppedItem.GetComponent<MeshRenderer>() != null)
+                    droppedItem.GetComponent<MeshRenderer>().enabled = true;
                 droppedItem.layer = 0;
 
                 heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
@@ -228,12 +235,14 @@ public class PlayerInventory : MonoBehaviour
             else
             {
                 heldObjects[selectedItemNum].transform.position = transform.GetChild(0).position + (transform.GetChild(0).forward * 2);
-              //  heldObjects[selectedItemNum].transform.rotation = transform.rotation;
+                //  heldObjects[selectedItemNum].transform.rotation = transform.rotation;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
                 heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
                 heldObjects[selectedItemNum].transform.parent = null;
                 heldObjects[selectedItemNum].layer = 0;
+                if (heldObjects[selectedItemNum].GetComponent<MeshRenderer>() != null)
+                heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
                     heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
                 heldObjects[selectedItemNum] = null;

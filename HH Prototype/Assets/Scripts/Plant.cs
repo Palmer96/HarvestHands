@@ -75,7 +75,7 @@ public class Plant : MonoBehaviour
     {
         if (readyToHarvest)
         {
-            WaveManager.instance.plantsLeft--;
+            //WaveManager.instance.plantsLeft--;
             //If dead
             if (!isAlive)
             {
