@@ -33,23 +33,23 @@ public class Item : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-   //   if (GetComponent<MeshFilter>().mesh != null)
-   //       ownMesh = GetComponent<MeshFilter>();
-   //   if (ownMesh == null)
-   //       if (transform.childCount > 0)
-   //           ownMesh = transform.GetChild(0).GetComponent<MeshFilter>();
-   //
-   //   if (GetComponent<MeshRenderer>().material != null)
-   //       ownMaterial = GetComponent<MeshRenderer>().material;
-   //   if (ownMaterial == null)
-   //       if (transform.childCount > 0)
-   //           ownMaterial = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-   //
-   //   if (GetComponent<MeshCollider>() != null)
-   //       ownMeshCollider = GetComponent<MeshCollider>();
-   //   if (ownMeshCollider == null)
-   //       if (transform.childCount > 0)
-   //           ownMeshCollider = transform.GetChild(0).GetComponent<MeshCollider>();
+        //   if (GetComponent<MeshFilter>().mesh != null)
+        //       ownMesh = GetComponent<MeshFilter>();
+        //   if (ownMesh == null)
+        //       if (transform.childCount > 0)
+        //           ownMesh = transform.GetChild(0).GetComponent<MeshFilter>();
+        //
+        //   if (GetComponent<MeshRenderer>().material != null)
+        //       ownMaterial = GetComponent<MeshRenderer>().material;
+        //   if (ownMaterial == null)
+        //       if (transform.childCount > 0)
+        //           ownMaterial = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+        //
+        //   if (GetComponent<MeshCollider>() != null)
+        //       ownMeshCollider = GetComponent<MeshCollider>();
+        //   if (ownMeshCollider == null)
+        //       if (transform.childCount > 0)
+        //           ownMeshCollider = transform.GetChild(0).GetComponent<MeshCollider>();
 
         if (!dontUpdate)
         {
@@ -69,6 +69,8 @@ public class Item : MonoBehaviour
         }
 
 
+
+        UpdateMesh();
     }
 
     public virtual void PrimaryUse()
