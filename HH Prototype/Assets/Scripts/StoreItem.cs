@@ -55,14 +55,14 @@ public class StoreItem : MonoBehaviour
                     PlayerInventory.instance.AddItem(newObject);
                     break;
 
-                case "ConstructZone":
-                    if (PlayerInventory.instance.HasBook())
-                    {
-                        PlayerInventory.instance.money -= price;
-
-                        PlayerInventory.instance.AddBlueprint(objectToBuy);
-                    }
-                    break;
+               // case "ConstructZone":
+               //     if (PlayerInventory.instance.HasBook())
+               //     {
+               //         PlayerInventory.instance.money -= price;
+               //
+               //         PlayerInventory.instance.AddBlueprint(objectToBuy);
+               //     }
+               //     break;
             }
 
             //  GameObject.FindObjectOfType<HandTool>().PickUp(newObject);

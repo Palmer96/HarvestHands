@@ -202,6 +202,7 @@ public class CraftingMenu : MonoBehaviour
         if (selectedButton == null)
             return;
         //PlayerInventory.instance.AddItem(selectedButton.recipe.Craft());
+        
         GameObject newObj = selectedButton.recipe.Craft();
         if (newObj != null)
             PlayerInventory.instance.AddItem(newObj);

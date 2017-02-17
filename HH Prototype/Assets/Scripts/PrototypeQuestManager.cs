@@ -81,7 +81,7 @@ public class PrototypeQuestManager : MonoBehaviour
                 + "Objective: " + activeQuests[activeQuestIndex].objectives[activeQuests[activeQuestIndex].currentObjective].objectiveDescription;
         }
         else
-            questDescriptionText.text = "No objective.";
+            questDescriptionText.text = "";
     }
 
     public void ChangeActiveQuest()

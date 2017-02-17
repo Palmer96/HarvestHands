@@ -159,8 +159,13 @@ public class Plant : MonoBehaviour
             {
                 readyToHarvest = true;
                 isAlive = false;
+                if (plantState != PlantState.Sapling)
+                {
+
                 UpdatePlantMesh(PlantState.Dead);
                 UpdatePlantMat(PlantMaterial.Dead);
+                }
+                GetComponent<Renderer>().material.color = Color.red;
             }
         }
     }

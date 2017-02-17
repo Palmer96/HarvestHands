@@ -105,7 +105,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
             if (!m_PreviouslyGrounded && onGround)
             {
-                StartCoroutine(m_JumpBob.DoBobCycle());
+                if (!swimming)
+                    StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
                 m_MoveDir.y = 0f;
                 m_Jumping = false;
@@ -231,12 +232,14 @@ namespace UnityStandardAssets.Characters.FirstPerson
                     m_HeadBob.DoHeadBob(m_CharacterController.velocity.magnitude +
                                       (speed * (m_IsWalking ? 1f : m_RunstepLenghten)));
                 newCameraPosition = m_Camera.transform.localPosition;
-                newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
+                if (!swimming)
+                    newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
             }
             else
             {
                 newCameraPosition = m_Camera.transform.localPosition;
-                newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+                if (!swimming)
+                    newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
             }
             m_Camera.transform.localPosition = newCameraPosition;
         }

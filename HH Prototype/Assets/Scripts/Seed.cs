@@ -8,14 +8,39 @@ public class Seed : Item
     // Use this for initialization
     void Start()
     {
-        if (singleMesh == null)
-            singleMesh = GetComponent<MeshFilter>().mesh;
-        if (multiMesh == null)
-            multiMesh = GetComponent<MeshFilter>().mesh;
-        if (singleMaterial == null)
-            singleMaterial = GetComponent<MeshRenderer>().material;
-        if (multiMaterial == null)
-            multiMaterial = GetComponent<MeshRenderer>().material;
+
+
+     //  if (GetComponent<MeshFilter>().mesh != null)
+     //      ownMesh = GetComponent<MeshFilter>();
+     //  if (ownMesh == null)
+     //      ownMesh = transform.GetChild(0).GetComponent<MeshFilter>();
+     //
+     //  if (GetComponent<MeshRenderer>().material != null)
+     //      ownMaterial = GetComponent<MeshRenderer>().material;
+     //  if (ownMaterial == null)
+     //      ownMaterial = transform.GetChild(0).GetComponent<MeshRenderer>().material;
+     //
+     //  if (GetComponent<MeshCollider>() != null)
+     //      ownMeshCollider = GetComponent<MeshCollider>();
+     //  if (ownMeshCollider == null)
+     //      ownMeshCollider = transform.GetChild(0).GetComponent<MeshCollider>();
+     //
+     //  if (!dontUpdate)
+     //  {
+     //      if (singleMesh == null)
+     //          singleMesh = ownMesh.mesh;
+     //      if (multiMesh == null)
+     //          multiMesh = ownMesh.mesh;
+     //      if (singleMaterial == null)
+     //          singleMaterial = ownMaterial;
+     //      if (multiMaterial == null)
+     //          multiMaterial = ownMaterial;
+     //  }
+     //
+     //  if (itemCap == 0)
+     //  {
+     //      itemCap = 20;
+     //  }
     }
 
     // Update is called once per frame

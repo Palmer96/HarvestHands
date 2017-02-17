@@ -52,6 +52,10 @@ public class PlayerInventory : MonoBehaviour
         //   heldObjects[1].transform.localPosition = new Vector3(1, 0, 2);
 
         UpdateInventory();
+        for (int i = 0; i < ItemHotbar.transform.childCount; i++)
+        {
+            itemText[i] = ItemHotbar.transform.GetChild(i).GetComponent<Text>();
+        }
     }
 
     // Update is called once per frame
@@ -169,8 +173,12 @@ public class PlayerInventory : MonoBehaviour
                     if (heldObjects[i].GetComponent<Item>().quantity >= heldObjects[i].GetComponent<Item>().itemCap)
                         continue;
                     heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
-                    // if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-                    //  WaveManager.instance.rabbitsLeft--;
+                    if (WaveManager.instance != null)
+                    {
+
+                        if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                            WaveManager.instance.rabbitsLeft--;
+                    }
 
                     Destroy(item);
                     return true;
@@ -196,11 +204,12 @@ public class PlayerInventory : MonoBehaviour
                 else
                     heldObjects[i].transform.Rotate(0, 0, 30);
 
-                // if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-                // {
-                //     heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-                //   WaveManager.instance.rabbitsLeft--;
-                // }
+                if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+                {
+                    heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+                    if (WaveManager.instance != null)
+                        WaveManager.instance.rabbitsLeft--;
+                }
 
                 return true;
             }
@@ -227,9 +236,9 @@ public class PlayerInventory : MonoBehaviour
                 droppedItem.layer = 0;
 
                 heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
-                if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
+                if (heldObjects[selectedItemNum].GetComponent<Item>().itemID > 10)
                     heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
-                if (droppedItem.GetComponent<Item>().itemID < 10)
+                if (droppedItem.GetComponent<Item>().itemID > 10)
                     droppedItem.GetComponent<Item>().UpdateMesh();
             }
             else
@@ -242,7 +251,7 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum].transform.parent = null;
                 heldObjects[selectedItemNum].layer = 0;
                 if (heldObjects[selectedItemNum].GetComponent<MeshRenderer>() != null)
-                heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
+                    heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
                     heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
                 heldObjects[selectedItemNum] = null;
@@ -256,6 +265,23 @@ public class PlayerInventory : MonoBehaviour
         Destroy(heldObjects[selectedItemNum]);
         heldObjects[selectedItemNum] = null;
     }
+
+
+    public void DestroyItem(GameObject item)
+    {
+        int itemDroppedNum = 0;
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+            if (heldObjects[i] == item)
+            {
+                itemDroppedNum = i;
+                break;
+            }
+        }
+        Destroy(heldObjects[itemDroppedNum]);
+        heldObjects[itemDroppedNum] = null;
+    }
+
 
     public void DropAllofItem()
     {
@@ -421,22 +447,6 @@ public class PlayerInventory : MonoBehaviour
         return 0;
     }
 
-    public bool HasBook()
-    {
-        for (int i = 0; i < heldObjects.Count; i++)
-        {
-            if (heldObjects[i] != null)
-            {
-                if (heldObjects[i].GetComponent<Item>().itemID == 5)
-                {
-                    Debug.Log("Has Book");
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
     public void AddBlueprint(GameObject item)
     {
@@ -461,24 +471,67 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    void BookUpdate()
+    {
+        if (!bookOpen)
+        {
+            book.SetActive(false);
+            selectedItemNum = oldnum;
+            book.GetComponent<Blueprint>().ConstructionCancel();
+        }
+        else
+        {
+            bookOpen = true;
+            book.SetActive(true);
+            selectedItemNum = 10;
+        }
+    }
+
     public void Hotkeys()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 0;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 1;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 2;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 3;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 4;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 5;
+        }
         if (Input.GetKeyDown(KeyCode.Alpha7))
+        {
+            bookOpen = false;
+            BookUpdate();
             selectedItemNum = 6;
 
-
+        }
     }
 
 }

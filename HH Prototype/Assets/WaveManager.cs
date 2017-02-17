@@ -18,6 +18,7 @@ public class WaveManager : MonoBehaviour
 
     public int rabbitsLeft;
     public int plantsLeft;
+    public int toMake;
     // Use this for initialization
     void Start()
     {
@@ -40,15 +41,16 @@ public class WaveManager : MonoBehaviour
         //   if (!inWave)
         {
             inWave = true;
+            toMake = perWave * waveNum;
 
-            for (int i = 0; i < perWave * waveNum; i++)
+            for (int i = 0; i < toMake; i++)
             {
                 Instantiate(rabbit, RandPos(), transform.rotation);
             }
             waveNum++;
         }
 
-        rabbitsLeft += perWave * waveNum;
+        rabbitsLeft += toMake;
 
     }
 

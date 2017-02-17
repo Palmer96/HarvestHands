@@ -17,6 +17,7 @@ public class Rabbit : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        eating = false;
         timer = timerRate;
         if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
             nav = GetComponent<UnityEngine.AI.NavMeshAgent>();
@@ -26,6 +27,7 @@ public class Rabbit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         if (eating)
         {
             timer -= Time.deltaTime;
@@ -48,6 +50,7 @@ public class Rabbit : MonoBehaviour
             {
                 nav.SetDestination(target.transform.position);
             }
+
         }
         else
         {
@@ -57,6 +60,9 @@ public class Rabbit : MonoBehaviour
 
     GameObject FindPlant()
     {
+        GameObject decoy = FindDecoy();
+        if (decoy != null)
+            return decoy;
         GameObject[] Plants = GameObject.FindGameObjectsWithTag("Plant");
         GameObject closest = null;
         float distance = Mathf.Infinity;
@@ -77,6 +83,7 @@ public class Rabbit : MonoBehaviour
 
     GameObject FindDecoy()
     {
+
         GameObject[] Plants = GameObject.FindGameObjectsWithTag("Decoy");
         GameObject closest = null;
         float distance = Mathf.Infinity;
@@ -91,9 +98,12 @@ public class Rabbit : MonoBehaviour
                 distance = curDistance;
             }
         }
-        if (Vector3.Distance(closest.transform.position, position) < 10)
-            return closest;
-        else
+        if (closest != null)
+        {
+            if (Vector3.Distance(closest.transform.position, position) < 20)
+                return closest;
+        }
+       
             return null;
     }
 
@@ -120,7 +130,7 @@ public class Rabbit : MonoBehaviour
     {
         if (!nav.isActiveAndEnabled)
         {
-            GetComponent<BoxCollider>().enabled = false;
+            GetComponent<MeshCollider>().enabled = false;
             GameObject[] parts = new GameObject[transform.childCount];
             for (int i = 0; i < transform.childCount; i++)
             {
