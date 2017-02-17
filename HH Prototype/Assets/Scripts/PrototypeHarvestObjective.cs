@@ -8,6 +8,11 @@ public class PrototypeHarvestObjective : QuestProtoypeObjective
     public int goalAmount = 1;
     public int currentAmount = 0;
 
+    void Start()
+    {
+        type = objectiveType.Construct;
+    }
+
     public override void ActivateObjective()
     {
         Debug.Log("Activating harvest objective");

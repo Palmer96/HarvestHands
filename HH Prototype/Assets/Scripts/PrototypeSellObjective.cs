@@ -6,6 +6,11 @@ public class PrototypeSellObjective : QuestProtoypeObjective
 {
     public string objectName = "WhatToSell";
 
+    void Start()
+    {
+        type = objectiveType.Sell;
+    }
+
     public override void ActivateObjective()
     {
         Debug.Log("Activating on sell objective");

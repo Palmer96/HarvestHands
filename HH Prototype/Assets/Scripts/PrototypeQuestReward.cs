@@ -7,7 +7,7 @@ public class PrototypeQuestReward : MonoBehaviour
     public int money = 0;
     public bool rewardGiven = false;
 
-	public void GenerateReward()
+	public virtual void GenerateReward()
     {
         if (rewardGiven)
             return;

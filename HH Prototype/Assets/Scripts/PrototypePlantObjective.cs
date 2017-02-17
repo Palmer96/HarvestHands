@@ -6,6 +6,11 @@ public class PrototypePlantObjective : QuestProtoypeObjective
 {
     public string plantName = "WhatToPlant";
 
+    void Start()
+    {
+        type = objectiveType.Plant;
+    }
+
     public override void ActivateObjective()
     {
         Debug.Log("Activating on plant objective");

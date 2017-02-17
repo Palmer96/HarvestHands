@@ -46,7 +46,10 @@ public class Bucket : Item
                 if (currentWaterLevel > 0)
                 {
                     if (hit.transform.GetComponent<Plant>().WaterPlant())
+                    {
                         currentWaterLevel -= waterDrain;
+                        EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                    }
                 }
             }
         }

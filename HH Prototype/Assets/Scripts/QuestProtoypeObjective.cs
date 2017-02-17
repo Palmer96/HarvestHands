@@ -15,6 +15,8 @@ public class QuestProtoypeObjective : MonoBehaviour
         Sell = 3,    
         Buy = 4,
         Construct = 5,
+        Water = 6,
+        Craft = 7,
     }
     public objectiveType type = objectiveType.NONE;
     public bool objectiveDone = false;

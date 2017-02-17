@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class PrototypeConstructObjective : QuestProtoypeObjective
 {
-
     public string constructName = "WhatToBuild";
     public int goalAmount = 1;
     public int currentAmount = 0;
+
+    void Start()
+    {
+        type = objectiveType.Construct;
+    }
 
     public override void ActivateObjective()
     {
