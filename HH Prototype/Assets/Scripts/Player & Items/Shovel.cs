@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Shovel : Item
 {
+    public int level = 1;
     public GameObject dirt;
     
     // Use this for initialization
@@ -30,6 +31,10 @@ public class Shovel : Item
             if (hit.transform.CompareTag("Ground"))
             {
                 Instantiate(dirt, hit.point, transform.rotation);
+                if (level > 1)
+                    Instantiate(dirt, hit.point + (transform.up * 1.5f) , transform.rotation);
+                if (level > 2)
+                    Instantiate(dirt, hit.point + (transform.up * 3), transform.rotation);
             }
         }
     }

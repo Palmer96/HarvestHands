@@ -5,6 +5,7 @@ using UnityEngine;
 public class Axe : Item
 {
 
+    public int level = 1;
     public GameObject wood;
 
     // Use this for initialization
@@ -30,8 +31,11 @@ public class Axe : Item
             if (hit.transform.CompareTag("Tree"))
             {
                 hit.transform.GetComponent<Tree>().Harvest();
-
-            //    Instantiate(wood, hit.point, transform.rotation);
+                if (level > 1)
+                    hit.transform.GetComponent<Tree>().Harvest();
+                if (level > 2)
+                    hit.transform.GetComponent<Tree>().Harvest();
+                //    Instantiate(wood, hit.point, transform.rotation);
             }
         }
 

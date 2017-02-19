@@ -104,7 +104,7 @@ public class DayNightController : MonoBehaviour
 
     public void BedDayJump()
     {
-        if (currentTimeOfDay > 18)
+      //  if (currentTimeOfDay > 18)
         {
             currentTimeOfDay = 6;
             ingameDay++;

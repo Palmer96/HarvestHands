@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Sickle : Item
 {
-
+    public int level = 1;
     // Use this for initialization
     void Start()
     {
@@ -26,7 +26,7 @@ public class Sickle : Item
         {
             if (hit.transform.CompareTag("Plant"))
             {
-                hit.transform.GetComponent<Plant>().HarvestPlant();
+                hit.transform.GetComponent<Plant>().HarvestPlant(level);
             }
         }
 

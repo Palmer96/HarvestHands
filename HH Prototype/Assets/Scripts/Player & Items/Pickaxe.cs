@@ -5,6 +5,7 @@ using UnityEngine;
 public class Pickaxe : Item
 {
 
+    public int level = 1;
     // Use this for initialization
     void Start()
     {
@@ -28,7 +29,10 @@ public class Pickaxe : Item
             if (hit.transform.CompareTag("Rock"))
             {
                 hit.transform.GetComponent<Rock>().Harvest();
-
+                if (level > 1)
+                    hit.transform.GetComponent<Rock>().Harvest();
+                if (level > 2)
+                    hit.transform.GetComponent<Rock>().Harvest();
                 //    Instantiate(wood, hit.point, transform.rotation);
             }
         }

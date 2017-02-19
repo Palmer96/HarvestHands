@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Bucket : Item
 {
+    public int level = 1;
     public int currentWaterLevel = 10;
     public int maxWaterLevel = 10;
     public int waterDrain = 1;

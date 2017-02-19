@@ -122,6 +122,69 @@ public class Plant : MonoBehaviour
         }
     }
 
+    public void HarvestPlant(int level)
+    {
+        if (readyToHarvest)
+        {
+            //WaveManager.instance.plantsLeft--;
+            //If dead
+            if (!isAlive)
+            {
+                if (soil != null)
+                    soil.occupied = false;
+                Destroy(gameObject);
+                return;
+            }
+            //if alive
+            else
+            {
+                EventManager.HarvestEvent(plantName);
+
+                harvestsToRemove--;
+
+                //if creates produce
+                if (harvestProduce != null)
+                {
+                    GameObject produce = (GameObject)Instantiate(harvestProduce,transform.position,transform.rotation);
+                    produce.transform.position = transform.position;
+                    produce.transform.position += new Vector3(0, 1, 0);
+                    if (level > 1)
+                    {
+                        GameObject produce2 = (GameObject)Instantiate(harvestProduce, transform.position + transform.up, transform.rotation);
+                        produce.transform.position = transform.position;
+                        produce.transform.position += new Vector3(0, 1, 0);
+                    }
+                    if (level > 2)
+                    {
+                        GameObject produce3 = (GameObject)Instantiate(harvestProduce, transform.position + (transform.up * 2), transform.rotation);
+                        produce.transform.position = transform.position;
+                        produce.transform.position += new Vector3(0, 1, 0);
+                    }
+                }
+
+                if (harvestsToRemove <= 0)
+                {
+                    isAlive = false;
+                    if (soil != null)
+                        soil.occupied = false;
+                    Destroy(gameObject);
+                }
+
+                //multiple times harvestable stuff
+                if (daysBetweenHarvets > 0)
+                {
+                    UpdatePlantMat(PlantMaterial.Growing);
+                    UpdatePlantMesh(PlantState.Growing);
+                }
+                else
+                {
+                    UpdatePlantMat(PlantMaterial.Grown);
+                    UpdatePlantMesh(PlantState.Grown);
+                }
+            }
+        }
+    }
+
     public void UpdatePlant(int ingameDay)
     {
         //if watered
