@@ -16,7 +16,7 @@ public class QuestPrototype : MonoBehaviour
 
     public void StartQuest(int atObjective = 0)
     {
-        Debug.Log("inside start quest - objectives.count = " + objectives.Count);
+        //Debug.Log("inside start quest - objectives.count = " + objectives.Count);
         questAccepted = true;
         objectives[atObjective].ActivateObjective();
     }

@@ -55,10 +55,10 @@ public class PrototypeQuestManager : MonoBehaviour
                 continue;
             }
 
-            Debug.Log("outside currentobjective done");
+            //Debug.Log("outside currentobjective done");
         }
 
-        Debug.Log("activequests After = " + instance.activeQuests.Count);
+        //Debug.Log("activequests After = " + instance.activeQuests.Count);
         foreach (QuestPrototype quest in newCompletedQuests)
         {
             instance.completedQuests.Add(quest);

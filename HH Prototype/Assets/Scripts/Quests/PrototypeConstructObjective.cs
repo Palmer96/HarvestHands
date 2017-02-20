@@ -15,7 +15,7 @@ public class PrototypeConstructObjective : QuestProtoypeObjective
 
     public override void ActivateObjective()
     {
-        Debug.Log("Activating construct objective");
+        //Debug.Log("Activating construct objective");
         EventManager.OnConstruct += CheckComplete;
     }
 

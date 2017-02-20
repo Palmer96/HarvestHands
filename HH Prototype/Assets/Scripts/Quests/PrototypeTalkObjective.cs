@@ -12,7 +12,7 @@ public class PrototypeTalkObjective : QuestProtoypeObjective
 
     public override void ActivateObjective()
     {
-        Debug.Log("Activating talk to objective");
+        //Debug.Log("Activating talk to objective");
         //EventManager.OnTalk += CheckComplete;
     }
 
