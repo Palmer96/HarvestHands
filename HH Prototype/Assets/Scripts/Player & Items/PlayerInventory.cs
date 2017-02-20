@@ -45,11 +45,6 @@ public class PlayerInventory : MonoBehaviour
         scrollTimer = 0.1f;
 
         inMenu = false;
-        //  heldObjects[0].transform.SetParent(transform.GetChild(0));
-        //  heldObjects[0].transform.localPosition = new Vector3(1, 0, 2);
-
-        //   heldObjects[1].transform.SetParent(transform.GetChild(1));
-        //   heldObjects[1].transform.localPosition = new Vector3(1, 0, 2);
 
         UpdateInventory();
         for (int i = 0; i < ItemHotbar.transform.childCount; i++)
