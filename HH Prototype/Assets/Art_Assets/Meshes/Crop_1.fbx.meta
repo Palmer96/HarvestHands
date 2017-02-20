@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: 3482af0d8d84545479f332e8eea9e6e3
-timeCreated: 1477883985
-licenseType: Free
+guid: 7a4ae0ee546d63a45a6e32c5a29e3cdf
+timeCreated: 1487564095
+licenseType: Pro
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
@@ -9,7 +9,7 @@ ModelImporter:
     400000: //RootNode
     2300000: //RootNode
     3300000: //RootNode
-    4300000: pCylinder260
+    4300000: Crop_1
     9500000: //RootNode
   materials:
     importMaterials: 1
@@ -57,6 +57,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -67,7 +68,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1
