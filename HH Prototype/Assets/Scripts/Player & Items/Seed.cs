@@ -64,6 +64,7 @@ public class Seed : Item
                     quantity--;
                     soil.PlantSeed(plantPrefab);
                     EventManager.PlantEvent(plantPrefab.GetComponent<Plant>().plantName);
+                    UpdateMesh();
                     //TODO: if 0 seeds, play staff animation
                 }
             }
