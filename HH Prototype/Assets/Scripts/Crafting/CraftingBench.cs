@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class CraftingBench : MonoBehaviour
 {
     public int currentlySelceted = 0;
-    public TextMesh recipeNameText;
-    public TextMesh recipeRequirementsText;
+   // public TextMesh recipeNameText;
+   // public TextMesh recipeRequirementsText;
     public List<Item> loadedResources = new List<Item>();
     public Transform spawnPoint;
        
@@ -51,7 +51,7 @@ public class CraftingBench : MonoBehaviour
         if (CraftingManager.instance.knownRecipes.Count < 1)
             return;
 
-        recipeNameText.text = CraftingManager.instance.knownRecipes[currentlySelceted].recipeName;
+    //    recipeNameText.text = CraftingManager.instance.knownRecipes[currentlySelceted].recipeName;
         string recipeRequirements = "";
         //Hopefully make text show as "0/10 Wood" if you have 0 wood and the recipe reqires 10 wood
         //And do a resource per line
@@ -67,7 +67,7 @@ public class CraftingBench : MonoBehaviour
             }
             recipeRequirements += sameResourceLoaded.ToString() + "/" + requirement.numRequired.ToString() + " " + requirement.resourceName + "\n"; 
         }
-        recipeRequirementsText.text = recipeRequirements;
+    //    recipeRequirementsText.text = recipeRequirements;
     }
 
     public void NextRecipeChoice()

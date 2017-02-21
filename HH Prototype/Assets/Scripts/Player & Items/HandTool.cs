@@ -78,6 +78,10 @@ public class HandTool : MonoBehaviour
                     //hit.transform.GetComponent<CraftingBench>().MakeItem();
                     CraftingMenu.instance.ActivateMenu();
                 }
+                if (hit.transform.tag == "Livestock")
+                {
+                    hit.transform.GetComponent<Livestock>().Interact();
+                }
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha1))

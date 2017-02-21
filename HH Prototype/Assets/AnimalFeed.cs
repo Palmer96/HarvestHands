@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimalFeed : Item
 {
-    public int happinessIncrease = 10;
+    public int hungerIncrease = 10;
 	// Use this for initialization
 	void Start ()
     {
@@ -28,12 +28,18 @@ public class AnimalFeed : Item
 
     public override void PrimaryUse()
     {
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
             if (hit.transform.CompareTag("Livestock"))
             {
-                hit.transform.GetComponent<Livestock>().IncreaseHappiness(happinessIncrease);
+                quantity--;
+                hit.transform.GetComponent<Livestock>().Feed(hungerIncrease);
             }
+        }
+        if (quantity <= 0)
+        {
+            PlayerInventory.instance.DestroyItem();
         }
     }
 

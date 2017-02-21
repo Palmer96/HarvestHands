@@ -57,7 +57,7 @@ public class NPC : MonoBehaviour
         int index = Random.Range(0, acceptableQuests.Count);
         QuestPrototype quest = acceptableQuests[index];
         quest.StartQuest();
-        PrototypeQuestManager.instance.activeQuests.Add(quest);
+        //PrototypeQuestManager.instance.activeQuests.Add(quest);
         acceptableQuests.RemoveAt(index);
         return quest;
     }
