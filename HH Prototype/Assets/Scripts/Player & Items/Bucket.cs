@@ -74,7 +74,7 @@ public class Bucket : Item
                             if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
                             {
                                 currentWaterLevel -= waterDrain;
-                                EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                                EventManager.WaterEvent(hit.transform.GetChild(0).GetComponent<Plant>().plantName.ToString());
                                 used = true;
                                 useTimer = useRate;
                             }

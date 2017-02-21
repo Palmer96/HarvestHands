@@ -73,13 +73,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
             {
-                waterLevel.enabled = true;
+                waterLevel.gameObject.SetActive(true);
                 waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
                 waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;
 
             }
             else
-                waterLevel.enabled = false;
+                waterLevel.gameObject.SetActive(false);
 
             Hotkeys();
 
@@ -134,7 +134,10 @@ public class PlayerInventory : MonoBehaviour
                             break;
                         case "Soil":
                             if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                            {
+                                if (hit.transform.childCount > 0)
                                 hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                            }
                             break;
                     }
 
