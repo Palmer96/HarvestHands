@@ -27,7 +27,7 @@ public class SellChest : MonoBehaviour
             {
                 if (item.GetComponent<Item>())
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
-                Debug.Log(col.transform.name);
+                //Debug.Log(col.transform.name);
                 valueOfItems += item.value * item.quantity;
                 Destroy(col.gameObject);
             }

@@ -35,8 +35,8 @@ public class CraftingMenu : MonoBehaviour
 
 
     public List<CraftingRecipe> recipes = new List<CraftingRecipe>();
-    private List<CraftingRecipe> haveResourceList = new List<CraftingRecipe>();
-    private List<CraftingRecipe> dontHaveResourceList = new List<CraftingRecipe>();
+    public List<CraftingRecipe> haveResourceList = new List<CraftingRecipe>();
+    public List<CraftingRecipe> dontHaveResourceList = new List<CraftingRecipe>();
 
     // Use this for initialization
     void Start()
@@ -92,7 +92,7 @@ public class CraftingMenu : MonoBehaviour
 
     public void ActivateMenu()
     {
-        Debug.Log("Inside ActivateMenu");
+        //Debug.Log("Inside ActivateMenu");
         scrollView.gameObject.SetActive(true);
         //  PlayerInventory.instance.enabled = false;
         PlayerInventory.instance.inMenu = true;
@@ -137,6 +137,12 @@ public class CraftingMenu : MonoBehaviour
 
     public void UpdateSelectedItemInfo()
     {
+        if (selectedButton == null)
+        {
+            selectedItemName.text = "";
+            selectedItemDescription.text = "";
+            selectedItemResources.text = "";
+        }
         selectedItemName.text = selectedButton.recipe.recipeName;
         selectedItemDescription.text = selectedButton.recipe.itemDescription;
         selectedItemResources.text = selectedButton.requirementText.text;
@@ -207,13 +213,24 @@ public class CraftingMenu : MonoBehaviour
         if (newObj != null)
             PlayerInventory.instance.AddItem(newObj);
         //CraftingManager.instance.knownRecipes[selectedButton.recipeIndex].Craft();
+        CraftingRecipe selectedRecipe = selectedButton.recipe;
         ResortLists();
+        ResetDisplay();
+        foreach (CraftingMenuButton button in craftingButtons)
+        {
+            if (button.recipe.recipeName == selectedRecipe.recipeName)
+            {
+                selectedButton = button;
+                break;
+            }
+        }
+
         UpdateDisplay(); // TODO Change this so it updates the list objects with the reduced player amounts, instead of destroying and recreating the entire list
     }
 
     public void ResortLists()
     {
-        Debug.Log("In resort Lists");
+        //Debug.Log("In resort Lists");
         List<CraftingMenuButton> haveResourceButtonList = new List<CraftingMenuButton>();
         List<CraftingMenuButton> dontHaveResourceButtonList = new List<CraftingMenuButton>();
       //  scrollView.

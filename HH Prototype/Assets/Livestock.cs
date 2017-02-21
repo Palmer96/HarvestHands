@@ -51,6 +51,8 @@ public class Livestock : MonoBehaviour
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         currentProduceTimer = produceTimer;
+        if (bed == null)
+            bed = transform;
     }
 	
 	// Update is called once per frame
