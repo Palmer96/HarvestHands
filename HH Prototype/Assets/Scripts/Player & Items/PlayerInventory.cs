@@ -37,6 +37,8 @@ public class PlayerInventory : MonoBehaviour
 
 
     private float clickTimer;
+
+    public Slider waterLevel;
     // Use this for initialization
     void Start()
     {
@@ -69,7 +71,15 @@ public class PlayerInventory : MonoBehaviour
 
         if (!inMenu)
         {
+            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+            {
+                waterLevel.enabled = true;
+                waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
+                waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;
 
+            }
+            else
+                waterLevel.enabled = false;
 
             Hotkeys();
 
@@ -119,12 +129,19 @@ public class PlayerInventory : MonoBehaviour
                     switch (hit.transform.tag)
                     {
                         case "Plant":
-                            hit.transform.GetComponent<Plant>().highlighted = true;
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                hit.transform.GetComponent<Plant>().highlighted = true;
+                            break;
+                        case "Soil":
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
                             break;
                     }
 
                 }
-                if (Input.GetKey(KeyCode.E)) // Interact
+
+
+                if (Input.GetKeyDown(KeyCode.E)) // Interact
                 {
                     //     hit;
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -139,10 +156,18 @@ public class PlayerInventory : MonoBehaviour
                             case "Bed":
                                 DayNightController.instance.BedDayJump();
                                 break;
-                            case "Item":
-                                AddItem(hit.transform.gameObject);
-                                break;
                         }
+                    }
+                }
+                if (Input.GetKey(KeyCode.E)) // Interact
+                {
+                    //     hit;
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    if (Physics.Raycast(ray, out hit, 5))
+                    {
+                        if (hit.transform.CompareTag("Item"))
+                            AddItem(hit.transform.gameObject);
                     }
                 }
 
@@ -208,7 +233,7 @@ public class PlayerInventory : MonoBehaviour
                     }
                     else
                         heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
-                    
+
                     if (WaveManager.instance != null)
                     {
                         if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)

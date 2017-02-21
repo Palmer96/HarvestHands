@@ -67,6 +67,19 @@ public class Bucket : Item
                             }
                         }
                     }
+                    else if (hit.transform.CompareTag("Soil"))
+                    {
+                        if (currentWaterLevel > 0)
+                        {
+                            if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
+                            {
+                                currentWaterLevel -= waterDrain;
+                                EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                                used = true;
+                                useTimer = useRate;
+                            }
+                        }
+                    }
                 }
                 break;
 
