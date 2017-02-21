@@ -21,10 +21,10 @@ public class PrototypeQuestOffer : MonoBehaviour
     {
         if (Input.GetKeyDown(acceptButton))
         {
-            PrototypeQuestManager.instance.activeQuests.Add(questOffered);
+            //PrototypeQuestManager.instance.activeQuests.Add(questOffered);
             questBoardSource.acceptedQuests.Add(questOffered);
             questOffered.StartQuest();
-            PrototypeQuestManager.instance.UpdateQuestText();
+            //PrototypeQuestManager.instance.UpdateQuestText();
             Destroy(gameObject);
         }
         else if (Input.GetKeyDown(declineButton))

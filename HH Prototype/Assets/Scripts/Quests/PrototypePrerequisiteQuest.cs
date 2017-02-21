@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PrototypePrerequisiteQuest : PrototypeQuestPrerequisite
 {
-    public Quest quest;
+    public QuestPrototype quest;
 
     public override bool CheckPrerequisiteMet()
     {
