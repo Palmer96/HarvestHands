@@ -71,15 +71,18 @@ public class PlayerInventory : MonoBehaviour
 
         if (!inMenu)
         {
-            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+            if (heldObjects[selectedItemNum] != null)
             {
-                waterLevel.gameObject.SetActive(true);
-                waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
-                waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;
+                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                {
+                    waterLevel.gameObject.SetActive(true);
+                    waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
+                    waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;
 
+                }
+                else
+                    waterLevel.gameObject.SetActive(false);
             }
-            else
-                waterLevel.gameObject.SetActive(false);
 
             Hotkeys();
 
@@ -129,14 +132,21 @@ public class PlayerInventory : MonoBehaviour
                     switch (hit.transform.tag)
                     {
                         case "Plant":
-                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                                hit.transform.GetComponent<Plant>().highlighted = true;
+                            if (heldObjects[selectedItemNum] != null)
+                            {
+
+                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                    hit.transform.GetComponent<Plant>().highlighted = true;
+                            }
                             break;
                         case "Soil":
-                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                            if (heldObjects[selectedItemNum] != null)
                             {
-                                if (hit.transform.childCount > 0)
-                                hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                {
+                                    if (hit.transform.childCount > 0)
+                                        hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                }
                             }
                             break;
                     }
