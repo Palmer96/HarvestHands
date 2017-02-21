@@ -35,6 +35,8 @@ public class DayNightController : MonoBehaviour
 
     [Range(0, 24f)]
     public float currentTimeOfDay = 0;
+
+    public float timePast;
     // Use this for initialization
     void Start()
     {
@@ -48,7 +50,8 @@ public class DayNightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        currentTimeOfDay += (Time.deltaTime / 60) * timeSpeed;
+        timePast = (Time.deltaTime / 60) * timeSpeed;
+        currentTimeOfDay += timePast;
 
         worldLight.transform.rotation = Quaternion.identity;
         worldLight.transform.Rotate((currentTimeOfDay * 7.5f), -30, 0);
@@ -105,20 +108,26 @@ public class DayNightController : MonoBehaviour
 
     public void BedDayJump()
     {
-      //  if (currentTimeOfDay > 18)
+        //  if (currentTimeOfDay > 18)
         {
+            float time = 24 - currentTimeOfDay + 6;
+
             currentTimeOfDay = 6;
             ingameDay++;
-            PlantManager.instance.UpdatePlants(ingameDay);
+
+            Debug.Log("Time Past: " + time);
+
+            PlantManager.instance.UpdatePlants(time);
             UpdateTree();
             SellChest.SellAllChests();
             if (WaveManager.instance != null)
                 WaveManager.instance.StartWave();
 
+
             if (Random.Range(1, 5) == 1)
             {
                 Rain.SetActive(true);
-                PlantManager.instance.WaterPlants();
+                //  PlantManager.instance.WaterPlants();
             }
             else
                 Rain.SetActive(false);
@@ -138,7 +147,7 @@ public class DayNightController : MonoBehaviour
         if (Random.Range(1, 5) == 1)
         {
             Rain.SetActive(true);
-            PlantManager.instance.WaterPlants();
+            //    PlantManager.instance.WaterPlants();
         }
         else
             Rain.SetActive(false);
@@ -147,6 +156,6 @@ public class DayNightController : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        skybox.SetColor("_SkyTint", new Color(76.0f/255, 91.0f / 255, 128.0f / 255));
+        skybox.SetColor("_SkyTint", new Color(76.0f / 255, 91.0f / 255, 128.0f / 255));
     }
 }

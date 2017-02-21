@@ -18,27 +18,64 @@ public class Axe : Item
     // Update is called once per frame
     void Update()
     {
-
+        if (used)
+        {
+            useTimer -= Time.deltaTime;
+            if (useTimer < 0)
+            {
+                used = false;
+            }
+        }
     }
 
-    public override void PrimaryUse()
+    public override void PrimaryUse(ClickType click)
     {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        Debug.Log("Axe");
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        switch (click)
         {
-            if (hit.transform.CompareTag("Tree"))
-            {
-                hit.transform.GetComponent<Tree>().Harvest();
-                if (level > 1)
-                    hit.transform.GetComponent<Tree>().Harvest();
-                if (level > 2)
-                    hit.transform.GetComponent<Tree>().Harvest();
-                //    Instantiate(wood, hit.point, transform.rotation);
-            }
+            case ClickType.Single:
+                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                Debug.Log("Axe");
+                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                {
+                    if (hit.transform.CompareTag("Tree"))
+                    {
+                        used = true;
+                        useTimer = useRate;
+                        hit.transform.GetComponent<Tree>().Harvest();
+                        if (level > 1)
+                            hit.transform.GetComponent<Tree>().Harvest();
+                        if (level > 2)
+                            hit.transform.GetComponent<Tree>().Harvest();
+                        //    Instantiate(wood, hit.point, transform.rotation);
+                    }
+                }
+                break;
+
+            case ClickType.Hold:
+                if (!used)
+                {
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    Debug.Log("Axe");
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
+                    {
+                        if (hit.transform.CompareTag("Tree"))
+                        {
+                            used = true;
+                            useTimer = useRate;
+                            hit.transform.GetComponent<Tree>().Harvest();
+                            if (level > 1)
+                                hit.transform.GetComponent<Tree>().Harvest();
+                            if (level > 2)
+                                hit.transform.GetComponent<Tree>().Harvest();
+                            //    Instantiate(wood, hit.point, transform.rotation);
+                        }
+                    }
+                }
+                break;
         }
 
     }
 
-    }
+}

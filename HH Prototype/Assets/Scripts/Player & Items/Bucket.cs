@@ -6,7 +6,7 @@ public class Bucket : Item
     public int level = 1;
     public int currentWaterLevel = 10;
     public int maxWaterLevel = 10;
-    public int waterDrain = 1;
+    public int waterDrain = 3;
 
     public GameObject waterDrop;
 
@@ -23,6 +23,14 @@ public class Bucket : Item
     void Update()
     {
         transform.GetChild(1).GetComponent<TextMesh>().text = currentWaterLevel.ToString();
+        if (used)
+        {
+            useTimer -= Time.deltaTime;
+            if (useTimer < 0)
+            {
+                used = false;
+            }
+        }
     }
 
 
@@ -34,22 +42,85 @@ public class Bucket : Item
         }
     }
 
+
+    public override void PrimaryUse(ClickType click)
+    {
+        switch (click)
+        {
+            case ClickType.Single:
+                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                {
+                    if (hit.transform.CompareTag("WaterSource"))
+                        currentWaterLevel = maxWaterLevel;
+                    else if (hit.transform.CompareTag("Plant"))
+                    {
+                        if (currentWaterLevel > 0)
+                        {
+                            if (hit.transform.GetComponent<Plant>().WaterPlant(waterDrain))
+                            {
+                                currentWaterLevel -= waterDrain;
+                                EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                                used = true;
+                                useTimer = useRate;
+                            }
+                        }
+                    }
+                }
+                break;
+
+            case ClickType.Hold:
+                if (!used)
+                {
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
+                    {
+                        if (hit.transform.CompareTag("WaterSource"))
+                            currentWaterLevel = maxWaterLevel;
+                        else if (hit.transform.CompareTag("Plant"))
+                        {
+                            if (currentWaterLevel > 0)
+                            {
+                                if (hit.transform.GetComponent<Plant>().WaterPlant(waterDrain))
+                                {
+                                    currentWaterLevel -= waterDrain;
+                                    EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                                    used = true;
+                                    useTimer = useRate;
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+        }
+
+    }
+
+
     public override void PrimaryUse()
     {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        if (!used)
         {
-            if (hit.transform.CompareTag("WaterSource"))
-                currentWaterLevel = maxWaterLevel;
-            else if (hit.transform.CompareTag("Plant"))
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
-                if (currentWaterLevel > 0)
+                if (hit.transform.CompareTag("WaterSource"))
+                    currentWaterLevel = maxWaterLevel;
+                else if (hit.transform.CompareTag("Plant"))
                 {
-                    if (hit.transform.GetComponent<Plant>().WaterPlant())
+                    if (currentWaterLevel > 0)
                     {
-                        currentWaterLevel -= waterDrain;
-                        EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                        if (hit.transform.GetComponent<Plant>().WaterPlant(waterDrain))
+                        {
+                            currentWaterLevel -= waterDrain;
+                            EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
+                            used = true;
+                            useTimer = useRate;
+                        }
                     }
                 }
             }

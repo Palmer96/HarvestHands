@@ -49,6 +49,10 @@ public class Seed : Item
 
     }
 
+    public override void PrimaryUse(ClickType click)
+    {
+        PrimaryUse();
+    }
     public override void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));

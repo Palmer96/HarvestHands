@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Plant : MonoBehaviour
 {
@@ -23,21 +24,21 @@ public class Plant : MonoBehaviour
     public string plantName = "";
 
     public int strengthTimer;
-
+    public GameObject finishedShine;
     public bool isWatered = false;
     public bool isAlive = true;
     public bool readyToHarvest = false;
 
     //Stuff to do with growing
-    public int dayPlanted = 0;
-    public int daysToGrow = 3;
-    public int dryDaysToDie = 2;
-    private int dryStreak = 0;
-    private int dryDays = 0;
+    // public int dayPlanted = 0;
+    // public int daysToGrow = 3;
+    // public int dryDaysToDie = 2;
+    // private int dryStreak = 0;
+    // private int dryDays = 0;
     //multiple harvests stuff
     public float harvestsToRemove = 1;
-    public int daysBetweenHarvets = 2;
-    private int daysSinceLastHarvest = 0;
+    // public int daysBetweenHarvets = 2;
+    // private int daysSinceLastHarvest = 0;
 
     public PlantState plantState = PlantState.Sapling;
     public PlantMaterial currentPlantMaterial = PlantMaterial.Growing;
@@ -58,6 +59,19 @@ public class Plant : MonoBehaviour
     public Material grownMaterial;
     public Material deadMaterial;
 
+    public float waterLevel;
+    public float lowWater;
+    public float highWater;
+    public float maxWater;
+
+    public float dryMultiplier = 1;
+    public float slowTimeMultiplier = 1;
+    public float harvestTimer = 20;
+
+    public bool highlighted;
+
+    bool particleCreated = false;
+
     // Use this for initialization
     void Start()
     {
@@ -68,8 +82,142 @@ public class Plant : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        harvestTimer -= DayNightController.instance.timePast;
+        if (harvestTimer < 0)
+        {
+            if (!particleCreated)
+            {
+                particleCreated = true;
+                GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+                particle.transform.SetParent(transform);
+            }
 
+            readyToHarvest = true;
+            plantState = PlantState.Grown;
+            currentPlantMaterial = PlantMaterial.Grown;
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+
+            UpdatePlants();
+        }
+        else
+        {
+            if (waterLevel <= 0 || waterLevel >= maxWater)
+            {
+                isAlive = false;
+                plantState = PlantState.Dead;
+                currentPlantMaterial = PlantMaterial.Dead;
+                //   UpdatePlantMat
+            }
+            else
+                waterLevel -= DayNightController.instance.timePast * dryMultiplier;
+
+            if (waterLevel < lowWater)
+            {
+                plantState = PlantState.Growing;
+                currentPlantMaterial = PlantMaterial.Dry;
+            }
+            else if (waterLevel > highWater)
+            {
+
+            }
+            else
+            {
+                plantState = PlantState.Growing;
+                currentPlantMaterial = PlantMaterial.Grown;
+            }
+
+            UpdatePlants();
+
+            if (highlighted)
+            {
+                highlighted = false;
+                transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
+                transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
+
+                transform.parent.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else
+            {
+                transform.GetChild(0).GetComponent<TextMesh>().text = "";
+                transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+                transform.parent.GetComponent<MeshRenderer>().enabled = false;
+            }
+        }
     }
+
+    void UpdatePlants()
+    {
+        switch (plantState)
+        {
+            case PlantState.Dead:
+                {
+                    meshFilter.mesh = deadMesh;
+                    meshCollider.sharedMesh = deadMesh;
+                }
+                break;
+            case PlantState.Growing:
+                {
+                    meshFilter.mesh = growingMesh;
+                    meshCollider.sharedMesh = growingMesh;
+                }
+                break;
+            case PlantState.Grown:
+                {
+                    meshFilter.mesh = grownMesh;
+                    meshCollider.sharedMesh = grownMesh;
+                }
+                break;
+            case PlantState.Sapling:
+                {
+                    meshFilter.mesh = saplingMesh;
+                    meshCollider.sharedMesh = saplingMesh;
+                }
+                break;
+            default:
+                {
+                    Debug.Log(name + " Plant script tried to .UpdatePlantMesh with enum: " + plantState);
+                }
+                break;
+        }
+
+        switch (currentPlantMaterial)
+        {
+            case PlantMaterial.Dead:
+                {
+                    renderer.material = deadMaterial;
+
+                }
+                break;
+            case PlantMaterial.Dry:
+                {
+                    renderer.material = dryMaterial;
+                }
+                break;
+            case PlantMaterial.Growing:
+                {
+                    renderer.material = growingMaterial;
+                }
+                break;
+            case PlantMaterial.Grown:
+                {
+                    renderer.material = grownMaterial;
+                }
+                break;
+            default:
+                {
+                    Debug.Log(name + " Plant script tried to .UpdatePlantMat with enum: " + currentPlantMaterial);
+                }
+                break;
+        }
+    }
+
+    public void TimeJump(float time)
+    {
+        harvestTimer -= time;
+        waterLevel -= time;
+    }
+
 
     public void HarvestPlant()
     {
@@ -108,16 +256,16 @@ public class Plant : MonoBehaviour
                 }
 
                 //multiple times harvestable stuff
-                if (daysBetweenHarvets > 0)
-                {
-                    UpdatePlantMat(PlantMaterial.Growing);
-                    UpdatePlantMesh(PlantState.Growing);
-                }
-                else
-                {
-                    UpdatePlantMat(PlantMaterial.Grown);
-                    UpdatePlantMesh(PlantState.Grown);
-                }
+                //     if (daysBetweenHarvets > 0)
+                //     {
+                //         UpdatePlantMat(PlantMaterial.Growing);
+                //         UpdatePlantMesh(PlantState.Growing);
+                //     }
+                //     else
+                //     {
+                //         UpdatePlantMat(PlantMaterial.Grown);
+                //         UpdatePlantMesh(PlantState.Grown);
+                //     }
             }
         }
     }
@@ -145,7 +293,7 @@ public class Plant : MonoBehaviour
                 //if creates produce
                 if (harvestProduce != null)
                 {
-                    GameObject produce = (GameObject)Instantiate(harvestProduce,transform.position,transform.rotation);
+                    GameObject produce = (GameObject)Instantiate(harvestProduce, transform.position, transform.rotation);
                     produce.transform.position = transform.position;
                     produce.transform.position += new Vector3(0, 1, 0);
                     if (level > 1)
@@ -171,16 +319,16 @@ public class Plant : MonoBehaviour
                 }
 
                 //multiple times harvestable stuff
-                if (daysBetweenHarvets > 0)
-                {
-                    UpdatePlantMat(PlantMaterial.Growing);
-                    UpdatePlantMesh(PlantState.Growing);
-                }
-                else
-                {
-                    UpdatePlantMat(PlantMaterial.Grown);
-                    UpdatePlantMesh(PlantState.Grown);
-                }
+                //  if (daysBetweenHarvets > 0)
+                //  {
+                //      UpdatePlantMat(PlantMaterial.Growing);
+                //      UpdatePlantMesh(PlantState.Growing);
+                //  }
+                //  else
+                //  {
+                //      UpdatePlantMat(PlantMaterial.Grown);
+                //      UpdatePlantMesh(PlantState.Grown);
+                //  }
             }
         }
     }
@@ -188,49 +336,49 @@ public class Plant : MonoBehaviour
     public void UpdatePlant(int ingameDay)
     {
         //if watered
-        if (isWatered)
-        {
-            dryStreak = 0;
+        // if (isWatered)
+        //  {
+        //   dryStreak = 0;
 
-            //if plant is currently NOT grown
-            if (!readyToHarvest)
-            {
-                //if plant is now grown
-                if (ingameDay >= dayPlanted + daysToGrow + dryDays)
-                {
-                    readyToHarvest = true;
-                    UpdatePlantMesh(PlantState.Grown);
-                    UpdatePlantMat(PlantMaterial.Grown);
-                }
-                //if plant is still growing
-                else
-                {
-                    isWatered = false;
-                    UpdatePlantMesh(PlantState.Growing);
-                    UpdatePlantMat(PlantMaterial.Dry);
-                }
-            }
-        }
+        //if plant is currently NOT grown
+        //    if (!readyToHarvest)
+        //   {
+        //if plant is now grown
+        //    if (ingameDay >= dayPlanted + daysToGrow + dryDays)
+        //    {
+        //        readyToHarvest = true;
+        //        UpdatePlantMesh(PlantState.Grown);
+        //        UpdatePlantMat(PlantMaterial.Grown);
+        //    }
+        //if plant is still growing
+        //        else
+        //        {
+        //            isWatered = false;
+        //            UpdatePlantMesh(PlantState.Growing);
+        //            UpdatePlantMat(PlantMaterial.Dry);
+        //        }
+        //    }
+        // }
         //if not watered
-        else
-        {
-            dryStreak++;
-            dryDays++;
-
-            //check if plant died
-            if (dryStreak >= dryDaysToDie)
-            {
-                readyToHarvest = true;
-                isAlive = false;
-                if (plantState != PlantState.Sapling)
-                {
-
-                UpdatePlantMesh(PlantState.Dead);
-                UpdatePlantMat(PlantMaterial.Dead);
-                }
-                GetComponent<Renderer>().material.color = Color.red;
-            }
-        }
+        // else
+        //  {
+        //  dryStreak++;
+        //  dryDays++;
+        //
+        //  //check if plant died
+        //  if (dryStreak >= dryDaysToDie)
+        //  {
+        //      readyToHarvest = true;
+        //      isAlive = false;
+        //      if (plantState != PlantState.Sapling)
+        //      {
+        //
+        //          UpdatePlantMesh(PlantState.Dead);
+        //          UpdatePlantMat(PlantMaterial.Dead);
+        //      }
+        //      GetComponent<Renderer>().material.color = Color.red;
+        //  }
+        //  }
     }
 
     void UpdatePlantMesh(PlantState newState)
@@ -307,18 +455,20 @@ public class Plant : MonoBehaviour
         }
     }
 
-    public bool WaterPlant()
+    public bool WaterPlant(float water)
     {
         if (isAlive)
         {
-            if (!isWatered)
-            {
-                isWatered = true;
-                // UpdatePlantMat(PlantMaterial.Growing);
-                GetComponent<Renderer>().material.color = Color.green;
-                return true;
-            }
+            waterLevel += water;
+            //    if (!isWatered)
+            //   {
+            isWatered = true;
+            // UpdatePlantMat(PlantMaterial.Growing);
+            GetComponent<Renderer>().material.color = Color.green;
+            return true;
+            //    }
         }
         return false;
+        //   return false;
     }
 }

@@ -20,7 +20,7 @@ public class Soil : MonoBehaviour
         newPlant.transform.parent = gameObject.transform;
 
         Plant plant = newPlant.GetComponent<Plant>();
-        plant.dayPlanted = DayNightController.instance.ingameDay;
+     //   plant.dayPlanted = DayNightController.instance.ingameDay;
         plant.soil = this;
 
         occupied = true;

@@ -7,12 +7,8 @@ public class TestManager : MonoBehaviour
     public GameObject Object1;
     public GameObject Object2;
 
-    public Camera cam;
-
-    public GameObject tool;
-
    // public Text Display;
-   // public string Name;
+  //  public string Name;
    // public string dialog;
 
     // Use this for initialization
@@ -24,8 +20,6 @@ public class TestManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        
 
         if (Input.GetKeyDown(KeyCode.O))
             Instantiate(Object2, new Vector3(0, 0, 0), transform.rotation);

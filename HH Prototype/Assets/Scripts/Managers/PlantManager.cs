@@ -33,14 +33,14 @@ public class PlantManager : MonoBehaviour
         soilList.Add(soil);
     }
 
-    public void UpdatePlants(int ingameDay)
+    public void UpdatePlants(float time)
     {
         foreach (Plant plant in plantList)
         {
             if (plant == null)
                 continue;
 
-            plant.UpdatePlant(ingameDay);
+            plant.TimeJump(time);
             
         }
     }
@@ -52,7 +52,7 @@ public class PlantManager : MonoBehaviour
             if (plant == null)
                 continue;
 
-            plant.WaterPlant();
+          //  plant.WaterPlant();
 
         }
     }

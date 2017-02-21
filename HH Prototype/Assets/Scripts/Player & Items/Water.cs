@@ -21,10 +21,10 @@ public class Water : Item
     {
         if (col.CompareTag("Plant"))
         {
-           if( col.GetComponent<Plant>().WaterPlant())
-            {
-                Destroy(gameObject);
-            }
+          // if( col.GetComponent<Plant>().WaterPlant())
+          //  {
+          //      Destroy(gameObject);
+          //  }
         }
     }
 }

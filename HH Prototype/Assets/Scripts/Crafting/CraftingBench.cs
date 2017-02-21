@@ -77,7 +77,7 @@ public class CraftingBench : MonoBehaviour
             currentlySelceted = 0;
         DisplayRecipeChoice();
     }
-
+    
     public void PreviousRecipeChocie()
     {
         currentlySelceted--;

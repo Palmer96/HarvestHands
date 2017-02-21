@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-
+    public enum ClickType
+    {
+        Single,
+        Hold
+    };
 
     public int itemID;
     public string itemName;
@@ -18,9 +22,13 @@ public class Item : MonoBehaviour
     public RaycastHit hit;
     public Ray ray;
 
-  //  protected MeshFilter ownMesh;
-  //  protected Material ownMaterial;
-  //  protected MeshCollider ownMeshCollider;
+    public bool used = false;
+    public float useTimer = 0.25f;
+    public float useRate = 0.25f;
+
+    //  protected MeshFilter ownMesh;
+    //  protected Material ownMaterial;
+    //  protected MeshCollider ownMeshCollider;
 
     public Mesh singleMesh;
     public Mesh multiMesh;
@@ -90,12 +98,25 @@ public class Item : MonoBehaviour
 
     }
 
-    public virtual void PrimaryUse(GameObject gameObj)
+    public virtual void PrimaryUse(ClickType click)
     {
-        Debug.Log("Use Item");
+
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-        Debug.Log("Axe");
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            if (hit.transform.CompareTag("Building"))
+            {
+                hit.transform.GetComponent<Building>().AddResource(gameObject);
+            }
+        }
+
+    }
+
+    public virtual void PrimaryUse(GameObject gameObj)
+    {
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
         if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
             if (hit.transform.CompareTag("Building"))

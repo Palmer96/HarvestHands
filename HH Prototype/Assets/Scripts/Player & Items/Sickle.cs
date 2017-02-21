@@ -14,22 +14,54 @@ public class Sickle : Item
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    public override void PrimaryUse()
-    {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        Debug.Log("Sickle");
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        if (used)
         {
-            if (hit.transform.CompareTag("Plant"))
+            useTimer -= Time.deltaTime;
+            if (useTimer < 0)
             {
-                hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                used = false;
             }
         }
+    }
 
+    public override void PrimaryUse(ClickType click)
+    {
+        switch (click)
+        {
+            case ClickType.Single:
+                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                Debug.Log("Sickle");
+                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                {
+                    if (hit.transform.CompareTag("Plant"))
+                    {
+                        hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                        used = true;
+                        useTimer = useRate;
+                    }
+                }
+                break;
+
+            case ClickType.Hold:
+ if (!used)
+        {
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            Debug.Log("Sickle");
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.CompareTag("Plant"))
+                {
+                    hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                    used = true;
+                    useTimer = useRate;
+                }
+            }
+        }
+                break;
+        }
+       
     }
 
     void OnTriggerEnter(Collider col)

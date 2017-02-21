@@ -136,7 +136,7 @@ public class Conversation : MonoBehaviour
 
         ////Let's specifically check for dynamic text change
         //if (!data.currentIsPlayer && data.extraData == "itemLookUp" && !data.pausedAction)
-        //    ItemLookUp(data);
+         //   ItemLookUp(data);
 
         //This will update the dialogue.nodeData with the next Node's data
         dialogue.Next();

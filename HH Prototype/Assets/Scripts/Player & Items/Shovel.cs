@@ -17,25 +17,62 @@ public class Shovel : Item
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    public override void PrimaryUse() 
-    {
-     //   base.UseTool();
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        Debug.Log("Shovel");
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        if (used)
         {
-            if (hit.transform.CompareTag("Ground"))
+            useTimer -= Time.deltaTime;
+            if (useTimer < 0)
             {
-                Instantiate(dirt, hit.point, transform.rotation);
-                if (level > 1)
-                    Instantiate(dirt, hit.point + (transform.up * 1.5f) , transform.rotation);
-                if (level > 2)
-                    Instantiate(dirt, hit.point + (transform.up * 3), transform.rotation);
+                used = false;
             }
         }
+    }
+
+    public override void PrimaryUse(ClickType click)
+    {
+        switch (click)
+        {
+            case ClickType.Single:
+                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                Debug.Log("Shovel");
+                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                {
+                    if (hit.transform.CompareTag("Ground"))
+                    {
+                        used = true;
+                        useTimer = useRate;
+                        Instantiate(dirt, hit.point, transform.rotation);
+                        if (level > 1)
+                            Instantiate(dirt, hit.point + (transform.up * 1.5f), transform.rotation);
+                        if (level > 2)
+                            Instantiate(dirt, hit.point + (transform.up * 3), transform.rotation);
+                    }
+                }
+                break;
+
+            case ClickType.Hold:
+       if (!used)
+        {
+            //   base.UseTool();
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            Debug.Log("Shovel");
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.CompareTag("Ground"))
+                {
+                    used = true;
+                    useTimer = useRate;
+                    Instantiate(dirt, hit.point, transform.rotation);
+                    if (level > 1)
+                        Instantiate(dirt, hit.point + (transform.up * 1.5f), transform.rotation);
+                    if (level > 2)
+                        Instantiate(dirt, hit.point + (transform.up * 3), transform.rotation);
+                }
+            }
+        }
+                break;
+        }
+ 
     }
 }
