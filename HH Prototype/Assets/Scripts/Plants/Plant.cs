@@ -77,6 +77,7 @@ public class Plant : MonoBehaviour
     {
         PlantManager.instance.AddPlant(this);
         UpdatePlant(1);
+        transform.GetChild(1).GetChild(0).GetComponent<Slider>().maxValue = maxWater;
     }
 
     // Update is called once per frame

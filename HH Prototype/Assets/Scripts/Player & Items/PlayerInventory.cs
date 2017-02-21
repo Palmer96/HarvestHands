@@ -203,19 +203,12 @@ public class PlayerInventory : MonoBehaviour
                         int difference = heldObjects[i].GetComponent<Item>().itemCap - heldObjects[i].GetComponent<Item>().quantity;
                         item.GetComponent<Item>().DecreaseQuantity(difference);
                         heldObjects[i].GetComponent<Item>().IncreaseQuantity(difference);
-
                         AddItem(item);
                         return true;
-
                     }
                     else
                         heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
-
-
-
-
-
-
+                    
                     if (WaveManager.instance != null)
                     {
                         if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
