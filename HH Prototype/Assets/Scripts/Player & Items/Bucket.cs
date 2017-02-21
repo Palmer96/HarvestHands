@@ -71,12 +71,16 @@ public class Bucket : Item
                     {
                         if (currentWaterLevel > 0)
                         {
-                            if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
+                            if (hit.transform.childCount > 0)
                             {
-                                currentWaterLevel -= waterDrain;
-                                EventManager.WaterEvent(hit.transform.GetChild(0).GetComponent<Plant>().plantName.ToString());
-                                used = true;
-                                useTimer = useRate;
+
+                                if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
+                                {
+                                    currentWaterLevel -= waterDrain;
+                                    EventManager.WaterEvent(hit.transform.GetChild(0).GetComponent<Plant>().plantName.ToString());
+                                    used = true;
+                                    useTimer = useRate;
+                                }
                             }
                         }
                     }
@@ -102,6 +106,23 @@ public class Bucket : Item
                                     EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
                                     used = true;
                                     useTimer = useRate;
+                                }
+                            }
+                        }
+                        else if (hit.transform.CompareTag("Soil"))
+                        {
+                            if (currentWaterLevel > 0)
+                            {
+                                if (hit.transform.childCount > 0)
+                                {
+
+                                    if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
+                                    {
+                                        currentWaterLevel -= waterDrain;
+                                        EventManager.WaterEvent(hit.transform.GetChild(0).GetComponent<Plant>().plantName.ToString());
+                                        used = true;
+                                        useTimer = useRate;
+                                    }
                                 }
                             }
                         }
