@@ -82,7 +82,11 @@ public class PlayerInventory : MonoBehaviour
                 }
                 else
                     waterLevel.gameObject.SetActive(false);
+
             }
+                else
+                    waterLevel.gameObject.SetActive(false);
+
 
             Hotkeys();
 

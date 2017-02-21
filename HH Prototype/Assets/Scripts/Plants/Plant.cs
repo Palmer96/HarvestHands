@@ -83,25 +83,27 @@ public class Plant : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        harvestTimer -= DayNightController.instance.timePast;
-        if (harvestTimer < 0)
+        if (isAlive)
         {
-            if (!particleCreated)
+        harvestTimer -= DayNightController.instance.timePast;
+
+            if (harvestTimer < 0)
             {
-                particleCreated = true;
-                GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
-                particle.transform.SetParent(transform);
+                if (!particleCreated)
+                {
+                    particleCreated = true;
+                    GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+                    particle.transform.SetParent(transform);
+                }
+
+                readyToHarvest = true;
+                plantState = PlantState.Grown;
+                currentPlantMaterial = PlantMaterial.Grown;
+                transform.GetChild(0).GetComponent<TextMesh>().text = "";
+
+                UpdatePlants();
             }
 
-            readyToHarvest = true;
-            plantState = PlantState.Grown;
-            currentPlantMaterial = PlantMaterial.Grown;
-            transform.GetChild(0).GetComponent<TextMesh>().text = "";
-
-            UpdatePlants();
-        }
-        else
-        {
             if (waterLevel <= 0 || waterLevel >= maxWater)
             {
                 isAlive = false;
@@ -128,24 +130,24 @@ public class Plant : MonoBehaviour
             }
 
             UpdatePlants();
+        }
+        if (highlighted)
+        {
+            highlighted = false;
+            transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
+            transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+            transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
 
-            if (highlighted)
-            {
-                highlighted = false;
-                transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
-                transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
-                transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
-
-                transform.parent.GetComponent<MeshRenderer>().enabled = true;
-            }
-            else
-            {
-                transform.GetChild(0).GetComponent<TextMesh>().text = "";
-                transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
-                transform.parent.GetComponent<MeshRenderer>().enabled = false;
-            }
+            transform.parent.GetComponent<MeshRenderer>().enabled = true;
+        }
+        else
+        {
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+            transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            transform.parent.GetComponent<MeshRenderer>().enabled = false;
         }
     }
+
 
     void UpdatePlants()
     {
