@@ -74,5 +74,13 @@ public class Sickle : Item
                 plant.HarvestPlant();
             }
         }
+        if (col.gameObject.CompareTag("Soil"))
+        {
+            Plant plant = col.transform.GetChild(0).GetComponent<Plant>();
+            if (plant.readyToHarvest)
+            {
+                plant.HarvestPlant();
+            }
+        }
     }
 }

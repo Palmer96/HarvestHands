@@ -87,23 +87,25 @@ public class Plant : MonoBehaviour
     {
         if (isAlive && !readyToHarvest)
         {
-        harvestTimer -= DayNightController.instance.timePast;
-
-            if (harvestTimer < 0)
+            harvestTimer -= DayNightController.instance.timePast;
+            if (waterLevel > 0)
             {
-                if (!particleCreated)
+                if (harvestTimer < 0)
                 {
-                    particleCreated = true;
-                    GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
-                    particle.transform.SetParent(transform);
+                    if (!particleCreated)
+                    {
+                        particleCreated = true;
+                        GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+                        particle.transform.SetParent(transform);
+                    }
+
+                    readyToHarvest = true;
+                    plantState = PlantState.Grown;
+                    currentPlantMaterial = PlantMaterial.Grown;
+                    transform.GetChild(0).GetComponent<TextMesh>().text = "";
+
+                    UpdatePlants();
                 }
-
-                readyToHarvest = true;
-                plantState = PlantState.Grown;
-                currentPlantMaterial = PlantMaterial.Grown;
-                transform.GetChild(0).GetComponent<TextMesh>().text = "";
-
-                UpdatePlants();
             }
 
             if (waterLevel <= 0 || waterLevel >= maxWater)
@@ -131,23 +133,23 @@ public class Plant : MonoBehaviour
                 currentPlantMaterial = PlantMaterial.Grown;
             }
 
+            if (highlighted)
+            {
+                highlighted = false;
+                transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
+                transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
+
+                transform.parent.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else
+            {
+                transform.GetChild(0).GetComponent<TextMesh>().text = "";
+                transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+                transform.parent.GetComponent<MeshRenderer>().enabled = false;
+            }
+
             UpdatePlants();
-        }
-        else
-        {
-
-        }
-
-
-
-        if (highlighted)
-        {
-            highlighted = false;
-            transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
-            transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
-            transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
-
-            transform.parent.GetComponent<MeshRenderer>().enabled = true;
         }
         else
         {
@@ -155,6 +157,10 @@ public class Plant : MonoBehaviour
             transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
             transform.parent.GetComponent<MeshRenderer>().enabled = false;
         }
+
+
+
+
     }
 
 
@@ -233,117 +239,107 @@ public class Plant : MonoBehaviour
 
     public void HarvestPlant()
     {
-        if (readyToHarvest)
+        if (!isAlive)
         {
-            //WaveManager.instance.plantsLeft--;
-            //If dead
-            if (!isAlive)
+            if (soil != null)
+                soil.occupied = false;
+            Destroy(gameObject);
+            return;
+        }
+        else if (readyToHarvest)
+        {
+            EventManager.HarvestEvent(plantName);
+
+            harvestsToRemove--;
+
+            //if creates produce
+            if (harvestProduce != null)
             {
+                GameObject produce = (GameObject)Instantiate(harvestProduce);
+                produce.transform.position = transform.position;
+                produce.transform.position += new Vector3(0, 1, 0);
+            }
+
+            if (harvestsToRemove <= 0)
+            {
+                isAlive = false;
                 if (soil != null)
                     soil.occupied = false;
                 Destroy(gameObject);
-                return;
             }
-            //if alive
-            else
-            {
-                EventManager.HarvestEvent(plantName);
 
-                harvestsToRemove--;
-
-                //if creates produce
-                if (harvestProduce != null)
-                {
-                    GameObject produce = (GameObject)Instantiate(harvestProduce);
-                    produce.transform.position = transform.position;
-                    produce.transform.position += new Vector3(0, 1, 0);
-                }
-
-                if (harvestsToRemove <= 0)
-                {
-                    isAlive = false;
-                    if (soil != null)
-                        soil.occupied = false;
-                    Destroy(gameObject);
-                }
-
-                //multiple times harvestable stuff
-                //     if (daysBetweenHarvets > 0)
-                //     {
-                //         UpdatePlantMat(PlantMaterial.Growing);
-                //         UpdatePlantMesh(PlantState.Growing);
-                //     }
-                //     else
-                //     {
-                //         UpdatePlantMat(PlantMaterial.Grown);
-                //         UpdatePlantMesh(PlantState.Grown);
-                //     }
-            }
+            //multiple times harvestable stuff
+            //     if (daysBetweenHarvets > 0)
+            //     {
+            //         UpdatePlantMat(PlantMaterial.Growing);
+            //         UpdatePlantMesh(PlantState.Growing);
+            //     }
+            //     else
+            //     {
+            //         UpdatePlantMat(PlantMaterial.Grown);
+            //         UpdatePlantMesh(PlantState.Grown);
+            //     }
         }
     }
+
 
     public void HarvestPlant(int level)
     {
-        if (readyToHarvest)
+        if (!isAlive)
         {
-            //WaveManager.instance.plantsLeft--;
-            //If dead
-            if (!isAlive)
+            if (soil != null)
+                soil.occupied = false;
+            Destroy(gameObject);
+            return;
+        }
+        else if (readyToHarvest)
+        {
+            EventManager.HarvestEvent(plantName);
+
+            harvestsToRemove--;
+
+            //if creates produce
+            if (harvestProduce != null)
             {
+                GameObject produce = (GameObject)Instantiate(harvestProduce, transform.position, transform.rotation);
+                produce.transform.position = transform.position;
+                produce.transform.position += new Vector3(0, 1, 0);
+                if (level > 1)
+                {
+                    GameObject produce2 = (GameObject)Instantiate(harvestProduce, transform.position + transform.up, transform.rotation);
+                    produce.transform.position = transform.position;
+                    produce.transform.position += new Vector3(0, 1, 0);
+                }
+                if (level > 2)
+                {
+                    GameObject produce3 = (GameObject)Instantiate(harvestProduce, transform.position + (transform.up * 2), transform.rotation);
+                    produce.transform.position = transform.position;
+                    produce.transform.position += new Vector3(0, 1, 0);
+                }
+            }
+
+            if (harvestsToRemove <= 0)
+            {
+                isAlive = false;
                 if (soil != null)
                     soil.occupied = false;
                 Destroy(gameObject);
-                return;
             }
-            //if alive
-            else
-            {
-                EventManager.HarvestEvent(plantName);
 
-                harvestsToRemove--;
-
-                //if creates produce
-                if (harvestProduce != null)
-                {
-                    GameObject produce = (GameObject)Instantiate(harvestProduce, transform.position, transform.rotation);
-                    produce.transform.position = transform.position;
-                    produce.transform.position += new Vector3(0, 1, 0);
-                    if (level > 1)
-                    {
-                        GameObject produce2 = (GameObject)Instantiate(harvestProduce, transform.position + transform.up, transform.rotation);
-                        produce.transform.position = transform.position;
-                        produce.transform.position += new Vector3(0, 1, 0);
-                    }
-                    if (level > 2)
-                    {
-                        GameObject produce3 = (GameObject)Instantiate(harvestProduce, transform.position + (transform.up * 2), transform.rotation);
-                        produce.transform.position = transform.position;
-                        produce.transform.position += new Vector3(0, 1, 0);
-                    }
-                }
-
-                if (harvestsToRemove <= 0)
-                {
-                    isAlive = false;
-                    if (soil != null)
-                        soil.occupied = false;
-                    Destroy(gameObject);
-                }
-
-                //multiple times harvestable stuff
-                //  if (daysBetweenHarvets > 0)
-                //  {
-                //      UpdatePlantMat(PlantMaterial.Growing);
-                //      UpdatePlantMesh(PlantState.Growing);
-                //  }
-                //  else
-                //  {
-                //      UpdatePlantMat(PlantMaterial.Grown);
-                //      UpdatePlantMesh(PlantState.Grown);
-                //  }
-            }
+            //multiple times harvestable stuff
+            //  if (daysBetweenHarvets > 0)
+            //  {
+            //      UpdatePlantMat(PlantMaterial.Growing);
+            //      UpdatePlantMesh(PlantState.Growing);
+            //  }
+            //  else
+            //  {
+            //      UpdatePlantMat(PlantMaterial.Grown);
+            //      UpdatePlantMesh(PlantState.Grown);
+            //  }
         }
     }
+
 
     public void UpdatePlant(int ingameDay)
     {
@@ -482,5 +478,21 @@ public class Plant : MonoBehaviour
         }
         return false;
         //   return false;
+    }
+
+    public bool RainPlant(float water)
+    {
+        if (isAlive)
+        {
+            if (waterLevel < highWater)
+            {
+
+                waterLevel += water;
+                isWatered = true;
+                GetComponent<Renderer>().material.color = Color.green;
+                return true;
+            }
+        }
+        return false;
     }
 }

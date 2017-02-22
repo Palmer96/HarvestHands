@@ -12,6 +12,7 @@ public class PlayerInventory : MonoBehaviour
     //  public GameObject ItemHotbar;
     public GameObject ItemHotbar;
     public GameObject book;
+    public GameObject hand;
 
     public bool bookOpen;
 
@@ -85,8 +86,8 @@ public class PlayerInventory : MonoBehaviour
                     waterLevel.gameObject.SetActive(false);
 
             }
-                else
-                    waterLevel.gameObject.SetActive(false);
+            else
+                waterLevel.gameObject.SetActive(false);
 
 
             Hotkeys();
@@ -98,7 +99,7 @@ public class PlayerInventory : MonoBehaviour
                     bookOpen = false;
                     book.SetActive(false);
                     ShowObject(heldObjects[selectedItemNum]);
-                  //  selectedItemNum = oldnum;
+                    //  selectedItemNum = oldnum;
                     book.GetComponent<Blueprint>().ConstructionCancel();
                 }
                 else
@@ -467,9 +468,9 @@ public class PlayerInventory : MonoBehaviour
     void UpdateItemMesh()
     {
 
-        for (int i = 0; i < heldObjects.Count; i++)
-            if (heldObjects[i] != null)
-                HideObject(heldObjects[i]);
+        // for (int i = 0; i < heldObjects.Count; i++)
+        //     if (heldObjects[i] != null)
+        //         HideObject(heldObjects[i]);
 
 
         for (int i = 0; i < heldObjects.Count; i++)
@@ -477,10 +478,18 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[i] != null)
             {
                 if (i == selectedItemNum)
+                {
                     ShowObject(heldObjects[i]);
+                    HideObject(hand);
+                }
                 else
+                {
                     HideObject(heldObjects[i]);
+                }
             }
+            else
+                 if (i == selectedItemNum)
+                ShowObject(hand);
         }
     }
 

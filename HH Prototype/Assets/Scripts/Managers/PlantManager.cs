@@ -8,20 +8,32 @@ public class PlantManager : MonoBehaviour
     public List<Plant> plantList = new List<Plant>();
     public List<Soil> soilList = new List<Soil>();
 
-	// Use this for initialization
-	void Start ()
+    public float rainWater = 0.01f;
+
+    public bool isRaining = false;
+
+    // Use this for initialization
+    void Start()
     {
         if (instance == null)
             instance = this;
         else
             Destroy(this);
-	}
-	
-	// Update is called once per frame
-	void Update ()
+    }
+
+    // Update is called once per frame
+    void Update()
     {
-	
-	}
+        if (isRaining)
+        {
+            foreach (Plant plant in plantList)
+            {
+                if (plant == null)
+                    continue;
+                plant.RainPlant(rainWater);
+            }
+        }
+    }
 
     public void AddPlant(Plant plant)
     {
@@ -41,19 +53,24 @@ public class PlantManager : MonoBehaviour
                 continue;
 
             plant.TimeJump(time);
-            
+
         }
     }
 
     public void WaterPlants()
     {
+       
         foreach (Plant plant in plantList)
         {
             if (plant == null)
                 continue;
 
-          //  plant.WaterPlant();
+            //  plant.WaterPlant();
 
         }
+    }
+    public void Raining(bool rain)
+    {
+        isRaining = rain;
     }
 }

@@ -127,10 +127,13 @@ public class DayNightController : MonoBehaviour
             if (Random.Range(1, 5) == 1)
             {
                 Rain.SetActive(true);
-                //  PlantManager.instance.WaterPlants();
+                PlantManager.instance.Raining(true);
             }
             else
+            {
                 Rain.SetActive(false);
+                PlantManager.instance.Raining(false);
+            }
         }
     }
 
@@ -147,10 +150,13 @@ public class DayNightController : MonoBehaviour
         if (Random.Range(1, 5) == 1)
         {
             Rain.SetActive(true);
-            //    PlantManager.instance.WaterPlants();
+            PlantManager.instance.Raining(true);
         }
         else
+        {
             Rain.SetActive(false);
+            PlantManager.instance.Raining(false);
+        }
     }
 
 
