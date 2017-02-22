@@ -103,7 +103,7 @@ public class PlayerInventory : MonoBehaviour
                 {
                     bookOpen = true;
                     book.SetActive(true);
-                    selectedItemNum = 10;
+                  //  selectedItemNum = 10;
                 }
             }
 

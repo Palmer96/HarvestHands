@@ -72,6 +72,8 @@ public class Plant : MonoBehaviour
 
     bool particleCreated = false;
 
+    public float deathTimer = 1;
+    public float deathTimerRate = 1;
     // Use this for initialization
     void Start()
     {
@@ -83,7 +85,7 @@ public class Plant : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isAlive)
+        if (isAlive && !readyToHarvest)
         {
         harvestTimer -= DayNightController.instance.timePast;
 
