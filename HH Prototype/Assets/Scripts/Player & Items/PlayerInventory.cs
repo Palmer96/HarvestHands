@@ -56,6 +56,7 @@ public class PlayerInventory : MonoBehaviour
         {
             itemText[i] = ItemHotbar.transform.GetChild(i).GetComponent<Text>();
         }
+
     }
 
 
@@ -96,14 +97,15 @@ public class PlayerInventory : MonoBehaviour
                 {
                     bookOpen = false;
                     book.SetActive(false);
-                    selectedItemNum = oldnum;
+                    ShowObject(heldObjects[selectedItemNum]);
+                  //  selectedItemNum = oldnum;
                     book.GetComponent<Blueprint>().ConstructionCancel();
                 }
                 else
                 {
                     bookOpen = true;
                     book.SetActive(true);
-                  //  selectedItemNum = 10;
+                    HideObject(heldObjects[selectedItemNum]);
                 }
             }
 

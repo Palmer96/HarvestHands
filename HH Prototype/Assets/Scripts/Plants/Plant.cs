@@ -133,6 +133,13 @@ public class Plant : MonoBehaviour
 
             UpdatePlants();
         }
+        else
+        {
+
+        }
+
+
+
         if (highlighted)
         {
             highlighted = false;

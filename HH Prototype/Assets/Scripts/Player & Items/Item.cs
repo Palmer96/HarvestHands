@@ -69,6 +69,7 @@ public class Item : MonoBehaviour
                 singleMaterial = GetComponent<MeshRenderer>().material;
             if (multiMaterial == null)
                 multiMaterial = GetComponent<MeshRenderer>().material;
+        UpdateMesh();
         }
 
         if (itemCap == 0)
@@ -78,7 +79,6 @@ public class Item : MonoBehaviour
 
 
 
-        UpdateMesh();
     }
 
     public virtual void PrimaryUse()
@@ -140,6 +140,13 @@ public class Item : MonoBehaviour
 
     public virtual void UpdateMesh()
     {
+        bool colliderEnabled = false;
+
+        if (GetComponent<MeshCollider>() != null)
+        {
+            colliderEnabled = GetComponent<MeshCollider>().enabled;
+            GetComponent<MeshCollider>().enabled = true;
+        }
         if (!dontUpdate)
         {
             if (quantity > 1)
@@ -156,6 +163,8 @@ public class Item : MonoBehaviour
                 if (GetComponent<MeshCollider>() != null)
                     GetComponent<MeshCollider>().sharedMesh = singleMesh;
             }
+            if (GetComponent<MeshCollider>() != null)
+                GetComponent<MeshCollider>().enabled = colliderEnabled;
         }
     }
 
@@ -165,7 +174,7 @@ public class Item : MonoBehaviour
 
         UpdateMesh();
 
-        GetComponent<Collider>().enabled = false;
+     //   GetComponent<Collider>().enabled = false;
     }
 
     public virtual void IncreaseQuantity(int amount)
@@ -174,7 +183,7 @@ public class Item : MonoBehaviour
 
         UpdateMesh();
 
-        GetComponent<Collider>().enabled = false;
+      //  GetComponent<Collider>().enabled = false;
     }
 
     public virtual void DecreaseQuantity()
@@ -184,7 +193,7 @@ public class Item : MonoBehaviour
         {
             UpdateMesh();
 
-            GetComponent<Collider>().enabled = false;
+    //        GetComponent<Collider>().enabled = false;
         }
 
         if (quantity < 0)
@@ -200,7 +209,7 @@ public class Item : MonoBehaviour
         {
             UpdateMesh();
 
-            GetComponent<Collider>().enabled = false;
+        //    GetComponent<Collider>().enabled = false;
         }
 
         if (quantity < 0)
