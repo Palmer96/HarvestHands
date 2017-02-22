@@ -6,29 +6,53 @@ using Random = UnityEngine.Random;
 
 namespace UnityStandardAssets.Characters.FirstPerson
 {
-    [RequireComponent(typeof (CharacterController))]
-    [RequireComponent(typeof (AudioSource))]
+    [RequireComponent(typeof(CharacterController))]
+    [RequireComponent(typeof(AudioSource))]
     public class FirstPersonController : MonoBehaviour
     {
-        [SerializeField] private bool m_IsWalking;
-        [SerializeField] private float m_WalkSpeed;
-        [SerializeField] private float m_RunSpeed;
-        [SerializeField] [Range(0f, 1f)] private float m_RunstepLenghten;
-        [SerializeField] private float m_JumpSpeed;
-        [SerializeField] private float m_StickToGroundForce;
-        [SerializeField] private float m_GravityMultiplier;
-        [SerializeField] private MouseLook m_MouseLook;
-        [SerializeField] private bool m_UseFovKick;
-        [SerializeField] private FOVKick m_FovKick = new FOVKick();
-        [SerializeField] private bool m_UseHeadBob;
-        [SerializeField] private CurveControlledBob m_HeadBob = new CurveControlledBob();
-        [SerializeField] private LerpControlledBob m_JumpBob = new LerpControlledBob();
-        [SerializeField] private float m_StepInterval;
-        [SerializeField] private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
-        [SerializeField] private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
-        [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
-        private Camera m_Camera;
+        public bool swimming;
+        [SerializeField]
+        private bool swim;
+
+        private bool onGround;
+        [SerializeField]
+        private bool m_IsWalking;
+        [SerializeField]
+        private float m_WalkSpeed;
+        [SerializeField]
+        private float m_RunSpeed;
+        [SerializeField]
+        [Range(0f, 1f)]
+        private float m_RunstepLenghten;
+        [SerializeField]
+        private float m_JumpSpeed;
+        [SerializeField]
+        private float m_StickToGroundForce;
+        [SerializeField]
+        private float m_GravityMultiplier;
+        [SerializeField]
+        private MouseLook m_MouseLook;
+        [SerializeField]
+        private bool m_UseFovKick;
+        [SerializeField]
+        private FOVKick m_FovKick = new FOVKick();
+        [SerializeField]
+        private bool m_UseHeadBob;
+        [SerializeField]
+        private CurveControlledBob m_HeadBob = new CurveControlledBob();
+        [SerializeField]
+        private LerpControlledBob m_JumpBob = new LerpControlledBob();
+        [SerializeField]
+        private float m_StepInterval;
+        [SerializeField]
+        private AudioClip[] m_FootstepSounds;    // an array of footstep sounds that will be randomly selected from.
+        [SerializeField]
+        private AudioClip m_JumpSound;           // the sound played when character leaves the ground.
+        [SerializeField]
+        private AudioClip m_LandSound;           // the sound played when character touches back on ground.
+
+        public Camera m_Camera;
         private bool m_Jump;
         private float m_YRotation;
         private Vector2 m_Input;
@@ -40,7 +64,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private float m_StepCycle;
         private float m_NextStep;
         private bool m_Jumping;
-        private AudioSource m_AudioSource;
+        //  private AudioSource m_AudioSource;
+
 
         // Use this for initialization
         private void Start()
@@ -51,43 +76,54 @@ namespace UnityStandardAssets.Characters.FirstPerson
             m_FovKick.Setup(m_Camera);
             m_HeadBob.Setup(m_Camera, m_StepInterval);
             m_StepCycle = 0f;
-            m_NextStep = m_StepCycle/2f;
+            m_NextStep = m_StepCycle / 2f;
             m_Jumping = false;
-            m_AudioSource = GetComponent<AudioSource>();
-			m_MouseLook.Init(transform , m_Camera.transform);
+            //     m_AudioSource = GetComponent<AudioSource>();
+            m_MouseLook.Init(transform, m_Camera.transform);
         }
 
 
         // Update is called once per frame
         private void Update()
         {
+
             RotateView();
+            if (swimming)
+                onGround = true;
+            else
+                onGround = m_CharacterController.isGrounded;
+
             // the jump state needs to read here to make sure it is not missed
-            if (!m_Jump)
+
+            if (!m_Jump && onGround)
             {
-                m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+                if (swimming)
+                    m_Jump = CrossPlatformInputManager.GetButton("Jump");
+                else
+                    m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
             }
 
-            if (!m_PreviouslyGrounded && m_CharacterController.isGrounded)
+            if (!m_PreviouslyGrounded && onGround)
             {
-                StartCoroutine(m_JumpBob.DoBobCycle());
+                if (!swimming)
+                    StartCoroutine(m_JumpBob.DoBobCycle());
                 PlayLandingSound();
                 m_MoveDir.y = 0f;
                 m_Jumping = false;
             }
-            if (!m_CharacterController.isGrounded && !m_Jumping && m_PreviouslyGrounded)
+            if (!onGround && !m_Jumping && m_PreviouslyGrounded)
             {
                 m_MoveDir.y = 0f;
             }
 
-            m_PreviouslyGrounded = m_CharacterController.isGrounded;
+            m_PreviouslyGrounded = onGround;
         }
 
 
         private void PlayLandingSound()
         {
-            m_AudioSource.clip = m_LandSound;
-            m_AudioSource.Play();
+            //   m_AudioSource.clip = m_LandSound;
+            //    m_AudioSource.Play();
             m_NextStep = m_StepCycle + .5f;
         }
 
@@ -97,25 +133,27 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float speed;
             GetInput(out speed);
             // always move along the camera forward as it is the direction that it being aimed at
-            Vector3 desiredMove = transform.forward*m_Input.y + transform.right*m_Input.x;
+            Vector3 desiredMove = transform.forward * m_Input.y + transform.right * m_Input.x;
 
             // get a normal for the surface that is being touched to move along it
             RaycastHit hitInfo;
             Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
-                               m_CharacterController.height/2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                               m_CharacterController.height / 2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
             desiredMove = Vector3.ProjectOnPlane(desiredMove, hitInfo.normal).normalized;
 
-            m_MoveDir.x = desiredMove.x*speed;
-            m_MoveDir.z = desiredMove.z*speed;
+            m_MoveDir.x = desiredMove.x * speed;
+            m_MoveDir.z = desiredMove.z * speed;
 
 
-            if (m_CharacterController.isGrounded)
+            if (onGround)
             {
                 m_MoveDir.y = -m_StickToGroundForce;
 
                 if (m_Jump)
                 {
+
                     m_MoveDir.y = m_JumpSpeed;
+
                     PlayJumpSound();
                     m_Jump = false;
                     m_Jumping = true;
@@ -123,9 +161,13 @@ namespace UnityStandardAssets.Characters.FirstPerson
             }
             else
             {
-                m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
+                m_MoveDir += Physics.gravity * m_GravityMultiplier * Time.fixedDeltaTime;
             }
-            m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
+
+            if (swimming)
+                m_CollisionFlags = m_CharacterController.Move(m_MoveDir / 4 * Time.fixedDeltaTime);
+            else
+                m_CollisionFlags = m_CharacterController.Move(m_MoveDir * Time.fixedDeltaTime);
 
             ProgressStepCycle(speed);
             UpdateCameraPosition(speed);
@@ -136,8 +178,8 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void PlayJumpSound()
         {
-            m_AudioSource.clip = m_JumpSound;
-            m_AudioSource.Play();
+            //     m_AudioSource.clip = m_JumpSound;
+            //     m_AudioSource.Play();
         }
 
 
@@ -145,7 +187,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             if (m_CharacterController.velocity.sqrMagnitude > 0 && (m_Input.x != 0 || m_Input.y != 0))
             {
-                m_StepCycle += (m_CharacterController.velocity.magnitude + (speed*(m_IsWalking ? 1f : m_RunstepLenghten)))*
+                m_StepCycle += (m_CharacterController.velocity.magnitude + (speed * (m_IsWalking ? 1f : m_RunstepLenghten))) *
                              Time.fixedDeltaTime;
             }
 
@@ -162,18 +204,18 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void PlayFootStepAudio()
         {
-            if (!m_CharacterController.isGrounded)
+            if (!onGround)
             {
                 return;
             }
             // pick & play a random footstep sound from the array,
             // excluding sound at index 0
-            int n = Random.Range(1, m_FootstepSounds.Length);
-            m_AudioSource.clip = m_FootstepSounds[n];
-            m_AudioSource.PlayOneShot(m_AudioSource.clip);
+            //    int n = Random.Range(1, m_FootstepSounds.Length);
+            //   m_AudioSource.clip = m_FootstepSounds[n];
+            //    m_AudioSource.PlayOneShot(m_AudioSource.clip);
             // move picked sound to index 0 so it's not picked next time
-            m_FootstepSounds[n] = m_FootstepSounds[0];
-            m_FootstepSounds[0] = m_AudioSource.clip;
+            //    m_FootstepSounds[n] = m_FootstepSounds[0];
+            //    m_FootstepSounds[0] = m_AudioSource.clip;
         }
 
 
@@ -184,18 +226,20 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
-            if (m_CharacterController.velocity.magnitude > 0 && m_CharacterController.isGrounded)
+            if (m_CharacterController.velocity.magnitude > 0 && onGround)
             {
                 m_Camera.transform.localPosition =
                     m_HeadBob.DoHeadBob(m_CharacterController.velocity.magnitude +
-                                      (speed*(m_IsWalking ? 1f : m_RunstepLenghten)));
+                                      (speed * (m_IsWalking ? 1f : m_RunstepLenghten)));
                 newCameraPosition = m_Camera.transform.localPosition;
-                newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
+                if (!swimming)
+                    newCameraPosition.y = m_Camera.transform.localPosition.y - m_JumpBob.Offset();
             }
             else
             {
                 newCameraPosition = m_Camera.transform.localPosition;
-                newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+                if (!swimming)
+                    newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
             }
             m_Camera.transform.localPosition = newCameraPosition;
         }
@@ -236,7 +280,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
 
         private void RotateView()
         {
-            m_MouseLook.LookRotation (transform, m_Camera.transform);
+            m_MouseLook.LookRotation(transform, m_Camera.transform);
         }
 
 
@@ -253,7 +297,27 @@ namespace UnityStandardAssets.Characters.FirstPerson
             {
                 return;
             }
-            body.AddForceAtPosition(m_CharacterController.velocity*0.1f, hit.point, ForceMode.Impulse);
+            body.AddForceAtPosition(m_CharacterController.velocity * 0.1f, hit.point, ForceMode.Impulse);
+        }
+
+        void OnTriggerStay(Collider col)
+        {
+            if (col.transform.CompareTag("WaterSource"))
+            {
+                swimming = true;
+            }
+        }
+
+        void OnTriggerExit(Collider col)
+        {
+            if (col.transform.CompareTag("WaterSource"))
+            {
+                swimming = false;
+                m_Jumping = true;
+                m_PreviouslyGrounded = false;
+
+                m_MoveDir.y = m_JumpSpeed / 3;
+            }
         }
     }
 }
