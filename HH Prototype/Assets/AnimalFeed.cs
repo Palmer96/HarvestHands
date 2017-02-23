@@ -26,11 +26,19 @@ public class AnimalFeed : Item
         UpdateMesh();
     }
 
+    public override void PrimaryUse(ClickType click)
+    {
+        if (click == Item.ClickType.Single)
+            PrimaryUse();
+    }
+
     public override void PrimaryUse()
     {
+        Debug.Log("Inside animal feed use"); 
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
+            Debug.Log("Inside hit");
             if (hit.transform.CompareTag("Livestock"))
             {
                 quantity--;
