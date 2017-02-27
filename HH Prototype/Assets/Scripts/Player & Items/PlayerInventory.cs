@@ -38,6 +38,10 @@ public class PlayerInventory : MonoBehaviour
 
 
     private float clickTimer;
+    private float qTimer;
+    private float eTimer;
+
+    public Image holdSlider;
 
     public Slider waterLevel;
     // Use this for initialization
@@ -89,45 +93,31 @@ public class PlayerInventory : MonoBehaviour
             else
                 waterLevel.gameObject.SetActive(false);
 
-
             Hotkeys();
 
-            // if (Input.GetKeyDown(KeyCode.B))
-            // {
-            //     if (bookOpen)
-            //     {
-            //         bookOpen = false;
-            //         book.SetActive(false);
-            //         ShowObject(heldObjects[selectedItemNum]);
-            //         //  selectedItemNum = oldnum;
-            //         book.GetComponent<Blueprint>().ConstructionCancel();
-            //     }
-            //     else
-            //     {
-            //         bookOpen = true;
-            //         book.SetActive(true);
-            //         HideObject(heldObjects[selectedItemNum]);
-            //     }
-            // }
-
-             if (!bookOpen)
+            if (!bookOpen)
             {
                 UpdateInventory();
 
-
-                if (Input.GetKey(KeyCode.Q)) // Drop
+                if (heldObjects[selectedItemNum] != null)
                 {
-                    clickTimer += Time.deltaTime;
-
-                    if (clickTimer > 0.5f)
+                    if (Input.GetKey(KeyCode.Q)) // Drop
                     {
-                        DropAllofItem();
+                        qTimer += Time.deltaTime;
+                        holdSlider.fillAmount = qTimer * 2;
+                        if (qTimer > 0.5f)
+                        {
+                            qTimer = 0;
+                            holdSlider.fillAmount = qTimer * 2;
+                            DropAllofItem();
+                        }
                     }
-                }
-                if (Input.GetKeyUp(KeyCode.Q))
-                {
-                    clickTimer = 0;
-                    RemoveItem();
+                    if (Input.GetKeyUp(KeyCode.Q))
+                    {
+                        qTimer = 0;
+                        holdSlider.fillAmount = qTimer * 2;
+                        RemoveItem();
+                    }
                 }
 
 
@@ -161,9 +151,8 @@ public class PlayerInventory : MonoBehaviour
                 }
 
 
-                if (Input.GetKeyDown(KeyCode.E)) // Interact
+                if (Input.GetKey(KeyCode.E)) // Interact
                 {
-                    //     hit;
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
                     if (Physics.Raycast(ray, out hit, 5))
@@ -171,67 +160,96 @@ public class PlayerInventory : MonoBehaviour
                         switch (hit.transform.tag)
                         {
                             case "StoreItem":
-                                hit.transform.GetComponent<StoreItem>().BuyObject();
+                                if (hit.transform.GetComponent<StoreItem>().price <= money)
+                                    eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer * 2;
+
+                                if (eTimer > 0.5f)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = eTimer * 2;
+                                    hit.transform.GetComponent<StoreItem>().BuyObject();/////
+
+                                }
                                 break;
                             case "Bed":
-                                DayNightController.instance.BedDayJump();
+                                eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer * 2;
+
+                                if (eTimer > 0.5f)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = eTimer * 2;
+                                    DayNightController.instance.BedDayJump();
+                                }
+                                break;
+                            case "Item":
+                                //  eTimer += Time.deltaTime;
+                                //  holdSlider.fillAmount = eTimer * 2;
+
+                                //if (eTimer > 0.5f)
+                                //{
+                                //    eTimer = 0;
+                                //    holdSlider.fillAmount = eTimer * 2;
+                                AddItem(hit.transform.gameObject);
+                                //}
                                 break;
                         }
                     }
+                    else
+                    {
+                        eTimer = 0;
+                        holdSlider.fillAmount = eTimer * 2;
+                    }
                 }
-                if (Input.GetKey(KeyCode.E)) // Interact
+                if (Input.GetKeyUp(KeyCode.E))
                 {
-                    //     hit;
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                    eTimer = 0;
+                    holdSlider.fillAmount = eTimer * 2;
+                }
 
-                    if (Physics.Raycast(ray, out hit, 5))
-                    {
-                        if (hit.transform.CompareTag("Item"))
-                            AddItem(hit.transform.gameObject);
-                    }
-                }
-
-                if (Input.GetMouseButtonDown(0)) // Primary Use
+                if (Input.GetMouseButton(0)) // Drop
                 {
-                    if (heldObjects[selectedItemNum] != null)
+                    clickTimer += Time.deltaTime;
+                    holdSlider.fillAmount = clickTimer * 2;
+                    if (clickTimer > 0.5f)
                     {
-                        heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                        if (heldObjects[selectedItemNum] != null)
+                        {
+                            clickTimer = 0;
+                            holdSlider.fillAmount = clickTimer * 2;
+                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                        }
                     }
                 }
-                else if (Input.GetMouseButton(0)) // Primary Use
+                if (Input.GetMouseButtonUp(0))
                 {
-                    if (heldObjects[selectedItemNum] != null)
+                    if (clickTimer < 0.5)
                     {
-                        heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                        if (heldObjects[selectedItemNum] != null)
+                        {
+                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                        }
                     }
+                    holdSlider.fillAmount = 0;
+                    clickTimer = 0;
                 }
-                // if (Input.GetMouseButton(1)) // Pickup
-                // {
-                //     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-                //
-                //     if (Physics.Raycast(ray, out hit, 5))
-                //     {
-                //         if (hit.transform.CompareTag("Item"))
-                //             AddItem(hit.transform.gameObject);
-                //     }
-                // }
             }
-           else
-           {
-              //  Blueprint.instance.ChangeSelect();
-
+            else
+            {
                 if (Input.GetMouseButtonDown(0)) // Primary Use
                 {
                     Blueprint.instance.PrimaryUse();
+                    bookOpen = false;
                 }
                 if (Input.GetMouseButtonDown(1)) // Pickup
                 {
                     Blueprint.instance.SecondaryUse();
+                    bookOpen = false;
                 }
             }
         }
     }
-
     public bool AddItem(GameObject item)
     {
         for (int i = 0; i < heldObjects.Count; i++)
@@ -629,3 +647,88 @@ public class PlayerInventory : MonoBehaviour
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+////////////////////////////_████████__██████  //////////////////////////
+//////////////////////////_█░░░░░░░░██_██░░░░░░█/////////////////////////
+//////////////////////////█░░░░░░░░░░░█░░░░░░░░░█////////////////////////
+/////////////////////////█░░░░░░░███░░░█░░░░░░░░░█///////////////////////
+/////////////////////////█░░░░███░░░███░█░░░████░█///////////////////////
+////////////////////////█░░░██░░░░░░░░███░██░░░░██///////////////////////
+///////////////////////█░░░░░░░░░░░░░░░░░█░░░░░░░░███////////////////////
+//////////////////////█░░░░░░░░░░░░░██████░░░░░████░░█///////////////////
+//////////////////////█░░░░░░░░░█████░░░████░░██░░██░░█//////////////////
+/////////////////////██░░░░░░░███░░░░░░░░░░█░░░░░░░░███//////////////////
+///////////////////_█░░░░░░░░░░░░░░█████████░░█████████//////////////////
+//////////////////█░░░░░░░░░░█████_████████_█████_█//////////////////////
+//////////////////█░░░░░░░░░░█___█_████___███_█_█////////////////////////
+//////////////////█░░░░░░░░░░░░█_████_████__██_██████ ///////////////////
+//////////////////░░░░░░░░░░░░░█████████░░░████████░░░█//////////////////
+//////////////////░░░░░░░░░░░░░░░░█░░░░░█░░░░░░░░░░░░█///////////////////
+//////////////////░░░░░░░░░░░░░░░░░░░░██░░░░█░░░░░░██////////////////////
+//////////////////░░░░░░░░░░░░░░░░░░██░░░░░░░███████/////////////////////
+//////////////////░░░░░░░░░░░░░░░░██░░░░░░░░░░█░░░░░█////////////////////
+//////////////////░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█///////////////////
+//////////////////░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█///////////////////
+//////////////////░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█///////////////////
+//////////////////░░░░░░░░░░░█████████░░░░░░░░░░░░░░██///////////////////
+//////////////////░░░░░░░░░░█▒▒▒▒▒▒▒▒███████████████▒▒█//////////////////
+//////////////////░░░░░░░░░█▒▒███████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█//////////////////
+//////////////////░░░░░░░░░█▒▒▒▒▒▒▒▒▒█████████████████ //////////////////
+//////////////////░░░░░░░░░░████████▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒█//////////////////
+//////////////////░░░░░░░░░░░░░░░░░░██████████████████///////////////////
+//////////////////░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░█///////////////////////
+//////////////////██░░░░░░░░░░░░░░░░░░░░░░░░░░░██ ///////////////////////
+//////////////////▓██░░░░░░░░░░░░░░░░░░░░░░░░██//////////////////////////
+//////////////////▓▓▓███░░░░░░░░░░░░░░░░░░░░█////////////////////////////
+//////////////////▓▓▓▓▓▓███░░░░░░░░░░░░░░░██/////////////////////////////
+//////////////////▓▓▓▓▓▓▓▓▓███████████████▓▓█////////////////////////////
+//////////////////▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓██//////////////////////////
+//////////////////▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█//////////////////////////
+//////////////////▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓█/////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+
+    
+
+
+//-----------------------------------------MMMMMMMMM
+//---------_______________________---------MMMMMMMMM
+//---------| Goblin Hammer Games |---------MMMMMMMMM
+//---------|    Harvest Hands    |---------MMMMMMMMM
+//---------_______________________---------MMMMMMMMM
+//---------_______________________---------MMMMMMMMM
+//---------|    Last Modified    |---------MMMMMMMMM
+//---------|      27/2/2017      |---------MMMMMMMMM
+//---------|         By          |---------MMMMMMMMM
+//---------|    Kayne Palmer     |---------MMMMMMMMM
+//---------_______________________---------MMMMMMMMM
+//-----------------------------------------MMMMMMMMM
+
+

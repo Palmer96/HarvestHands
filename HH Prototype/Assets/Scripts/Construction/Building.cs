@@ -6,7 +6,6 @@ public class Building : MonoBehaviour
     public enum ResourceType
     {
         Wood,
-        Water,
         Rock,
         Dirt
     }
@@ -32,24 +31,10 @@ public class Building : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        int count = 0;
-        for (int i = 0; i < resources.Length; i++)
-        {
-            if (resources[i].numHave >= resources[i].numRequired)
-            {
-                count++;
-            }
-        }
-        if (resources.Length == count)
-        {
-            Build();
-        }
-
         text.text = GetText();
     }
 
-
-   public void AddResource(GameObject item)
+    public void AddResource(GameObject item)
     {
         for (int i = 0; i < resources.Length; i++)
         {
@@ -81,40 +66,31 @@ public class Building : MonoBehaviour
 
     void OnCollisionEnter(Collision col)
     {
-        for (int i = 0; i < resources.Length; i++)
-        {
-            if (col.transform.GetComponent<Item>() != null)
-            {
-                if (col.transform.GetComponent<Item>().itemName == resources[i].resource.ToString())
-                {
-                    if (resources[i].numRequired > resources[i].numHave)
-                    {
-                        int num = resources[i].numRequired - resources[i].numHave;
-
-                        if (num < col.transform.GetComponent<Item>().quantity)
-                        {
-                        resources[i].numHave += num;
-                        col.transform.GetComponent<Item>().DecreaseQuantity(num);
-                        }
-                        else
-                        {
-                            resources[i].numHave += col.transform.GetComponent<Item>().quantity;
-                            col.transform.GetComponent<Item>().DecreaseQuantity(col.transform.GetComponent<Item>().quantity);
-                        Destroy(col.gameObject);
-                        }
-
-                    }
-                }
-            }
-        }
+        AddResource(col.gameObject);
     }
 
-    void Build()
+
+    public void Build()
     {
-        Instantiate(builtVersion, transform.position, transform.rotation);
-        EventManager.ConstructEvent(constructName);
-        Debug.Log("Construcing event - passing in = " + constructName);
-        Destroy(gameObject);
+        int count = 0;
+        for (int i = 0; i < resources.Length; i++)
+        {
+            if (resources[i].numHave >= resources[i].numRequired)
+            {
+                count++;
+            }
+        }
+        if (resources.Length == count)
+        {
+            GameObject build = Instantiate(builtVersion, transform.position, transform.rotation);
+            build.tag = "Built";
+            EventManager.ConstructEvent(constructName);
+            Debug.Log("Construcing event - passing in = " + constructName);
+            Destroy(gameObject);
+        }
+
+
+
     }
 
     public string GetText()
@@ -124,6 +100,28 @@ public class Building : MonoBehaviour
         {
             line += resources[i].resource + ": " + resources[i].numHave.ToString() + "/" + resources[i].numRequired.ToString() + "\n";
         }
-   return line;
+        return line;
+    }
+
+    public void Deconstruct()
+    {
+        for (int i = 0; i < resources.Length; i++)
+        {
+            for (int j = 0; j < resources[i].numHave; j++)
+            {
+                //   Debug.Log
+                Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
+
+                GameObject obj = ResourceManager.instance.GetResource(resources[i].resource.ToString());
+                if (obj != null)
+                {
+                    // if (PlayerInventory.instance.AddItem(obj))
+                    Instantiate(obj, transform.position + transform.up * 2, transform.rotation);
+                }
+                else
+                    Debug.Log("Fail");
+            }
+        }
+        Destroy(gameObject);
     }
 }

@@ -50,11 +50,4 @@ public class AnimalFeed : Item
             PlayerInventory.instance.DestroyItem();
         }
     }
-
-    public override void SecondaryUse()
-    {
-        
-    }
-
-
 }

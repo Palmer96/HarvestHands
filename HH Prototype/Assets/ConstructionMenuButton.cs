@@ -38,17 +38,19 @@ public class ConstructionMenuButton : ScrollMenuButton
         else
             recipeName = recipe.constructName;
 
-        foreach (Building.ResourceRequired requirement in recipe.selfObject.GetComponent<Building>().resources)
+        for (int i = 0; i < recipe.selfObject.GetComponent<Building>().resources.Length; i++)
         {
-            //recipeResources += requirement.numRequired + Building.EnumToString(requirement.resource) + ", ";
-            recipeResources += requirement.numRequired + requirement.resource.ToString() + ", ";
+            recipeResources += recipe.selfObject.GetComponent<Building>().resources[i].numRequired + " " + recipe.selfObject.GetComponent<Building>().resources[i].resource.ToString();
+            if (i < recipe.selfObject.GetComponent<Building>().resources.Length-1)
+                recipeResources += ", ";
         }
+        
         //Display list prefab thing
         Debug.Log("nameText.text = recipe name, recipename == " + recipeName);
         nameText.text = recipeName;
         requirementText.text = recipeResources;
-        nameText.color = CraftingMenu.instance.canMakeColor;
-        requirementText.color = CraftingMenu.instance.sufficientResourceColour;
+        nameText.color = ConstructionMenu.instance.canMakeColor;
+        requirementText.color = ConstructionMenu.instance.sufficientResourceColour;
         
     }
 

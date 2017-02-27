@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Axe : Item
+public class Hammer : Item
 {
 
     public int level = 1;
-    public GameObject wood;
 
     // Use this for initialization
     void Start()
@@ -35,41 +34,41 @@ public class Axe : Item
             case ClickType.Single:
                 ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                //Debug.Log("Axe");
+                Debug.Log("Hammer");
                 if (Physics.Raycast(ray, out hit, rayMaxDist))
                 {
-                    if (hit.transform.CompareTag("Tree"))
+                    if (hit.transform.CompareTag("Building"))
                     {
+                        Debug.Log("Building");
                         used = true;
                         useTimer = useRate;
-                        hit.transform.GetComponent<Tree>().Harvest();
-                        if (level > 1)
-                            hit.transform.GetComponent<Tree>().Harvest();
-                        if (level > 2)
-                            hit.transform.GetComponent<Tree>().Harvest();
-                        //    Instantiate(wood, hit.point, transform.rotation);
+                        hit.transform.GetComponent<Building>().Build();
                     }
                 }
                 break;
 
             case ClickType.Hold:
-             //   if (!used)
+                // if (!used)
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                    //Debug.Log("Axe");
+                    Debug.Log("Hammer");
                     if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
-                        if (hit.transform.CompareTag("Tree"))
+                        switch (hit.transform.tag)
                         {
-                            used = true;
-                            useTimer = useRate;
-                            hit.transform.GetComponent<Tree>().Harvest();
-                            if (level > 1)
-                                hit.transform.GetComponent<Tree>().Harvest();
-                            if (level > 2)
-                                hit.transform.GetComponent<Tree>().Harvest();
-                            //    Instantiate(wood, hit.point, transform.rotation);
+                            case "BUilding":
+                                used = true;
+                                useTimer = useRate;
+                                hit.transform.GetComponent<Building>().Deconstruct();
+                                break;
+                            case "Built":
+                                Destroy(hit.transform.gameObject);
+                                break;
+                        }
+                        if (hit.transform.CompareTag("Building"))
+                        {
+
                         }
                     }
                 }

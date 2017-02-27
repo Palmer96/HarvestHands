@@ -45,10 +45,16 @@ public class CraftingMenuButton : ScrollMenuButton
             recipeName = recipe.recipeName;
         bool hasResource = true;
 
-        foreach (CraftingManager.ResourceRequirement requirement in recipe.requiredItems)
+
+        for (int i = 0; i < recipe.requiredItems.Count; i++)
         {
             int haveAmount = 0;
-            recipeResources += requirement.numRequired + requirement.resourceName + ", ";
+
+            recipeResources += recipe.requiredItems[i].numRequired + " " + recipe.requiredItems[i].resourceName.ToString();
+            if (i < recipe.requiredItems.Count - 1)
+                recipeResources += ", ";
+    
+          //  recipeResources += requirement.numRequired + requirement.resourceName + ", ";
 
             foreach (GameObject heldItem in PlayerInventory.instance.heldObjects)
             {
@@ -57,15 +63,15 @@ public class CraftingMenuButton : ScrollMenuButton
                 Item item = heldItem.GetComponent<Item>();
                 if (item == null)
                     continue;
-                if (item.itemName == requirement.resourceName)
+                if (item.itemName == recipe.requiredItems[i].resourceName)
                 {
                     haveAmount += item.quantity;
 
-                    if (haveAmount >= requirement.numRequired)
+                    if (haveAmount >= recipe.requiredItems[i].numRequired)
                         break;
                 }
             }
-            if (haveAmount < requirement.numRequired)
+            if (haveAmount < recipe.requiredItems[i].numRequired)
                 hasResource = false;
 
         }

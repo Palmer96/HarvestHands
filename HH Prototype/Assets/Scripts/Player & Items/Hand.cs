@@ -38,7 +38,7 @@ public class Hand : Item
         }
     }
 
-    public override void SecondaryUse()
+    public void SecondaryUse()
     {
         Throw();
     }

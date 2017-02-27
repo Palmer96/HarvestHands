@@ -41,24 +41,6 @@ public class Item : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //   if (GetComponent<MeshFilter>().mesh != null)
-        //       ownMesh = GetComponent<MeshFilter>();
-        //   if (ownMesh == null)
-        //       if (transform.childCount > 0)
-        //           ownMesh = transform.GetChild(0).GetComponent<MeshFilter>();
-        //
-        //   if (GetComponent<MeshRenderer>().material != null)
-        //       ownMaterial = GetComponent<MeshRenderer>().material;
-        //   if (ownMaterial == null)
-        //       if (transform.childCount > 0)
-        //           ownMaterial = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-        //
-        //   if (GetComponent<MeshCollider>() != null)
-        //       ownMeshCollider = GetComponent<MeshCollider>();
-        //   if (ownMeshCollider == null)
-        //       if (transform.childCount > 0)
-        //           ownMeshCollider = transform.GetChild(0).GetComponent<MeshCollider>();
-
         if (!dontUpdate)
         {
             if (singleMesh == null)
@@ -69,25 +51,19 @@ public class Item : MonoBehaviour
                 singleMaterial = GetComponent<MeshRenderer>().material;
             if (multiMaterial == null)
                 multiMaterial = GetComponent<MeshRenderer>().material;
-        UpdateMesh();
-        }
 
+            UpdateMesh();
+        }
         if (itemCap == 0)
         {
             itemCap = 20;
         }
-
-
-
     }
 
     public virtual void PrimaryUse()
     {
-
-        Debug.Log("Use Item");
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-        Debug.Log("Axe");
         if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
             if (hit.transform.CompareTag("Building"))
@@ -95,12 +71,10 @@ public class Item : MonoBehaviour
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
         }
-
     }
 
     public virtual void PrimaryUse(ClickType click)
     {
-
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
         if (Physics.Raycast(ray, out hit, rayMaxDist))
@@ -110,7 +84,6 @@ public class Item : MonoBehaviour
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
         }
-
     }
 
     public virtual void PrimaryUse(GameObject gameObj)
@@ -125,18 +98,6 @@ public class Item : MonoBehaviour
             }
         }
     }
-
-    public virtual void SecondaryUse()
-    {
-        Debug.Log("Use Item");
-    }
-
-    public virtual void SecondaryUse(GameObject gameObj)
-    {
-        Debug.Log("Use Item");
-    }
-
-
 
     public virtual void UpdateMesh()
     {
@@ -171,19 +132,13 @@ public class Item : MonoBehaviour
     public virtual void IncreaseQuantity()
     {
         quantity++;
-
         UpdateMesh();
-
-     //   GetComponent<Collider>().enabled = false;
     }
 
     public virtual void IncreaseQuantity(int amount)
     {
         quantity += amount;
-
         UpdateMesh();
-
-      //  GetComponent<Collider>().enabled = false;
     }
 
     public virtual void DecreaseQuantity()
@@ -192,8 +147,6 @@ public class Item : MonoBehaviour
         if (quantity == 1)
         {
             UpdateMesh();
-
-    //        GetComponent<Collider>().enabled = false;
         }
 
         if (quantity < 0)
@@ -208,8 +161,6 @@ public class Item : MonoBehaviour
         if (quantity == 1)
         {
             UpdateMesh();
-
-        //    GetComponent<Collider>().enabled = false;
         }
 
         if (quantity < 0)

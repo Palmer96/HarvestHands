@@ -94,7 +94,7 @@ public class ConstructionMenu : ScrollMenu
             Debug.Log("selected button = " + selectedButton.name);
         if (selectedButton == null)
         {
-            selectedItemName.text = "BOOM";
+            selectedItemName.text = "";
             selectedItemDescription.text = "";
             selectedItemResources.text = "";
         }
