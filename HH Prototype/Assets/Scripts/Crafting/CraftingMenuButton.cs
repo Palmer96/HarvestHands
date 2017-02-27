@@ -3,14 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CraftingMenuButton : MonoBehaviour
+public class CraftingMenuButton : ScrollMenuButton
 {
-    public int recipeIndex = -1;
-    public Button button;
-    public Text nameText;
     public Text requirementText;
-    public Image iconImage;
-    public CraftingMenu craftingMenu;
     public CraftingRecipe recipe;
 
 	// Use this for initialization
@@ -19,7 +14,7 @@ public class CraftingMenuButton : MonoBehaviour
 	}
 	
 	// Update is called once per frame
-	public void UpdateSelectedButton ()
+	public override void UpdateSelectedButton ()
     {
         if (CraftingMenu.instance.selectedButton != null)
             CraftingMenu.instance.selectedButton.UnselectButton();
@@ -28,17 +23,17 @@ public class CraftingMenuButton : MonoBehaviour
         SelectButton();
 	}
 
-    public void UnselectButton()
+    public override void UnselectButton()
     {
         nameText.text = recipe.recipeName;
     }
 
-    public void SelectButton()
+    public override void SelectButton()
     {
         nameText.text = "-> " + recipe.recipeName + " <-";
     }
 
-    public void UpdateDisplay()
+    public override void UpdateDisplay()
     {
         string recipeName = "";
         string recipeResources = "";
@@ -85,7 +80,7 @@ public class CraftingMenuButton : MonoBehaviour
         else
         {
             nameText.color = CraftingMenu.instance.cantMakeColor;
-            requirementText.color = CraftingMenu.instance.insufficientResourceColour;
+            requirementText.color = CraftingMenu.instance.insufficientResourceColor;
         }
     }
 }

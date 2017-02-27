@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Blueprint : Item
+public class Blueprint : MonoBehaviour
 {
+    public static Blueprint instance = null;
     public GameObject currentConstruct;
     public float constructionMaxDist = 20;
     public float GridDist = 1;
@@ -16,13 +17,24 @@ public class Blueprint : Item
 
     public bool held;
 
+    void Awake()
+    {
+        if (instance == null)
+            instance = this;
+        else
+            Debug.Log("2 blue prints in scene");
+    }
+
     // Use this for initialization
     void Start()
     {
         held = false;
-        itemID = 2;
-        itemCap = 1;
         scrollTimer = 0.1f;
+        if (instance == null)
+            instance = this;
+        //else
+        //    Debug.Log("2 blue prints in scene");
+        Debug.Log("Inside Blueprint Start()");
     }
 
 
@@ -39,7 +51,7 @@ public class Blueprint : Item
             ChangeSelect();
 
 
-        transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
+        //transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
 
 
         if (currentConstruct != null)
@@ -74,7 +86,7 @@ public class Blueprint : Item
         }
 
     }
-    public override void PrimaryUse()
+    public  void PrimaryUse()
     {
         if (currentConstruct == null)
         {
@@ -87,7 +99,7 @@ public class Blueprint : Item
         }
     }
 
-    public override void SecondaryUse()
+    public  void SecondaryUse()
     {
         if (currentConstruct != null)
             ConstructionCancel();

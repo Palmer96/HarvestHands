@@ -35,7 +35,7 @@ public class Axe : Item
             case ClickType.Single:
                 ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                Debug.Log("Axe");
+                //Debug.Log("Axe");
                 if (Physics.Raycast(ray, out hit, rayMaxDist))
                 {
                     if (hit.transform.CompareTag("Tree"))
@@ -57,7 +57,7 @@ public class Axe : Item
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                    Debug.Log("Axe");
+                    //Debug.Log("Axe");
                     if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
                         if (hit.transform.CompareTag("Tree"))

@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Construct : MonoBehaviour
 {
+    public string constructName = "";
+    public string constructDescription = "";
     public GameObject selfObject;
     public bool canBuild;
     public Material[] mat;

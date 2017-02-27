@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CraftingMenu : MonoBehaviour
+public class CraftingMenu : ScrollMenu
 {
     public enum DisplayItemType
     {
@@ -15,25 +15,9 @@ public class CraftingMenu : MonoBehaviour
     public static CraftingMenu instance = null;
 
     public DisplayItemType currentRecipeType = DisplayItemType.ALL;
-
-    public GameObject recipeListButtonPrefab;
-    public Transform scrollView;
-    public Transform contentPanel;
-    public GameObject craftButton;
-    public GameObject returnButton;
-    public Color sufficientResourceColour = Color.green;
-    public Color insufficientResourceColour = Color.gray;
-    public Color canMakeColor = Color.green;
-    public Color cantMakeColor = Color.grey;
-    public CraftingMenuButton selectedButton = null;
-    public List<CraftingMenuButton> craftingButtons = new List<CraftingMenuButton>();
-
-    public Text selectedItemName;
-    public Text selectedItemDescription;
+        
     public Text selectedItemResources;
-    public RawImage background;
-
-
+    
     public List<CraftingRecipe> recipes = new List<CraftingRecipe>();
     public List<CraftingRecipe> haveResourceList = new List<CraftingRecipe>();
     public List<CraftingRecipe> dontHaveResourceList = new List<CraftingRecipe>();
@@ -75,22 +59,22 @@ public class CraftingMenu : MonoBehaviour
         GetRecipeList();
     }
 
-    public void UpdateDisplay()
-    {
-        foreach (CraftingMenuButton button in craftingButtons)
-        {
-            button.UpdateDisplay();
-        }
-    }
+    //public void UpdateDisplay()
+    //{
+    //    foreach (CraftingMenuButton button in craftingButtons)
+    //    {
+    //        button.UpdateDisplay();
+    //    }
+    //}
 
-    public void ResetDisplay()
+    public override void ResetDisplay()
     {
         RemoveButtons();
-        AddButtons(CraftingManager.instance.knownRecipes);
+        AddButtons();
         //UpdateDisplay();
     }
 
-    public void ActivateMenu()
+    public override void ActivateMenu()
     {
         //Debug.Log("Inside ActivateMenu");
         scrollView.gameObject.SetActive(true);
@@ -99,7 +83,7 @@ public class CraftingMenu : MonoBehaviour
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = false;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-        craftButton.SetActive(true);
+        createButton.SetActive(true);
         returnButton.SetActive(true);
         background.gameObject.SetActive(true);
         selectedItemName.gameObject.SetActive(true);
@@ -109,7 +93,7 @@ public class CraftingMenu : MonoBehaviour
         SelectButton(0);
     }
 
-    public void DeactivateMenu()
+    public override void DeactivateMenu()
     {
         scrollView.gameObject.SetActive(false);
         //   PlayerInventory.instance.enabled = true;
@@ -117,7 +101,7 @@ public class CraftingMenu : MonoBehaviour
         PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-        craftButton.SetActive(false);
+        createButton.SetActive(false);
         returnButton.SetActive(false);
         background.gameObject.SetActive(false);
         selectedItemName.gameObject.SetActive(false);
@@ -125,17 +109,17 @@ public class CraftingMenu : MonoBehaviour
         selectedItemResources.gameObject.SetActive(false);
     }
 
-    public void SelectButton(int i)
+    public override void SelectButton(int i)
     {
         if (i < CraftingManager.instance.knownRecipes.Count)
         {
-            craftingButtons[i].UpdateSelectedButton();
+            contentButtons[i].UpdateSelectedButton();
         }
         UpdateSelectedItemInfo();
     }
 
 
-    public void UpdateSelectedItemInfo()
+    public override void UpdateSelectedItemInfo()
     {
         if (selectedButton == null)
         {
@@ -143,13 +127,14 @@ public class CraftingMenu : MonoBehaviour
             selectedItemDescription.text = "";
             selectedItemResources.text = "";
         }
-        selectedItemName.text = selectedButton.recipe.recipeName;
-        selectedItemDescription.text = selectedButton.recipe.itemDescription;
-        selectedItemResources.text = selectedButton.requirementText.text;
+        selectedItemName.text = (selectedButton as CraftingMenuButton).recipe.recipeName;
+        selectedItemDescription.text = (selectedButton as CraftingMenuButton).recipe.itemDescription;
+        selectedItemResources.text = (selectedButton as CraftingMenuButton).requirementText.text;
     }
 
-    public void AddButtons(List<CraftingRecipe> recipes)
+    public override void AddButtons() // WHAT TYPE WAS THIS???
     {
+        List<CraftingRecipe> recipes = CraftingManager.instance.knownRecipes;
         haveResourceList = new List<CraftingRecipe>();
         dontHaveResourceList = new List<CraftingRecipe>();
         int recipeIndex = 0;
@@ -159,6 +144,13 @@ public class CraftingMenu : MonoBehaviour
             return a.recipeName.CompareTo(b.recipeName);
         }
         );
+
+        //recipes.Sort(delegate (CraftingRecipe a, CraftingRecipe b)
+        //{
+        //    return a.recipeName.CompareTo(b.recipeName);
+        //}
+        //);
+
         //Sort to have resource and dont have resources
         foreach (CraftingRecipe recipe in CraftingManager.instance.knownRecipes)
         {
@@ -170,11 +162,11 @@ public class CraftingMenu : MonoBehaviour
         //create ui buttons for each
         foreach (CraftingRecipe recipe in haveResourceList)
         {
-            GameObject menuButton = Instantiate(recipeListButtonPrefab);
+            GameObject menuButton = Instantiate(contentButtonPrefab);
             CraftingMenuButton craftingButton = menuButton.GetComponent<CraftingMenuButton>();
             menuButton.transform.SetParent(contentPanel);
-            craftingButtons.Add(craftingButton);
-            craftingButton.recipeIndex = recipeIndex;
+            contentButtons.Add(craftingButton);
+            craftingButton.index = recipeIndex;
             recipeIndex++;
             craftingButton.recipe = recipe;
 
@@ -182,41 +174,32 @@ public class CraftingMenu : MonoBehaviour
         }
         foreach (CraftingRecipe recipe in dontHaveResourceList)
         {
-            GameObject menuButton = Instantiate(recipeListButtonPrefab);
+            GameObject menuButton = Instantiate(contentButtonPrefab);
             CraftingMenuButton craftingButton = menuButton.GetComponent<CraftingMenuButton>();
             menuButton.transform.SetParent(contentPanel);
-            craftingButtons.Add(craftingButton);
-            craftingButton.recipeIndex = recipeIndex;
+            contentButtons.Add(craftingButton);
+            craftingButton.index = recipeIndex;
             recipeIndex++;
             craftingButton.recipe = recipe;
 
             craftingButton.UpdateDisplay();
         }
     }
-
-    public void RemoveButtons()
-    {
-        while (craftingButtons.Count > 0)
-        {
-            Destroy(craftingButtons[0].gameObject);
-            craftingButtons.RemoveAt(0);
-        }
-    }
-
+    
     public void CreateSelectedItem()
     {
         if (selectedButton == null)
             return;
         //PlayerInventory.instance.AddItem(selectedButton.recipe.Craft());
         
-        GameObject newObj = selectedButton.recipe.Craft();
+        GameObject newObj = (selectedButton as CraftingMenuButton).recipe.Craft();
         if (newObj != null)
             PlayerInventory.instance.AddItem(newObj);
         //CraftingManager.instance.knownRecipes[selectedButton.recipeIndex].Craft();
-        CraftingRecipe selectedRecipe = selectedButton.recipe;
+        CraftingRecipe selectedRecipe = (selectedButton as CraftingMenuButton).recipe;
         ResortLists();
         ResetDisplay();
-        foreach (CraftingMenuButton button in craftingButtons)
+        foreach (CraftingMenuButton button in contentButtons)
         {
             if (button.recipe.recipeName == selectedRecipe.recipeName)
             {
@@ -228,14 +211,14 @@ public class CraftingMenu : MonoBehaviour
         UpdateDisplay(); // TODO Change this so it updates the list objects with the reduced player amounts, instead of destroying and recreating the entire list
     }
 
-    public void ResortLists()
+    public override void ResortLists()
     {
         //Debug.Log("In resort Lists");
         List<CraftingMenuButton> haveResourceButtonList = new List<CraftingMenuButton>();
         List<CraftingMenuButton> dontHaveResourceButtonList = new List<CraftingMenuButton>();
       //  scrollView.
 
-        foreach (CraftingMenuButton menuButton in craftingButtons)
+        foreach (CraftingMenuButton menuButton in contentButtons)
         {
             if (menuButton.recipe.HaveResources())
                 haveResourceButtonList.Add(menuButton);

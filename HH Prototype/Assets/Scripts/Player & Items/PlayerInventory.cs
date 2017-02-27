@@ -92,25 +92,25 @@ public class PlayerInventory : MonoBehaviour
 
             Hotkeys();
 
-         // if (Input.GetKeyDown(KeyCode.B))
-         // {
-         //     if (bookOpen)
-         //     {
-         //         bookOpen = false;
-         //         book.SetActive(false);
-         //         ShowObject(heldObjects[selectedItemNum]);
-         //         //  selectedItemNum = oldnum;
-         //         book.GetComponent<Blueprint>().ConstructionCancel();
-         //     }
-         //     else
-         //     {
-         //         bookOpen = true;
-         //         book.SetActive(true);
-         //         HideObject(heldObjects[selectedItemNum]);
-         //     }
-         // }
+            // if (Input.GetKeyDown(KeyCode.B))
+            // {
+            //     if (bookOpen)
+            //     {
+            //         bookOpen = false;
+            //         book.SetActive(false);
+            //         ShowObject(heldObjects[selectedItemNum]);
+            //         //  selectedItemNum = oldnum;
+            //         book.GetComponent<Blueprint>().ConstructionCancel();
+            //     }
+            //     else
+            //     {
+            //         bookOpen = true;
+            //         book.SetActive(true);
+            //         HideObject(heldObjects[selectedItemNum]);
+            //     }
+            // }
 
-           // if (!bookOpen)
+             if (!bookOpen)
             {
                 UpdateInventory();
 
@@ -216,19 +216,19 @@ public class PlayerInventory : MonoBehaviour
                 //     }
                 // }
             }
-          // else
-          // {
-          //     book.GetComponent<Blueprint>().ChangeSelect();
-          //
-          //     if (Input.GetMouseButtonDown(0)) // Primary Use
-          //     {
-          //         book.GetComponent<Blueprint>().PrimaryUse();
-          //     }
-          //     if (Input.GetMouseButtonDown(1)) // Pickup
-          //     {
-          //         book.GetComponent<Blueprint>().SecondaryUse();
-          //     }
-          // }
+           else
+           {
+              //  Blueprint.instance.ChangeSelect();
+
+                if (Input.GetMouseButtonDown(0)) // Primary Use
+                {
+                    Blueprint.instance.PrimaryUse();
+                }
+                if (Input.GetMouseButtonDown(1)) // Pickup
+                {
+                    Blueprint.instance.SecondaryUse();
+                }
+            }
         }
     }
 
@@ -585,44 +585,44 @@ public class PlayerInventory : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-          //  bookOpen = false;
-          //  BookUpdate();
+            //  bookOpen = false;
+            //  BookUpdate();
             selectedItemNum = 0;
         }
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-          //  bookOpen = false;
-           // BookUpdate();
+            //  bookOpen = false;
+            // BookUpdate();
             selectedItemNum = 1;
         }
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-           // bookOpen = false;
-          //  BookUpdate();
+            // bookOpen = false;
+            //  BookUpdate();
             selectedItemNum = 2;
         }
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-           // bookOpen = false;
-           // BookUpdate();
+            // bookOpen = false;
+            // BookUpdate();
             selectedItemNum = 3;
         }
         if (Input.GetKeyDown(KeyCode.Alpha5))
         {
-          //  bookOpen = false;
-         //   BookUpdate();
+            //  bookOpen = false;
+            //   BookUpdate();
             selectedItemNum = 4;
         }
         if (Input.GetKeyDown(KeyCode.Alpha6))
         {
-         //   bookOpen = false;
-         //   BookUpdate();
+            //   bookOpen = false;
+            //   BookUpdate();
             selectedItemNum = 5;
         }
         if (Input.GetKeyDown(KeyCode.Alpha7))
         {
-         //   bookOpen = false;
-         //   BookUpdate();
+            //   bookOpen = false;
+            //   BookUpdate();
             selectedItemNum = 6;
 
         }
