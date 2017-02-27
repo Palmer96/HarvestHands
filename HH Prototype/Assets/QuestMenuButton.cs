@@ -19,6 +19,16 @@ public class QuestMenuButton : ScrollMenuButton
         SelectButton();
     }
 
+    public override void UnselectButton()
+    {
+        nameText.text = recipe.questName; ;
+    }
+
+    public override void SelectButton()
+    {
+        nameText.text = "-> " + recipe.questName + " <-";
+    }
+
     public override void UpdateDisplay()
     {
         string recipeName = "";
