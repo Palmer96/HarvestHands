@@ -99,6 +99,25 @@ public class Item : MonoBehaviour
         }
     }
 
+
+    public virtual void SecondaryUse()
+    {
+
+    }
+
+    public virtual void SecondaryUse(ClickType click)
+    {
+
+    }
+
+    public virtual void SecondaryUse(GameObject gameObj)
+    {
+
+    }
+
+
+
+
     public virtual void UpdateMesh()
     {
         bool colliderEnabled = false;

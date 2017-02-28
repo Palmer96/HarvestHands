@@ -51,6 +51,7 @@ public class Seed : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (click == ClickType.Single)
         PrimaryUse();
     }
     public override void PrimaryUse()

@@ -21,13 +21,17 @@ public class Tree : MonoBehaviour
 
     public void Harvest()
     {
-        Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
-
-        woodAvaliable--;
-        if (woodAvaliable == 0)
+        if (woodAvaliable > 0)
         {
-            Instantiate(stump, transform.position, transform.rotation);
-            Destroy(gameObject);
+
+            Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
+
+            woodAvaliable--;
+            if (woodAvaliable == 0)
+            {
+                Instantiate(stump, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
         }
     }
 
