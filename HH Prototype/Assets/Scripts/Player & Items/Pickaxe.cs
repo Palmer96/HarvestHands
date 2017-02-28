@@ -30,32 +30,32 @@ public class Pickaxe : Item
     {
         switch (click)
         {
-            case ClickType.Single:
-                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                Debug.Log("Axe");
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
-                {
-                    if (hit.transform.CompareTag("Rock"))
-                    {
-                        used = true;
-                        useTimer = useRate;
-                        hit.transform.GetComponent<Rock>().Harvest();
-                        if (level > 1)
-                            hit.transform.GetComponent<Rock>().Harvest();
-                        if (level > 2)
-                            hit.transform.GetComponent<Rock>().Harvest();
-                        //    Instantiate(wood, hit.point, transform.rotation);
-                    }
-                }
-                break;
+          //  case ClickType.Single:
+          //      ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+          //
+          //      Debug.Log("Pickaxe");
+          //      if (Physics.Raycast(ray, out hit, rayMaxDist))
+          //      {
+          //          if (hit.transform.CompareTag("Rock"))
+          //          {
+          //              used = true;
+          //              useTimer = useRate;
+          //              hit.transform.GetComponent<Rock>().Harvest();
+          //              if (level > 1)
+          //                  hit.transform.GetComponent<Rock>().Harvest();
+          //              if (level > 2)
+          //                  hit.transform.GetComponent<Rock>().Harvest();
+          //              //    Instantiate(wood, hit.point, transform.rotation);
+          //          }
+          //      }
+          //      break;
 
             case ClickType.Hold:
         if (!used)
         {
             ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-            Debug.Log("Axe");
+            Debug.Log("Pickaxe");
             if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
                 if (hit.transform.CompareTag("Rock"))

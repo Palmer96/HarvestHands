@@ -28,7 +28,7 @@ public class AnimalFeed : Item
 
     public override void PrimaryUse(ClickType click)
     {
-        if (click == Item.ClickType.Single)
+        if (click == Item.ClickType.Hold)
             PrimaryUse();
     }
 

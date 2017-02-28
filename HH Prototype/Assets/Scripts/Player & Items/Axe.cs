@@ -32,25 +32,25 @@ public class Axe : Item
     {
         switch (click)
         {
-            case ClickType.Single:
-                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                //Debug.Log("Axe");
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
-                {
-                    if (hit.transform.CompareTag("Tree"))
-                    {
-                        used = true;
-                        useTimer = useRate;
-                        hit.transform.GetComponent<Tree>().Harvest();
-                        if (level > 1)
-                            hit.transform.GetComponent<Tree>().Harvest();
-                        if (level > 2)
-                            hit.transform.GetComponent<Tree>().Harvest();
-                        //    Instantiate(wood, hit.point, transform.rotation);
-                    }
-                }
-                break;
+          //  case ClickType.Single:
+          //      ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+          //
+          //      //Debug.Log("Axe");
+          //      if (Physics.Raycast(ray, out hit, rayMaxDist))
+          //      {
+          //          if (hit.transform.CompareTag("Tree"))
+          //          {
+          //              used = true;
+          //              useTimer = useRate;
+          //              hit.transform.GetComponent<Tree>().Harvest();
+          //              if (level > 1)
+          //                  hit.transform.GetComponent<Tree>().Harvest();
+          //              if (level > 2)
+          //                  hit.transform.GetComponent<Tree>().Harvest();
+          //              //    Instantiate(wood, hit.point, transform.rotation);
+          //          }
+          //      }
+          //      break;
 
             case ClickType.Hold:
              //   if (!used)

@@ -99,6 +99,11 @@ public class PlayerInventory : MonoBehaviour
             {
                 UpdateInventory();
 
+
+                /////////////--- Q Press --- DROP
+                //////////////////////////////////////////////////////
+
+
                 if (heldObjects[selectedItemNum] != null)
                 {
                     if (Input.GetKey(KeyCode.Q)) // Drop
@@ -151,6 +156,10 @@ public class PlayerInventory : MonoBehaviour
                 }
 
 
+                /////////////--- E Press --- INTERACT ---
+                //////////////////////////////////////////////////////
+
+
                 if (Input.GetKey(KeyCode.E)) // Interact
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -184,15 +193,7 @@ public class PlayerInventory : MonoBehaviour
                                 }
                                 break;
                             case "Item":
-                                //  eTimer += Time.deltaTime;
-                                //  holdSlider.fillAmount = eTimer * 2;
-
-                                //if (eTimer > 0.5f)
-                                //{
-                                //    eTimer = 0;
-                                //    holdSlider.fillAmount = eTimer * 2;
                                 AddItem(hit.transform.gameObject);
-                                //}
                                 break;
                         }
                     }
@@ -208,6 +209,9 @@ public class PlayerInventory : MonoBehaviour
                     holdSlider.fillAmount = eTimer * 2;
                 }
 
+                /////////////--- Left Click --- USE ---
+                //////////////////////////////////////////////////////
+
                 if (Input.GetMouseButton(0)) // Drop
                 {
                     clickTimer += Time.deltaTime;
@@ -216,9 +220,12 @@ public class PlayerInventory : MonoBehaviour
                     {
                         if (heldObjects[selectedItemNum] != null)
                         {
-                            clickTimer = 0;
-                            holdSlider.fillAmount = clickTimer * 2;
                             heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                            {
+                                clickTimer = 0;
+                                holdSlider.fillAmount = clickTimer * 2;
+                            }
                         }
                     }
                 }
@@ -715,7 +722,7 @@ public class PlayerInventory : MonoBehaviour
 /////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////
 
-    
+
 
 
 //-----------------------------------------MMMMMMMMM

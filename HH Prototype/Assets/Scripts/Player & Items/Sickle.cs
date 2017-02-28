@@ -28,40 +28,40 @@ public class Sickle : Item
     {
         switch (click)
         {
-            case ClickType.Single:
-                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            //       case ClickType.Single:
+            //           ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            //
+            //           Debug.Log("Sickle");
+            //           if (Physics.Raycast(ray, out hit, rayMaxDist))
+            //           {
+            //               if (hit.transform.CompareTag("Plant"))
+            //               {
+            //                   hit.transform.GetComponent<Plant>().HarvestPlant(level);
+            //                   used = true;
+            //                   useTimer = useRate;
+            //               }
+            //           }
+            //           break;
 
-                Debug.Log("Sickle");
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
+            case ClickType.Hold:
+                if (!used)
                 {
-                    if (hit.transform.CompareTag("Plant"))
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+                    Debug.Log("Sickle");
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
-                        hit.transform.GetComponent<Plant>().HarvestPlant(level);
-                        used = true;
-                        useTimer = useRate;
+                        if (hit.transform.CompareTag("Plant"))
+                        {
+                            hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                            used = true;
+                            useTimer = useRate;
+                        }
                     }
                 }
                 break;
-
-            case ClickType.Hold:
- if (!used)
-        {
-            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-            Debug.Log("Sickle");
-            if (Physics.Raycast(ray, out hit, rayMaxDist))
-            {
-                if (hit.transform.CompareTag("Plant"))
-                {
-                    hit.transform.GetComponent<Plant>().HarvestPlant(level);
-                    used = true;
-                    useTimer = useRate;
-                }
-            }
         }
-                break;
-        }
-       
+
     }
 
     void OnTriggerEnter(Collider col)

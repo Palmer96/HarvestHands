@@ -74,12 +74,15 @@ public class Plant : MonoBehaviour
 
     public float deathTimer = 1;
     public float deathTimerRate = 1;
+
+    private float startTime;
     // Use this for initialization
     void Start()
     {
         PlantManager.instance.AddPlant(this);
         UpdatePlant(1);
         transform.GetChild(1).GetChild(0).GetComponent<Slider>().maxValue = maxWater;
+        startTime = harvestTimer;
     }
 
     // Update is called once per frame
@@ -137,15 +140,16 @@ public class Plant : MonoBehaviour
             {
                 highlighted = false;
                 transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
-                transform.GetChild(1).GetChild(0).gameObject.SetActive(true);
+                transform.GetChild(1).gameObject.SetActive(true);
                 transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
+                transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>().fillAmount = harvestTimer/startTime;
 
                 transform.parent.GetComponent<MeshRenderer>().enabled = true;
             }
             else
             {
                 transform.GetChild(0).GetComponent<TextMesh>().text = "";
-                transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+                transform.GetChild(1).gameObject.SetActive(false);
                 transform.parent.GetComponent<MeshRenderer>().enabled = false;
             }
 
