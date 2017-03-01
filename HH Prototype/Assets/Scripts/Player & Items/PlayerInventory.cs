@@ -514,6 +514,7 @@ public class PlayerInventory : MonoBehaviour
                 {
                     selectedItemNum--;
                     scrollTimer = 0.1f;
+                    
                 }
                 else
                 {
