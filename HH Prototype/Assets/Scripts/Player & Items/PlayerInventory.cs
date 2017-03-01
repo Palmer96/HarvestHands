@@ -5,6 +5,22 @@ using UnityEngine.UI;
 
 public class PlayerInventory : MonoBehaviour
 {
+    public enum ControllerInput
+    {
+        A,
+        B,
+        X,
+        Y,
+        LBumper,
+        RBumper,
+        LTrigger,
+        RTrigger,
+        Start,
+        Back,
+        LStickClick,
+        RStickClick
+
+    }
     public static PlayerInventory instance = null;
     public int money = 0;
 
@@ -51,6 +67,18 @@ public class PlayerInventory : MonoBehaviour
     public Image holdSlider;
 
     public Slider waterLevel;
+
+    RaycastHit hit;
+    Ray ray;
+
+    public ControllerInput iInteract;
+    public ControllerInput iPrimaryUse;
+    public ControllerInput iSecondaryUse;
+    public ControllerInput iPickup;
+    public ControllerInput iDrop;
+    public ControllerInput iSelectUp;
+    public ControllerInput iSelectDown;
+
     // Use this for initialization
     void Start()
     {
@@ -85,97 +113,29 @@ public class PlayerInventory : MonoBehaviour
     void Update()
     {
         scrollTimer -= Time.deltaTime;
-
         UpdateItemMesh();
         UpdateImages();
 
-
         if (!inMenu)
         {
-            if (heldObjects[selectedItemNum] != null)
+            if (!bookOpen)
             {
-                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                if (heldObjects[selectedItemNum] != null && heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                 {
                     waterLevel.gameObject.SetActive(true);
                     waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
                     waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;
-
                 }
                 else
                     waterLevel.gameObject.SetActive(false);
 
-            }
-            else
-                waterLevel.gameObject.SetActive(false);
+                Hotkeys();
 
-            Hotkeys();
-
-            if (!bookOpen)
-            {
                 UpdateInventory();
-
-
                 /////////////--- Q Press --- DROP
                 //////////////////////////////////////////////////////
 
-
-                if (heldObjects[selectedItemNum] != null)
-                {
-                    if (Input.GetKey(KeyCode.Q)) // Drop
-                    {
-                        qTimer += Time.deltaTime;
-                        holdSlider.fillAmount = qTimer / qRate;
-                        if (qTimer > qRate)
-                        {
-                            qTimer = 0;
-                            holdSlider.fillAmount = 0;
-                            DropAllofItem();
-                        }
-                    }
-                    if (Input.GetKeyUp(KeyCode.Q))
-                    {
-                        qTimer = 0;
-                        holdSlider.fillAmount = 0;
-                        RemoveItem();
-                    }
-                }
-
-
-                RaycastHit hit;
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                if (Physics.Raycast(ray, out hit, 5))
-                {
-                    switch (hit.transform.tag)
-                    {
-                        case "Plant":
-                            if (heldObjects[selectedItemNum] != null)
-                            {
-
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                                    hit.transform.GetComponent<Plant>().highlighted = true;
-                            }
-                            break;
-                        case "Soil":
-                            if (heldObjects[selectedItemNum] != null)
-                            {
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                                {
-                                    if (hit.transform.childCount > 0)
-                                        hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
-                                }
-                            }
-                            break;
-                    }
-
-                }
-
-
-                /////////////--- E Press --- INTERACT ---
-                //////////////////////////////////////////////////////
-
-
-                if (Input.GetKey(KeyCode.E)) // Interact
+                if (Input.GetKey(KeyCode.E) || Input.GetButton("Controller_" + iInteract)) // Interact
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
@@ -232,106 +192,129 @@ public class PlayerInventory : MonoBehaviour
                         holdSlider.fillAmount = eTimer * 2;
                     }
                 }
-                if (Input.GetKeyUp(KeyCode.E))
-                {
-                    eTimer = 0;
-                    holdSlider.fillAmount = 0;
-                }
 
-                /////////////--- Left Click --- USE ---
-                //////////////////////////////////////////////////////
-
-                if (Input.GetMouseButton(0)) // Drop
+                if (heldObjects[selectedItemNum] != null)
                 {
-                    if (disableLeft)
+                    if (Input.GetKey(KeyCode.Q) || Input.GetButton("Controller_" + iDrop)) // Drop
+                    {
+                        qTimer += Time.deltaTime;
+                        holdSlider.fillAmount = qTimer / qRate;
+                        if (qTimer > qRate)
+                        {
+                            qTimer = 0;
+                            holdSlider.fillAmount = 0;
+                            DropAllofItem();
+                        }
+                    }
+                    if (Input.GetKeyUp(KeyCode.Q) || Input.GetButtonUp("Controller_" + iDrop))
+                    {
+                        qTimer = 0;
+                        holdSlider.fillAmount = 0;
+                        RemoveItem();
+                    }
+
+
+                    Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                    if (Physics.Raycast(ray, out hit, 5))
+                    {
+                        switch (hit.transform.tag)
+                        {
+                            case "Plant":
+                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                    hit.transform.GetComponent<Plant>().highlighted = true;
+                                break;
+                            case "Soil":
+                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                {
+                                    if (hit.transform.childCount > 0)
+                                        hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                }
+                                break;
+                        }
+
+                    }
+                    /////////////--- E Press --- INTERACT ---
+                    //////////////////////////////////////////////////////
+
+                    if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + iInteract))
+                    {
+                        eTimer = 0;
+                        holdSlider.fillAmount = 0;
+                    }
+
+                    /////////////--- Left Click --- USE ---
+                    //////////////////////////////////////////////////////
+
+                    if ((Input.GetMouseButton(0) || Input.GetButton("Controller_" + iPrimaryUse)) && disableLeft) // Drop
                     {
                         lClickTimer += Time.deltaTime;
                         rClickTimer = 0;
                         holdSlider.fillAmount = lClickTimer / lClickRate;
                         if (lClickTimer > lClickRate)
                         {
-                            if (heldObjects[selectedItemNum] != null)
+                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
                             {
-                                heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
-                                {
-                                    lClickTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                }
+                                lClickTimer = 0;
+                                holdSlider.fillAmount = 0;
                                 disableLeft = false;
                             }
                         }
                     }
-                }
-                if (Input.GetMouseButtonUp(0))
-                {
-                    if (lClickTimer < lClickRate)
-                    {
-                        if (heldObjects[selectedItemNum] != null)
-                        {
-                            //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
-                        }
-                    }
-                    disableLeft = true;
-                    holdSlider.fillAmount = 0;
-                    lClickTimer = 0;
-                }
 
-                if (Input.GetMouseButton(1)) // Drop
-                {
-                    rClickTimer += Time.deltaTime;
-                    //  lClickTimer = 0;
-                    holdSlider.fillAmount = rClickTimer / rClickRate;
-                    if (rClickTimer > rClickRate)
+                    if (Input.GetMouseButtonUp(0) || Input.GetButtonUp("Controller_" + iPrimaryUse))
                     {
-                        if (heldObjects[selectedItemNum] != null)
+                        if (lClickTimer < lClickRate)
+                        {
+                            if (heldObjects[selectedItemNum] != null)
+                            {
+                                //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                            }
+                        }
+                        disableLeft = true;
+                        holdSlider.fillAmount = 0;
+                        lClickTimer = 0;
+                    }
+
+                    if (Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse)) // Drop
+                    {
+                        rClickTimer += Time.deltaTime;
+                        //  lClickTimer = 0;
+                        holdSlider.fillAmount = rClickTimer / rClickRate;
+                        if (rClickTimer > rClickRate)
                         {
                             heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Hold);
-                            // if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
-                            // {
-                            //     rClickTimer = 0;
-                            //     holdSlider.fillAmount = 0;
-                            // }
                         }
                     }
-                }
-                if (Input.GetMouseButtonUp(1))
-                {
-                    if (rClickTimer < rClickRate)
-                    {
-                        if (heldObjects[selectedItemNum] != null)
-                        {
-                            //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Single);
 
+                    if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))
+                    {
+                        if (rClickTimer < rClickRate)
+                        {
+                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Single);
                         }
+                        holdSlider.fillAmount = 0;
+                        rClickTimer = 0;
                     }
-                    holdSlider.fillAmount = 0;
-                    rClickTimer = 0;
                 }
             }
             else
             {
-                holdSlider.fillAmount = 0;
-                lClickTimer = 0;
-                rClickTimer = 0;
-            }
-        }
-        else
-        {
-            if (Input.GetMouseButtonDown(0)) // Primary Use
-            {
-                Blueprint.instance.PrimaryUse();
-                bookOpen = false;
-            }
-            if (Input.GetMouseButtonDown(1)) // Pickup
-            {
-                Blueprint.instance.SecondaryUse();
-                bookOpen = false;
+                if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Controller_" + iPrimaryUse)) // Primary Use
+                {
+                    Blueprint.instance.PrimaryUse();
+                    bookOpen = false;
+                }
+                if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("Controller_" + iPrimaryUse)) // Pickup
+                {
+                    Blueprint.instance.SecondaryUse();
+                    bookOpen = false;
+                }
             }
         }
     }
+
 
     public bool AddItem(GameObject item)
     {
@@ -467,7 +450,6 @@ public class PlayerInventory : MonoBehaviour
 
     public void DropAllofItem()
     {
-
         GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[selectedItemNum].transform.rotation);
         droppedItem.SetActive(true);
         droppedItem.GetComponent<Item>().quantity = 1;
@@ -486,23 +468,6 @@ public class PlayerInventory : MonoBehaviour
             droppedItem.GetComponent<Item>().UpdateMesh();
         Destroy(heldObjects[selectedItemNum]);
         heldObjects[selectedItemNum] = null;
-
-        //if (heldObjects[selectedItemNum] != null)
-        //{
-        //    heldObjects[selectedItemNum].transform.position = transform.GetChild(0).position + (transform.GetChild(0).forward * 2);
-        //    //  heldObjects[selectedItemNum].transform.rotation = transform.rotation;
-        //    heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = false;
-        //    heldObjects[selectedItemNum].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-        //    heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
-        //    heldObjects[selectedItemNum].transform.parent = null;
-        //    heldObjects[selectedItemNum].layer = 0;
-        //    if (heldObjects[selectedItemNum].GetComponent<MeshRenderer>() != null)
-        //        heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
-        //    if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
-        //        heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
-        //    heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
-        //    heldObjects[selectedItemNum] = null;
-        //}
     }
 
     void UpdateImages()
@@ -524,8 +489,6 @@ public class PlayerInventory : MonoBehaviour
 
             if (heldObjects[i] != null)
             {
-                // itemText[i].sprite = itemSprites[heldObjects[i].GetComponent<Item>().itemID];
-
                 itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
                 if (heldObjects[i].GetComponent<Item>().quantity > 1)
                     itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
@@ -534,7 +497,6 @@ public class PlayerInventory : MonoBehaviour
             }
             else
             {
-                //  itemText[i].sprite = itemSprites[0];
                 itemText[i].transform.GetComponentInChildren<Text>().text = "-";
                 itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
@@ -545,7 +507,7 @@ public class PlayerInventory : MonoBehaviour
     {
         if (scrollTimer < 0)
         {
-            if (Input.GetAxis("Mouse ScrollWheel") > 0.05f)
+            if ((Input.GetAxis("Mouse ScrollWheel") > 0.05f) || Input.GetButton("Controller_" + iSelectDown))
             {
 
                 if (selectedItemNum > 0)
@@ -559,7 +521,7 @@ public class PlayerInventory : MonoBehaviour
                 }
             }
 
-            if (Input.GetAxis("Mouse ScrollWheel") < -0.05f)
+            if ((Input.GetAxis("Mouse ScrollWheel") < -0.05f) || Input.GetButton("Controller_" + iSelectUp))
             {
                 if (selectedItemNum < itemText.Count - 1)
                 {
@@ -573,28 +535,8 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-
-    public void UseItem()
-    {
-        if (heldObjects[selectedItemNum] != null)
-            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
-    }
-
-    public void UseItem(GameObject gameObj)
-    {
-        if (heldObjects[selectedItemNum] != null)
-            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(gameObj);
-    }
-
-
     void UpdateItemMesh()
     {
-
-        // for (int i = 0; i < heldObjects.Count; i++)
-        //     if (heldObjects[i] != null)
-        //         HideObject(heldObjects[i]);
-
-
         for (int i = 0; i < heldObjects.Count; i++)
         {
             if (heldObjects[i] != null)
@@ -648,106 +590,24 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    public int BlueprintIndex()
-    {
-        for (int i = 0; i < heldObjects.Count; i++)
-        {
-            if (heldObjects[i] != null)
-            {
-                if (heldObjects[i].GetComponent<Item>().itemID == 5)
-                {
-                    return i;
-                }
-            }
-        }
-        return 0;
-    }
-
-
-    public void AddBlueprint(GameObject item)
-    {
-        GameObject bPrint = null;
-        for (int i = 0; i < heldObjects.Count; i++)
-        {
-            if (heldObjects[i] != null)
-            {
-                if (heldObjects[i].GetComponent<Item>().itemID == 5)
-                {
-                    bPrint = heldObjects[i];
-                    Debug.Log("Yep, has Book");
-                    break;
-                }
-            }
-        }
-
-        if (bPrint != null)
-        {
-            Debug.Log("Add Blueprint");
-            bPrint.GetComponent<Blueprint>().AddBuild(item);
-        }
-    }
-
-    void BookUpdate()
-    {
-        if (!bookOpen)
-        {
-            book.SetActive(false);
-            selectedItemNum = oldnum;
-            book.GetComponent<Blueprint>().ConstructionCancel();
-        }
-        else
-        {
-            bookOpen = true;
-            book.SetActive(true);
-            selectedItemNum = 10;
-        }
-    }
 
     public void Hotkeys()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            //  bookOpen = false;
-            //  BookUpdate();
             selectedItemNum = 0;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            //  bookOpen = false;
-            // BookUpdate();
             selectedItemNum = 1;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            // bookOpen = false;
-            //  BookUpdate();
             selectedItemNum = 2;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            // bookOpen = false;
-            // BookUpdate();
             selectedItemNum = 3;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha5))
-        {
-            //  bookOpen = false;
-            //   BookUpdate();
             selectedItemNum = 4;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha6))
-        {
-            //   bookOpen = false;
-            //   BookUpdate();
             selectedItemNum = 5;
-        }
         if (Input.GetKeyDown(KeyCode.Alpha7))
-        {
-            //   bookOpen = false;
-            //   BookUpdate();
             selectedItemNum = 6;
 
-        }
     }
 
 }

@@ -15,17 +15,19 @@ public class HandTool : MonoBehaviour
 
     public bool usingHand;
 
+    public string Interact;
     // Use this for initialization
     void Start()
     {
         ConstructionMode = false;
+        Interact = GetComponent<PlayerInventory>().iInteract.ToString();
     }
 
     // Update is called once per frame
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetButton("Controller_" + Interact))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
