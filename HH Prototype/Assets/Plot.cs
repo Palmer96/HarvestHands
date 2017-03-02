@@ -9,6 +9,13 @@ public class Plot : BuildingIdentifier
 	// Use this for initialization
 	void Start ()
     {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            soilList.Add(transform.GetChild(i).GetComponent<Soil>());
+        }
+
+
+
         PlantManager.instance.plotList.Add(this);
         SaveAndLoadManager.OnSave += Save;
     }

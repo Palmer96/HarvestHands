@@ -633,6 +633,10 @@ public class PlayerSave
     float rotY;
     float rotZ;
 
+    float camrotX;
+    float camrotY;
+    float camrotZ;
+
     public PlayerSave(PlayerInventory playerInventory)
     {
         money = playerInventory.money;
@@ -642,6 +646,10 @@ public class PlayerSave
         rotX = playerInventory.transform.rotation.x;
         rotY = playerInventory.transform.rotation.y;
         rotZ = playerInventory.transform.rotation.z;
+
+        camrotX = playerInventory.transform.GetChild(0).rotation.x;
+        camrotY = playerInventory.transform.GetChild(0).rotation.y;
+        camrotZ = playerInventory.transform.GetChild(0).rotation.z;
     }
 
     public GameObject LoadObject()
@@ -652,6 +660,7 @@ public class PlayerSave
             PlayerInventory.instance.money = money;
             PlayerInventory.instance.transform.position = new Vector3(posX, posY, posZ);
             PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
+            PlayerInventory.instance.transform.GetChild(0).rotation = new Quaternion(camrotX, camrotY, camrotZ, 0);
         }
         else
         {

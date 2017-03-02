@@ -24,6 +24,7 @@ public class BuildingIdentifier : MonoBehaviour
     }
 }
 
+[System.Serializable]
 public class BuildingSave
 {
     int ID;
