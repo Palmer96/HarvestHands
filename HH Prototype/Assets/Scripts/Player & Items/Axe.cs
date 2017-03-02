@@ -13,6 +13,7 @@ public class Axe : Item
     {
         itemID = 3;
         itemCap = 1;
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -104,5 +105,60 @@ public class Axe : Item
         }
 
     }
+        
 
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.axeSaveList.Add(new AxeSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+
+}
+
+
+[System.Serializable]
+public class AxeSave
+{
+    int level;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public AxeSave(Axe axe)
+    {
+        level = axe.level;
+        posX = axe.transform.position.x;
+        posY = axe.transform.position.y;
+        posZ = axe.transform.position.z;
+        rotX = axe.transform.rotation.x;
+        rotY = axe.transform.rotation.y;
+        rotZ = axe.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableTools)
+        {
+            Axe axePrefab = toolPrefab.GetComponent<Axe>();
+            if (axePrefab == null)
+                continue;
+
+            if (axePrefab.level == level)
+            {
+                //Debug.Log("Loading Axe");
+                GameObject axe = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                return axe;
+            }
+        }
+        Debug.Log("Failed to load Axe, level = " + level.ToString());
+        return null;
+    }
 }

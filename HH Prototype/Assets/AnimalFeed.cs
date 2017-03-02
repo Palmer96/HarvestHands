@@ -24,6 +24,7 @@ public class AnimalFeed : Item
             itemCap = 20;
         }
         UpdateMesh();
+        SaveAndLoadManager.OnSave += Save;
     }
 
     public override void PrimaryUse(ClickType click)
@@ -51,3 +52,28 @@ public class AnimalFeed : Item
         }
     }
 }
+
+//[System.Serializable]
+//public class AnimalFeedSave
+//{
+//    int itemId;
+//    int quantity;
+//    float posX;
+//    float posY;
+//    float posZ;
+//    float rotX;
+//    float rotY;
+//    float rotZ;
+//
+//    public AnimalFeedSave(AnimalFeed animalFeed)
+//    {
+//        itemId = animalFeed.itemID;
+//        quantity = animalFeed.quantity;
+//        posX = animalFeed.transform.position.x;
+//        posY = animalFeed.transform.position.y;
+//        posZ = animalFeed.transform.position.z;
+//        rotX = animalFeed.transform.rotation.x;
+//        rotY = animalFeed.transform.rotation.y;
+//        rotZ = animalFeed.transform.rotation.z;
+//    }
+//}

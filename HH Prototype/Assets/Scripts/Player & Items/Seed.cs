@@ -41,12 +41,18 @@ public class Seed : Item
         //  {
         //      itemCap = 20;
         //  }
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
     void Update()
     {
 
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
     }
 
     public override void PrimaryUse(ClickType click)

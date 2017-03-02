@@ -104,7 +104,7 @@ public class PlayerInventory : MonoBehaviour
         qTimer = 0;
         eTimer = 0;
 
-
+        SaveAndLoadManager.OnSave += Save;
     }
 
 
@@ -610,8 +610,56 @@ public class PlayerInventory : MonoBehaviour
 
     }
 
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.playerSaveData = new PlayerSave(this);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
 }
 
+
+[System.Serializable]
+public class PlayerSave
+{
+    int money;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public PlayerSave(PlayerInventory playerInventory)
+    {
+        money = playerInventory.money;
+        posX = playerInventory.transform.position.x;
+        posY = playerInventory.transform.position.y;
+        posZ = playerInventory.transform.position.z;
+        rotX = playerInventory.transform.rotation.x;
+        rotY = playerInventory.transform.rotation.y;
+        rotZ = playerInventory.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+
+        if (PlayerInventory.instance != null)
+        {
+            PlayerInventory.instance.money = money;
+            PlayerInventory.instance.transform.position = new Vector3(posX, posY, posZ);
+            PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
+        }
+        else
+        {
+            Debug.Log("Failed to load player inventory, PlayerInventory.instance = " + PlayerInventory.instance);
+        }        
+        return null;
+    }
+}
 
 
 

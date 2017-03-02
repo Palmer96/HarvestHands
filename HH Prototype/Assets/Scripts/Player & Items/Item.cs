@@ -58,6 +58,7 @@ public class Item : MonoBehaviour
         {
             itemCap = 20;
         }
+        SaveAndLoadManager.OnSave += Save;
     }
 
     public virtual void PrimaryUse()
@@ -187,4 +188,60 @@ public class Item : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.itemSaveList.Add(new ItemSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
 }
+
+[System.Serializable]
+public class ItemSave
+{
+    public int itemID;
+    public int quantity;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public ItemSave(Item item)
+    {
+        itemID = item.itemID;
+        quantity = item.quantity;
+        posX = item.transform.position.x;
+        posY = item.transform.position.y;
+        posZ = item.transform.position.z;
+        rotX = item.transform.rotation.x;
+        rotY = item.transform.rotation.y;
+        rotZ = item.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableItems)
+        {
+            Item itemPrefab = toolPrefab.GetComponent<Item>();
+            if (itemPrefab == null)
+                continue;
+
+            if (itemPrefab.itemID == itemID)
+            {
+                //Debug.Log("Loading Item");
+                GameObject item = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                item.GetComponent<Item>().quantity = quantity;
+                return item;
+            }
+        }
+        Debug.Log("Failed to load Item, ID = " + itemID.ToString());
+        return null;
+    }
+}
+

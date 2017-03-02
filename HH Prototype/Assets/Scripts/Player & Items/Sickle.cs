@@ -9,6 +9,7 @@ public class Sickle : Item
     {
         itemID = 6;
         itemCap = 1;
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -82,5 +83,57 @@ public class Sickle : Item
                 plant.HarvestPlant();
             }
         }
+    }
+
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.sickleSaveList.Add(new SickleSave(this));
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+}
+
+[System.Serializable]
+public class SickleSave
+{
+    int level;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public SickleSave(Sickle sickle)
+    {
+        level = sickle.level;
+        posX = sickle.transform.position.x;
+        posY = sickle.transform.position.y;
+        posZ = sickle.transform.position.z;
+        rotX = sickle.transform.rotation.x;
+        rotY = sickle.transform.rotation.y;
+        rotZ = sickle.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableTools)
+        {
+            Sickle sicklePrefab = toolPrefab.GetComponent<Sickle>();
+            if (sicklePrefab == null)
+                continue;
+
+            if (sicklePrefab.level == level)
+            {
+                //Debug.Log("Loading Axe");
+                GameObject sickle = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                return sickle;
+            }
+        }
+        Debug.Log("Failed to load sickle, level = " + level.ToString());
+        return null;
     }
 }

@@ -83,6 +83,7 @@ public class Plant : MonoBehaviour
         UpdatePlant(1);
         transform.GetChild(1).GetChild(0).GetComponent<Slider>().maxValue = maxWater;
         startTime = harvestTimer;
+        //SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -498,5 +499,73 @@ public class Plant : MonoBehaviour
             }
         }
         return false;
+    }
+
+    /* Plot Covers soil and plant saving
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.plotSaveList.Add(new PlotSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+    */
+}
+
+[System.Serializable]
+public class PlantSave
+{
+    string plantName;
+    float waterLevel;
+    float harvestTimer;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public PlantSave(Plant plant)
+    {
+        plantName = plant.plantName;
+        waterLevel = plant.waterLevel;
+        harvestTimer = plant.harvestTimer;
+        posX = plant.transform.position.x;
+        posY = plant.transform.position.y;
+        posZ = plant.transform.position.z;
+        rotX = plant.transform.rotation.x;
+        rotY = plant.transform.rotation.y;
+        rotZ = plant.transform.rotation.z;
+    }
+
+    public GameObject LoadObject(Transform parent = null)
+    {
+        foreach (GameObject plantPrefabType in SaveAndLoadManager.instance.instantiateablePlants)
+        {
+            Plant plantPrefab = plantPrefabType.GetComponent<Plant>();
+            if (plantPrefab == null)
+                continue;
+
+            if (plantPrefab.plantName == plantName)
+            {
+                //Debug.Log("Loading Axe");
+                GameObject plant = (GameObject)Object.Instantiate(plantPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                Plant newPlant = plant.GetComponent<Plant>();
+                newPlant.waterLevel = waterLevel;
+                newPlant.harvestTimer = harvestTimer;
+                if (parent != null)
+                {
+                    plant.transform.SetParent(parent);
+                    plant.transform.position = new Vector3(posX, posY, posZ);
+                    plant.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
+                }
+                return plant;
+            }
+        }
+        Debug.Log("Failed to load Plant, plantName = " + plantName.ToString());
+        return null;
     }
 }

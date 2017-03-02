@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NPC : MonoBehaviour
-{
+{    
     public static List<NPC> npcList = new List<NPC>();
     public string npcName = "xXxPussySlayer69xXx";
     public int arousalValue = 0;
@@ -14,8 +14,8 @@ public class NPC : MonoBehaviour
 	// Use this for initialization
 	void Start () {
         npcList.Add(this);
-		
-	}
+        SaveAndLoadManager.OnSave += Save;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -60,5 +60,66 @@ public class NPC : MonoBehaviour
         //PrototypeQuestManager.instance.activeQuests.Add(quest);
         acceptableQuests.RemoveAt(index);
         return quest;
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.npcSaveList.Add(new NPCSave(this));
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+}
+
+[System.Serializable]
+public class NPCSave
+{
+    string npcName;
+    int arousalValue;
+    int videOverrideNode;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+    //List of questpool quests
+    //List of acceptable quests //or just search questppol for accepted ones instead of saving two lists
+
+    public NPCSave(NPC npc)
+    {
+        npcName = npc.npcName;
+        arousalValue = npc.arousalValue;
+        videOverrideNode = npc.GetComponent<VIDE_Assign>().overrideStartNode;
+        posX = npc.transform.position.x;
+        posY = npc.transform.position.y;
+        posZ = npc.transform.position.z;
+        rotX = npc.transform.rotation.x;
+        rotY = npc.transform.rotation.y;
+        rotZ = npc.transform.rotation.z;
+
+        //Quests and stuff
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (NPC npcPrefab in NPC.npcList)
+        {           
+            if (npcPrefab.npcName == npcName)
+            {
+                //Debug.Log("Loading Hammer");                
+                npcPrefab.arousalValue = arousalValue;
+                npcPrefab.GetComponent<VIDE_Assign>().overrideStartNode = videOverrideNode;
+                npcPrefab.transform.position = new Vector3(posX, posY, posZ);
+                npcPrefab.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
+
+                //Quest stuff
+                return npcPrefab.gameObject;
+            }
+        }
+        Debug.Log("Failed to load NPC, npcName = " + npcName.ToString());
+        return null;
     }
 }

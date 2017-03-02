@@ -6,6 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Livestock : MonoBehaviour
 {
+    public int livestockID;
     public string animalName = "";
     public int petHappinessIncrease = 5;
     public float currentHunger = 100f;
@@ -53,6 +54,13 @@ public class Livestock : MonoBehaviour
         currentProduceTimer = produceTimer;
         if (bed == null)
             bed = transform;
+
+        SaveAndLoadManager.OnSave += Save;
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
     }
 	
 	// Update is called once per frame
@@ -151,5 +159,64 @@ public class Livestock : MonoBehaviour
         movementTimer = Random.Range(minMoveTime, maxMoveTime);
         Vector3 moveToPos = bed.position + new Vector3(Random.Range(-roamRadius, roamRadius), 0, Random.Range(-roamRadius, roamRadius));
         navMeshAgent.SetDestination(moveToPos);
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.livestockSaveList.Add(new LivestockSave(this));
+    }
+
+}
+
+
+[System.Serializable]
+public class LivestockSave
+{
+    int livestockID;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+    float currentHappiness;
+    float currentHunger;
+    float currentProduceTimer;
+
+    public LivestockSave(Livestock livestock)
+    {
+        livestockID = livestock.livestockID;
+        posX = livestock.transform.position.x;
+        posY = livestock.transform.position.y;
+        posZ = livestock.transform.position.z;
+        rotX = livestock.transform.rotation.x;
+        rotY = livestock.transform.rotation.y;
+        rotZ = livestock.transform.rotation.z;
+        currentHappiness = livestock.currentHappiness;
+        currentHunger = livestock.currentHunger;
+        currentProduceTimer = livestock.currentProduceTimer;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject objectPrefab in SaveAndLoadManager.instance.instantiateableLivestock)
+        {
+            Livestock livestockPrefab = objectPrefab.GetComponent<Livestock>();
+            if (livestockPrefab == null)
+                continue;
+
+            if (livestockPrefab.livestockID == livestockID)
+            {
+                //Debug.Log("Loading Livestock");
+                GameObject livestock = (GameObject)Object.Instantiate(objectPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                Livestock livestockScript = livestock.GetComponent<Livestock>();
+                livestockScript.currentHappiness = currentHappiness;
+                livestockScript.currentHunger = currentHunger;
+                livestockScript.currentProduceTimer = currentProduceTimer;
+                return livestock;
+            }
+        }
+        Debug.Log("Failed to load Livestock, livestockID = " + livestockID.ToString());
+        return null;
     }
 }

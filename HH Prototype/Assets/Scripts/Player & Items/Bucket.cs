@@ -17,6 +17,7 @@ public class Bucket : Item
     {
         itemID = 5;
         itemCap = 1;
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -159,5 +160,60 @@ public class Bucket : Item
                 }
             }
         }
+    }
+
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.bucketSaveList.Add(new BucketSave(this));
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+}
+
+[System.Serializable]
+public class BucketSave
+{
+    int level;
+    float currentWaterLevel;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public BucketSave(Bucket bucket)
+    {
+        level = bucket.level;
+        currentWaterLevel = bucket.currentWaterLevel;
+        posX = bucket.transform.position.x;
+        posY = bucket.transform.position.y;
+        posZ = bucket.transform.position.z;
+        rotX = bucket.transform.rotation.x;
+        rotY = bucket.transform.rotation.y;
+        rotZ = bucket.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableTools)
+        {
+            Bucket bucketPrefab = toolPrefab.GetComponent<Bucket>();
+            if (bucketPrefab == null)
+                continue;
+
+            if (bucketPrefab.level == level)
+            {
+                //Debug.Log("Loading Bucket");
+                GameObject bucket = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                bucket.GetComponent<Bucket>().currentWaterLevel = currentWaterLevel;
+                return bucket;
+            }
+        }
+        Debug.Log("Failed to load bucket, level = " + level.ToString());
+        return null;
     }
 }

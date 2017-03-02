@@ -15,6 +15,7 @@ public class Shovel : Item
     {
         itemID = 4;
         itemCap = 1;
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -106,6 +107,58 @@ public class Shovel : Item
                 }
                 break;
         }
+    }
 
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.shovelSaveList.Add(new ShovelSave(this));
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+}
+
+
+[System.Serializable]
+public class ShovelSave
+{
+    int level;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public ShovelSave(Shovel shovel)
+    {
+        level = shovel.level;
+        posX = shovel.transform.position.x;
+        posY = shovel.transform.position.y;
+        posZ = shovel.transform.position.z;
+        rotX = shovel.transform.rotation.x;
+        rotY = shovel.transform.rotation.y;
+        rotZ = shovel.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableTools)
+        {
+            Shovel shovelPrefab = toolPrefab.GetComponent<Shovel>();
+            if (shovelPrefab == null)
+                continue;
+
+            if (shovelPrefab.level == level)
+            {
+                //Debug.Log("Loading Shovel");
+                GameObject shovel = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                return shovel;
+            }
+        }
+        Debug.Log("Failed to load shovel, level = " + level.ToString());
+        return null;
     }
 }

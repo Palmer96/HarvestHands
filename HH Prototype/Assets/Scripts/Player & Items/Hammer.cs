@@ -12,6 +12,7 @@ public class Hammer : Item
     {
         itemID = 3;
         itemCap = 1;
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -76,5 +77,55 @@ public class Hammer : Item
         }
 
     }
+    public override void Save()
+    {
+        SaveAndLoadManager.instance.hammerSaveList.Add(new HammerSave(this));
+    }
 
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+}
+
+[System.Serializable]
+public class HammerSave
+{
+    int level;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+
+    public HammerSave(Hammer hammer)
+    {
+        level = hammer.level;
+        posX = hammer.transform.position.x;
+        posY = hammer.transform.position.y;
+        posZ = hammer.transform.position.z;
+        rotX = hammer.transform.rotation.x;
+        rotY = hammer.transform.rotation.y;
+        rotZ = hammer.transform.rotation.z;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject toolPrefab in SaveAndLoadManager.instance.instantiateableTools)
+        {
+            Hammer hammerPrefab = toolPrefab.GetComponent<Hammer>();
+            if (hammerPrefab == null)
+                continue;
+
+            if (hammerPrefab.level == level)
+            {
+                //Debug.Log("Loading Hammer");
+                GameObject hammer = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                return hammer;
+            }
+        }
+        Debug.Log("Failed to load hammer, level = " + level.ToString());
+        return null;
+    }
 }
