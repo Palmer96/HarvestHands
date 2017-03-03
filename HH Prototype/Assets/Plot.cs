@@ -22,7 +22,7 @@ public class Plot : BuildingIdentifier
 
     public override void Save()
     {
-        SaveAndLoadManager.instance.plotSaveList.Add(new PlotSave(this));
+        SaveAndLoadManager.instance.saveData.plotSaveList.Add(new PlotSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -43,6 +43,7 @@ public class PlotSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public PlotSave(Plot plot)
     {
@@ -58,6 +59,7 @@ public class PlotSave
         rotX = plot.transform.rotation.x;
         rotY = plot.transform.rotation.y;
         rotZ = plot.transform.rotation.z;
+        rotW = plot.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -71,7 +73,7 @@ public class PlotSave
             if (plotPrefab.ID == ID)
             {
                 //Debug.Log("Loading Axe");
-                GameObject plot = (GameObject)Object.Instantiate(plotPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject plot = (GameObject)Object.Instantiate(plotPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 Plot newPlot = plot.GetComponent<Plot>();
                 foreach(Soil soil in newPlot.soilList)
                 {

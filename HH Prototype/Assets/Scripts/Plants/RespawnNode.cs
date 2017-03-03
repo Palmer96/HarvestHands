@@ -17,7 +17,7 @@ public class RespawnNode : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.respawnNodeList.Add(new RespawnNodeSave(this));
+        SaveAndLoadManager.instance.saveData.respawnNodeList.Add(new RespawnNodeSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -48,6 +48,7 @@ public class RespawnNodeSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public RespawnNodeSave(RespawnNode respawnNode)
     {
@@ -59,6 +60,7 @@ public class RespawnNodeSave
         rotX = respawnNode.transform.rotation.x;
         rotY = respawnNode.transform.rotation.y;
         rotZ = respawnNode.transform.rotation.z;
+        rotW = respawnNode.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -72,7 +74,7 @@ public class RespawnNodeSave
             if (respawnNodePrefab.ID == ID)
             {
             //Debug.Log("Loading Bucket");
-            GameObject respawnNode = (GameObject)Object.Instantiate(respawnNodeType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+            GameObject respawnNode = (GameObject)Object.Instantiate(respawnNodeType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
             respawnNode.GetComponent<RespawnNode>().daysTill = daysTill;
             return respawnNode;
             }

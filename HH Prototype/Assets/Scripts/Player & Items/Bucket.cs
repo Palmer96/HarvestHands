@@ -164,7 +164,7 @@ public class Bucket : Item
 
     public override void Save()
     {
-        SaveAndLoadManager.instance.bucketSaveList.Add(new BucketSave(this));
+        SaveAndLoadManager.instance.saveData.bucketSaveList.Add(new BucketSave(this));
     }
 
     void OnDestroy()
@@ -184,6 +184,7 @@ public class BucketSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public BucketSave(Bucket bucket)
     {
@@ -195,6 +196,7 @@ public class BucketSave
         rotX = bucket.transform.rotation.x;
         rotY = bucket.transform.rotation.y;
         rotZ = bucket.transform.rotation.z;
+        rotW = bucket.transform.rotation.w;        
     }
 
     public GameObject LoadObject()
@@ -208,7 +210,7 @@ public class BucketSave
             if (bucketPrefab.level == level)
             {
                 //Debug.Log("Loading Bucket");
-                GameObject bucket = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject bucket = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 bucket.GetComponent<Bucket>().currentWaterLevel = currentWaterLevel;
                 return bucket;
             }

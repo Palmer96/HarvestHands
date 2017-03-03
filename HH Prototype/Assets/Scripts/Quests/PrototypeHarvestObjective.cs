@@ -38,4 +38,16 @@ public class PrototypeHarvestObjective : QuestProtoypeObjective
             }
         }
     }
+
+    //Helps with save/load
+    public override int GetCurrentObjectiveValue()
+    {
+        return goalAmount;
+    }
+
+    //Helps with save/load
+    public override void SetCurrentObjectiveValue(int amount)
+    {
+        goalAmount = amount;
+    }
 }

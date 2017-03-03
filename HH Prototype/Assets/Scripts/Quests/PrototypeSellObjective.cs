@@ -5,6 +5,8 @@ using UnityEngine;
 public class PrototypeSellObjective : QuestProtoypeObjective
 {
     public string objectName = "WhatToSell";
+    public int goalAmount = 1;
+    public int currentAmount = 0;
 
     void Start()
     {
@@ -26,11 +28,27 @@ public class PrototypeSellObjective : QuestProtoypeObjective
     {
         if (objectName == objectType)
         {
-            objectiveDone = true;
-            Debug.Log(objectType + " sold!");
-            //GenerateRewards();
-            PrototypeQuestManager.UpdateQuests();
+            currentAmount++;
+            if (currentAmount >= goalAmount)
+            {
+                objectiveDone = true;
+                Debug.Log(objectType + " sold!");
+                //GenerateRewards();
+                PrototypeQuestManager.UpdateQuests();
+            }
         }
 
+    }
+
+    //Helps with save/load
+    public override int GetCurrentObjectiveValue()
+    {
+        return goalAmount;
+    }
+
+    //Helps with save/load
+    public override void SetCurrentObjectiveValue(int amount)
+    {
+        goalAmount = amount;
     }
 }

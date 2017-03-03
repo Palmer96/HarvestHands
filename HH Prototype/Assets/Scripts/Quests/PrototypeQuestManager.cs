@@ -27,6 +27,11 @@ public class PrototypeQuestManager : MonoBehaviour
         UpdateQuestText();
     }
 
+    void Start()
+    {
+        SaveAndLoadManager.OnSave += Save;
+    }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.J))
@@ -118,5 +123,70 @@ public class PrototypeQuestManager : MonoBehaviour
         }
 
         return -1;
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public void Save()
+    {
+        SaveAndLoadManager.instance.saveData.questManagerSave = new QuestManagerSave(this);
+        //Debug.Log("Saved item = " + name);
+    }
+}
+
+[System.Serializable]
+public class QuestManagerSave
+{
+    List<string> activeQuests;
+    List<string> completedQuests;
+    int activeQuestIndex;
+
+    public QuestManagerSave(PrototypeQuestManager questManager)
+    {
+        activeQuestIndex = questManager.activeQuestIndex;
+        activeQuests = new List<string>();
+        completedQuests = new List<string>();
+        foreach (QuestPrototype quest in questManager.activeQuests)
+        {
+            activeQuests.Add(quest.questName);
+        }
+        foreach (QuestPrototype quest in questManager.completedQuests)
+        {
+            completedQuests.Add(quest.questName);
+        }
+    }
+
+    public GameObject LoadObject()
+    {
+        PrototypeQuestManager.instance.activeQuestIndex = activeQuestIndex;
+
+        PrototypeQuestManager.instance.activeQuests = new List<QuestPrototype>();
+        PrototypeQuestManager.instance.completedQuests = new List<QuestPrototype>();
+        foreach (QuestPrototype quest in QuestGrabber.questList)
+        {
+            foreach (string questName in activeQuests)
+            {
+                if (questName == quest.questName)
+                {
+                    PrototypeQuestManager.instance.activeQuests.Add(quest);
+                    break;
+                }
+            }
+            foreach (string questName in completedQuests)
+            {
+                if (questName == quest.questName)
+                {
+                    PrototypeQuestManager.instance.completedQuests.Add(quest);
+                    break;
+                }
+            }
+//    Debug.Log("Failed to add active or completed saveData quest to questManager active/completed list, questName = " + quest.questName.ToString());
+        }
+        PrototypeQuestManager.instance.UpdateQuestText();
+
+        return null;
     }
 }

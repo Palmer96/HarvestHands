@@ -14,7 +14,7 @@ public class BuildingIdentifier : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.buildingSaveList.Add(new BuildingSave(this));
+        SaveAndLoadManager.instance.saveData.buildingIdentifierSaveList.Add(new BuildingIdentifierSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -25,7 +25,7 @@ public class BuildingIdentifier : MonoBehaviour
 }
 
 [System.Serializable]
-public class BuildingSave
+public class BuildingIdentifierSave
 {
     int ID;
     float posX;
@@ -34,8 +34,9 @@ public class BuildingSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
-    public BuildingSave(BuildingIdentifier building)
+    public BuildingIdentifierSave(BuildingIdentifier building)
     {
         ID = building.ID;
         posX = building.transform.position.x;
@@ -44,11 +45,12 @@ public class BuildingSave
         rotX = building.transform.rotation.x;
         rotY = building.transform.rotation.y;
         rotZ = building.transform.rotation.z;
+        rotW = building.transform.rotation.w;
     }
 
     public GameObject LoadObject()
     {
-        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
+        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildingIdentifiers)
         {
             BuildingIdentifier buildingPrefab = buildingPrefabType.GetComponent<BuildingIdentifier>();
             if (buildingPrefab == null)
@@ -57,7 +59,7 @@ public class BuildingSave
             if (buildingPrefab.ID == ID)
             {
                 //Debug.Log("Loading Axe");
-                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 return building;
             }
         }

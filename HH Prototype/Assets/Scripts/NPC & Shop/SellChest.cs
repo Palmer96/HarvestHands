@@ -5,12 +5,14 @@ using UnityEngine;
 public class SellChest : MonoBehaviour
 {
     public static List<SellChest> sellChests = new List<SellChest>();
+    public int ID;
     public int valueOfItems = 0;
 
     // Use this for initialization
     void Start()
     {
         SellChest.sellChests.Add(this);
+        SaveAndLoadManager.OnSave += Save;
     }
 
     void Update()
@@ -43,4 +45,41 @@ public class SellChest : MonoBehaviour
             chest.valueOfItems = 0;
         }
     }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.saveData.sellChestSaveList.Add(new SellChestSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
 }
+
+[System.Serializable]
+public class SellChestSave
+{
+    int ID;
+    int sellValue;
+
+    public SellChestSave(SellChest sellChest)
+    {
+        sellValue = sellChest.valueOfItems;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (SellChest sellChest in SellChest.sellChests)
+        {
+            if (ID == sellChest.ID)
+            {
+                sellChest.valueOfItems = sellValue;
+                return sellChest.gameObject;
+            }
+        }
+        Debug.Log("Failed to load SellChest, ID = " + ID.ToString() + ", sellValue = " + sellValue.ToString());
+        return null;
+    }
+} 

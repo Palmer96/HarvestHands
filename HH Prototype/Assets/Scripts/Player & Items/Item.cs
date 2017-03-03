@@ -190,7 +190,7 @@ public class Item : MonoBehaviour
     }
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.itemSaveList.Add(new ItemSave(this));
+        SaveAndLoadManager.instance.saveData.itemSaveList.Add(new ItemSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -211,6 +211,7 @@ public class ItemSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public ItemSave(Item item)
     {
@@ -222,6 +223,7 @@ public class ItemSave
         rotX = item.transform.rotation.x;
         rotY = item.transform.rotation.y;
         rotZ = item.transform.rotation.z;
+        rotW = item.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -235,7 +237,7 @@ public class ItemSave
             if (itemPrefab.itemID == itemID)
             {
                 //Debug.Log("Loading Item");
-                GameObject item = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject item = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 item.GetComponent<Item>().quantity = quantity;
                 return item;
             }

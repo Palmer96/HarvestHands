@@ -35,6 +35,7 @@ public class Blueprint : MonoBehaviour
         //else
         //    Debug.Log("2 blue prints in scene");
         Debug.Log("Inside Blueprint Start()");
+        SaveAndLoadManager.OnSave += Save;
     }
 
 
@@ -174,4 +175,69 @@ public class Blueprint : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.saveData.blueprintSave = new BlueprintSave(this);
+        //Debug.Log("Saved item = " + name);
+    }
+
+}
+
+
+[System.Serializable]
+public class BlueprintSave
+{
+    int constructsCount;
+    List<string> constructNames;
+
+    public BlueprintSave(Blueprint blueprint)
+    {
+        constructsCount = blueprint.Constructs.Count;
+        constructNames = new List<string>();
+        foreach (GameObject constructPrefab in blueprint.Constructs)
+        {
+            Construct construct = constructPrefab.GetComponent<Construct>();
+            if (construct == null)
+                continue;
+
+            constructNames.Add(construct.constructName);
+        }
+    }
+
+    public GameObject LoadObject()
+    {
+        if (Blueprint.instance == null)
+        {
+            Debug.Log("Cant load Blueprint, Blueprint.instance = null");
+            return null;
+        }
+
+        Blueprint.instance.Constructs = new List<GameObject>();
+        foreach (string constructName in constructNames)
+        {
+            foreach (GameObject constructPrefabType in SaveAndLoadManager.instance.instantiateableConstructs)
+            {
+                Construct construct = constructPrefabType.GetComponent<Construct>();
+                if (construct == null)
+                    continue;
+
+                if (constructName == construct.constructName)
+                { 
+                    Blueprint.instance.Constructs.Add(constructPrefabType);
+                    break;
+                }
+            }
+        }
+        if (constructsCount != Blueprint.instance.Constructs.Count)
+        {
+            Debug.Log("Blueprint couldn't load all Constructs, Saved = " + constructsCount.ToString() + " vs Loaded = " + Blueprint.instance.Constructs.Count.ToString());
+        }
+
+        return CraftingManager.instance.gameObject;
+    }
 }

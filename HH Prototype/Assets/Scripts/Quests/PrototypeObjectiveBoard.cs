@@ -39,3 +39,66 @@ public class PrototypeObjectiveBoard : MonoBehaviour
         PrototypeQuestManager.instance.UpdateQuestText();
     }
 }
+
+[System.Serializable]
+public class NoticeBoardSave
+{    
+    List<string> potentialQuests;
+    List<string> acceptedQuests;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+    float rotW;
+
+    public NoticeBoardSave(PrototypeObjectiveBoard board)
+    {
+        posX = board.transform.position.x;
+        posY = board.transform.position.y;
+        posZ = board.transform.position.z;
+        rotX = board.transform.rotation.x;
+        rotY = board.transform.rotation.y;
+        rotZ = board.transform.rotation.z;
+        rotW = board.transform.rotation.w;
+        foreach (QuestPrototype quest in board.acceptedQuests)
+        {
+            acceptedQuests.Add(quest.questName);
+        }
+        foreach (QuestPrototype quest in board.potentialQuests)
+        {
+            potentialQuests.Add(quest.questName);
+        }
+    }
+
+    public GameObject LoadObject()
+    {
+        GameObject newNoticeBoard = (GameObject)Object.Instantiate(SaveAndLoadManager.instance.instantiateableQuestBoard, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+        PrototypeObjectiveBoard objectiveBoard = newNoticeBoard.GetComponent<PrototypeObjectiveBoard>();
+        objectiveBoard.acceptedQuests = new List<QuestPrototype>();
+        objectiveBoard.potentialQuests = new List<QuestPrototype>();
+        foreach(string questName in acceptedQuests)
+        {
+            foreach(QuestPrototype quest in QuestGrabber.questList)
+            {
+                if (questName == quest.questName)
+                {
+                    objectiveBoard.acceptedQuests.Add(quest);
+                }
+            }
+        }
+        foreach (string questName in potentialQuests)
+        {
+            foreach (QuestPrototype quest in QuestGrabber.questList)
+            {
+                if (questName == quest.questName)
+                {
+                    objectiveBoard.potentialQuests.Add(quest);
+                }
+            }
+        }
+
+        return newNoticeBoard;
+    }
+}

@@ -612,7 +612,7 @@ public class PlayerInventory : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.playerSaveData = new PlayerSave(this);
+        SaveAndLoadManager.instance.saveData.playerSaveData = new PlayerSave(this);
     }
 
     void OnDestroy()
@@ -632,10 +632,12 @@ public class PlayerSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     float camrotX;
     float camrotY;
     float camrotZ;
+    float camrotW;
 
     public PlayerSave(PlayerInventory playerInventory)
     {
@@ -646,10 +648,12 @@ public class PlayerSave
         rotX = playerInventory.transform.rotation.x;
         rotY = playerInventory.transform.rotation.y;
         rotZ = playerInventory.transform.rotation.z;
+        rotW = playerInventory.transform.rotation.w;
 
         camrotX = playerInventory.transform.GetChild(0).rotation.x;
         camrotY = playerInventory.transform.GetChild(0).rotation.y;
         camrotZ = playerInventory.transform.GetChild(0).rotation.z;
+        camrotW = playerInventory.transform.GetChild(0).rotation.w;
     }
 
     public GameObject LoadObject()
@@ -659,8 +663,8 @@ public class PlayerSave
         {
             PlayerInventory.instance.money = money;
             PlayerInventory.instance.transform.position = new Vector3(posX, posY, posZ);
-            PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
-            PlayerInventory.instance.transform.GetChild(0).rotation = new Quaternion(camrotX, camrotY, camrotZ, 0);
+            PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, rotW);
+            PlayerInventory.instance.transform.GetChild(0).rotation = new Quaternion(camrotX, camrotY, camrotZ, camrotW);
         }
         else
         {

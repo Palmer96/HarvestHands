@@ -111,7 +111,7 @@ public class Shovel : Item
 
     public override void Save()
     {
-        SaveAndLoadManager.instance.shovelSaveList.Add(new ShovelSave(this));
+        SaveAndLoadManager.instance.saveData.shovelSaveList.Add(new ShovelSave(this));
     }
 
     void OnDestroy()
@@ -131,6 +131,7 @@ public class ShovelSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public ShovelSave(Shovel shovel)
     {
@@ -141,6 +142,7 @@ public class ShovelSave
         rotX = shovel.transform.rotation.x;
         rotY = shovel.transform.rotation.y;
         rotZ = shovel.transform.rotation.z;
+        rotW = shovel.transform.rotation.z;
     }
 
     public GameObject LoadObject()
@@ -154,7 +156,7 @@ public class ShovelSave
             if (shovelPrefab.level == level)
             {
                 //Debug.Log("Loading Shovel");
-                GameObject shovel = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject shovel = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 return shovel;
             }
         }

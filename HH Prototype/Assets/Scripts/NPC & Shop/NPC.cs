@@ -64,7 +64,7 @@ public class NPC : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.npcSaveList.Add(new NPCSave(this));
+        SaveAndLoadManager.instance.saveData.npcSaveList.Add(new NPCSave(this));
     }
 
     void OnDestroy()
@@ -85,6 +85,7 @@ public class NPCSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
     //List of questpool quests
     //List of acceptable quests //or just search questppol for accepted ones instead of saving two lists
 
@@ -99,6 +100,7 @@ public class NPCSave
         rotX = npc.transform.rotation.x;
         rotY = npc.transform.rotation.y;
         rotZ = npc.transform.rotation.z;
+        rotW = npc.transform.rotation.w;
 
         //Quests and stuff
     }
@@ -113,7 +115,7 @@ public class NPCSave
                 npcPrefab.arousalValue = arousalValue;
                 npcPrefab.GetComponent<VIDE_Assign>().overrideStartNode = videOverrideNode;
                 npcPrefab.transform.position = new Vector3(posX, posY, posZ);
-                npcPrefab.transform.rotation = new Quaternion(rotX, rotY, rotZ, 0);
+                npcPrefab.transform.rotation = new Quaternion(rotX, rotY, rotZ, rotW);
 
                 //Quest stuff
                 return npcPrefab.gameObject;

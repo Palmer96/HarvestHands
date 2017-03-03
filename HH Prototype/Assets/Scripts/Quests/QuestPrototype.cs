@@ -14,6 +14,11 @@ public class QuestPrototype : MonoBehaviour
     public List<PrototypeQuestReward> rewards = new List<PrototypeQuestReward>();
     public List<PrototypeQuestPrerequisite> prerequisites = new List<PrototypeQuestPrerequisite>();
 
+    void Start()
+    {
+        SaveAndLoadManager.OnSave += Save;
+    }
+
     public void StartQuest(int atObjective = 0)
     {
         //Debug.Log("inside start quest - objectives.count = " + objectives.Count);
@@ -87,5 +92,82 @@ public class QuestPrototype : MonoBehaviour
                 return false;
         }
         return true;
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.saveData.questSaveList.Add(new QuestSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+}
+
+
+[System.Serializable]
+public class QuestSave
+{
+    string questName;
+    bool questAccepted;
+    bool questComplete;
+    int currentObjective;
+    int currenObjectiveGoalValue;
+
+    public QuestSave(QuestPrototype quest)
+    {
+
+        questName = quest.questName;
+        questAccepted = quest.questAccepted;
+        questComplete = quest.questComplete;
+        currentObjective = quest.currentObjective;
+        if (!quest.questComplete) //if complete, index is > objectives.count (i think)
+            currenObjectiveGoalValue = quest.objectives[currentObjective].GetCurrentObjectiveValue();
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (QuestPrototype questPrefab in QuestGrabber.questList)
+        {
+            if (questPrefab == null)
+                continue;
+
+            //Debug.Log("questPrefab.questName(" + questPrefab.questName + ") vs questName(" + questName + ")");
+            if (questPrefab.questName == questName)
+            {
+                //Debug.Log("Loading Item");
+                questPrefab.questAccepted = questAccepted;
+                questPrefab.questComplete = questComplete;
+                questPrefab.currentObjective = currentObjective;
+                if (!questComplete) //if complete, index is > objectives.count (i think)
+                {
+                    questPrefab.objectives[currentObjective].SetCurrentObjectiveValue(currenObjectiveGoalValue);
+                    for (int i = 0; i < currentObjective; ++i)
+                    {
+                        questPrefab.objectives[i].objectiveDone = true;
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < questPrefab.objectives.Count; ++i)
+                    {
+                        questPrefab.objectives[i].objectiveDone = true;
+                    }
+                }
+                if (questAccepted)
+                {
+                    if (!questComplete)
+                    {
+                        PrototypeQuestManager.instance.activeQuests.Add(questPrefab);
+                    }
+                }
+
+                return null;
+            }
+        }
+        Debug.Log("Failed to load Quest, questName = " + questName.ToString());
+        return null;
     }
 }

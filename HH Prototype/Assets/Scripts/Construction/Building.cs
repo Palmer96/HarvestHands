@@ -26,6 +26,7 @@ public class Building : MonoBehaviour
     void Start()
     {
         text = transform.GetChild(0).GetComponent<TextMesh>();
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -123,5 +124,64 @@ public class Building : MonoBehaviour
             }
         }
         Destroy(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+}
+
+
+[System.Serializable]
+public class BuildingSave
+{
+    string constructName;
+    Building.ResourceRequired[] resources;
+    float posX;
+    float posY;
+    float posZ;
+    float rotX;
+    float rotY;
+    float rotZ;
+    float rotW;
+
+    public BuildingSave(Building building)
+    {
+        constructName = building.constructName;
+        resources = building.resources;
+        posX = building.transform.position.x;
+        posY = building.transform.position.y;
+        posZ = building.transform.position.z;
+        rotX = building.transform.rotation.x;
+        rotY = building.transform.rotation.y;
+        rotZ = building.transform.rotation.z;
+        rotW = building.transform.rotation.w;
+    }
+
+    public GameObject LoadObject()
+    {
+        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
+        {
+            Building buildingPrefab = buildingPrefabType.GetComponent<Building>();
+            if (buildingPrefab == null)
+                continue;
+
+            if (buildingPrefab.constructName == constructName)
+            {
+                //Debug.Log("Loading Axe");
+                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+                building.GetComponent<Building>().resources = resources;
+                return building;
+            }
+        }
+        Debug.Log("Failed to load Building, constructName = " + constructName.ToString());
+        return null;
     }
 }

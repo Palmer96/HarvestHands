@@ -37,7 +37,7 @@ public class Tree : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.treeSaveList.Add(new TreeSave(this));
+        SaveAndLoadManager.instance.saveData.treeSaveList.Add(new TreeSave(this));
     }
 }
 
@@ -51,6 +51,7 @@ public class TreeSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public TreeSave(Tree tree)
     {
@@ -61,6 +62,7 @@ public class TreeSave
         rotX = tree.transform.rotation.x;
         rotY = tree.transform.rotation.y;
         rotZ = tree.transform.rotation.z;
+        rotW = tree.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -74,7 +76,7 @@ public class TreeSave
             //if (treePrefab.ID == ID)
             //{
                 //Debug.Log("Loading Bucket");
-                GameObject tree = (GameObject)Object.Instantiate(treePrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject tree = (GameObject)Object.Instantiate(treePrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 tree.GetComponent<Tree>().woodAvaliable = woodAvailable;
                 return tree;
             //}

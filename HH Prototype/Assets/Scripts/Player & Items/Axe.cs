@@ -114,7 +114,7 @@ public class Axe : Item
 
     public override void Save()
     {
-        SaveAndLoadManager.instance.axeSaveList.Add(new AxeSave(this));
+        SaveAndLoadManager.instance.saveData.axeSaveList.Add(new AxeSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -131,6 +131,7 @@ public class AxeSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public AxeSave(Axe axe)
     {
@@ -141,6 +142,7 @@ public class AxeSave
         rotX = axe.transform.rotation.x;
         rotY = axe.transform.rotation.y;
         rotZ = axe.transform.rotation.z;
+        rotW = axe.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -154,7 +156,7 @@ public class AxeSave
             if (axePrefab.level == level)
             {
                 //Debug.Log("Loading Axe");
-                GameObject axe = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject axe = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 return axe;
             }
         }

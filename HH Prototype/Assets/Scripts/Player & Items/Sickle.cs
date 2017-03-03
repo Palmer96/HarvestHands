@@ -87,7 +87,7 @@ public class Sickle : Item
 
     public override void Save()
     {
-        SaveAndLoadManager.instance.sickleSaveList.Add(new SickleSave(this));
+        SaveAndLoadManager.instance.saveData.sickleSaveList.Add(new SickleSave(this));
     }
 
     void OnDestroy()
@@ -106,6 +106,7 @@ public class SickleSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public SickleSave(Sickle sickle)
     {
@@ -116,6 +117,7 @@ public class SickleSave
         rotX = sickle.transform.rotation.x;
         rotY = sickle.transform.rotation.y;
         rotZ = sickle.transform.rotation.z;
+        rotW = sickle.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -129,7 +131,7 @@ public class SickleSave
             if (sicklePrefab.level == level)
             {
                 //Debug.Log("Loading Axe");
-                GameObject sickle = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject sickle = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 return sickle;
             }
         }

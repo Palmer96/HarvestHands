@@ -8,23 +8,27 @@ using System.IO;
 public class SaveAndLoadManager : MonoBehaviour
 {
     public static SaveAndLoadManager instance = null;
+    public SaveData saveData = new SaveData();
 
     //-----ACTUAL DATA LIST THINGS-----------------------------------------
-    public PlayerSave playerSaveData;
-    public List<AxeSave> axeSaveList = new List<AxeSave>();
-    public List<ShovelSave> shovelSaveList = new List<ShovelSave>();
-    public List<BucketSave> bucketSaveList = new List<BucketSave>();
-    public List<SickleSave> sickleSaveList = new List<SickleSave>();
-    public List<HammerSave> hammerSaveList = new List<HammerSave>();
-
-    public List<ItemSave> itemSaveList = new List<ItemSave>();
-    public List<LivestockSave> livestockSaveList = new List<LivestockSave>();
-    public List<NPCSave> npcSaveList = new List<NPCSave>();
-    public List<PlotSave> plotSaveList = new List<PlotSave>();
-    public List<BuildingSave> buildingSaveList = new List<BuildingSave>();
-    public List<TreeSave> treeSaveList = new List<TreeSave>();
-    public List<RespawnNodeSave> respawnNodeList = new List<RespawnNodeSave>();
-    public List<RockSave> rockSaveList = new List<RockSave>();
+    //public PlayerSave playerSaveData;
+    //public List<AxeSave> axeSaveList = new List<AxeSave>();
+    //public List<ShovelSave> shovelSaveList = new List<ShovelSave>();
+    //public List<BucketSave> bucketSaveList = new List<BucketSave>();
+    //public List<SickleSave> sickleSaveList = new List<SickleSave>();
+    //public List<HammerSave> hammerSaveList = new List<HammerSave>();
+    //
+    //public List<ItemSave> itemSaveList = new List<ItemSave>();
+    //public List<LivestockSave> livestockSaveList = new List<LivestockSave>();
+    //public List<NPCSave> npcSaveList = new List<NPCSave>();
+    //public List<PlotSave> plotSaveList = new List<PlotSave>();
+    //public List<BuildingSave> buildingSaveList = new List<BuildingSave>();
+    //public List<TreeSave> treeSaveList = new List<TreeSave>();
+    //public List<RespawnNodeSave> respawnNodeList = new List<RespawnNodeSave>();
+    //public List<RockSave> rockSaveList = new List<RockSave>();
+    //public List<QuestSave> questSaveList = new List<QuestSave>();
+    //public QuestManagerSave questManagerSave;
+    //public DayNightControllerSave dayNightControllerSave;
     
 
     //-----PREFABS-----------------------------------------------------------
@@ -33,13 +37,17 @@ public class SaveAndLoadManager : MonoBehaviour
     public List<GameObject> instantiateableLivestock = new List<GameObject>();
     //public List<GameObject> instantiateableNPCs = new List<GameObject>();
     public List<GameObject> instantiateablePlants = new List<GameObject>();
-    public List<GameObject> instantiateableBuildings = new List<GameObject>();
+    public List<GameObject> instantiateableBuildingIdentifiers = new List<GameObject>();
     public List<GameObject> instantiateablePlots = new List<GameObject>();
     public GameObject       instantiateableSoil;
     public List<GameObject> instantiateableTrees = new List<GameObject>();
     public List<GameObject> instantiateableRespawnNodes = new List<GameObject>();
     public List<GameObject> instantiateableRocks = new List<GameObject>();
-    
+    public List<CraftingRecipe> instantiateableCraftingRecipes = new List<CraftingRecipe>();
+    public List<GameObject> instantiateableConstructs = new List<GameObject>();
+    public List<GameObject> instantiateableBuildings = new List<GameObject>();
+    public GameObject       instantiateableQuestBoard;
+
 
     public delegate void SaveAction();
     public static event SaveAction OnSave = delegate { };
@@ -62,55 +70,12 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void Save()
     {
-        //Empty List from any previous saves
-        //playerSaveData = PlayerSave();
-        axeSaveList = new List<AxeSave>();
-        shovelSaveList = new List<ShovelSave>();
-        bucketSaveList = new List<BucketSave>();
-        sickleSaveList = new List<SickleSave>();
-        hammerSaveList = new List<HammerSave>();
+        //Create save prefab
+        saveData = new SaveData();
 
-        itemSaveList = new List<ItemSave>();
-        livestockSaveList = new List<LivestockSave>();
-        npcSaveList = new List<NPCSave>();
-        plotSaveList = new List<PlotSave>();
-        buildingSaveList = new List<BuildingSave>();
-        treeSaveList = new List<TreeSave>();
-
-
-        //Generate new lists
+        //Collect lists of data to save
         SaveEvent();
-
-        //Put in save file
-        SaveData saveData = new SaveData();
-        saveData.playerSaveData = playerSaveData;
-        saveData.axeSaveList = axeSaveList;
-        saveData.shovelSaveList = shovelSaveList;
-        saveData.bucketSaveList = bucketSaveList;
-        saveData.sickleSaveList = sickleSaveList;
-        saveData.hammerSaveList = hammerSaveList;
-        saveData.itemSaveList = itemSaveList;
-        saveData.livestockSaveList = livestockSaveList;
-        saveData.npcSaveList = npcSaveList;
-        saveData.plotSaveList = plotSaveList;
-        saveData.buildingSaveList = buildingSaveList;
-        saveData.treeSaveList = treeSaveList;
-        saveData.respawnNodeList = respawnNodeList;
-        saveData.rockSaveList = rockSaveList;
-        
-        Debug.Log("Attemptign to save " + treeSaveList.Count.ToString() + " trees");
-
-        //Debug.Log("axeSaveList.Count = " + axeSaveList.Count);
-        //Debug.Log("shovelSaveList.Count = " + shovelSaveList.Count);
-        //Debug.Log("bucketSaveList.Count = " + bucketSaveList.Count);
-        //Debug.Log("sickleSaveList.Count = " + sickleSaveList.Count);
-        //Debug.Log("hammerSaveList.Count = " + hammerSaveList.Count);
-        //Debug.Log("itemSaveList.Count = " + itemSaveList.Count);
-        //Debug.Log("livestockSaveList.Count = " + livestockSaveList.Count);
-
-        Debug.Log("Total Saved count = " + (saveData.axeSaveList.Count + saveData.shovelSaveList.Count + saveData.bucketSaveList.Count + saveData.sickleSaveList.Count
-            + saveData.hammerSaveList.Count + saveData.itemSaveList.Count + saveData.livestockSaveList.Count).ToString());
-
+                
         //Save Data
         BinaryFormatter bf = new BinaryFormatter();
         Debug.Log("Data Path = \"" + Application.persistentDataPath + "\"");
@@ -121,7 +86,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
     public void Load()
     {
-        if (File.Exists(Application.persistentDataPath + "/save.dat"));
+        if (File.Exists(Application.persistentDataPath + "/save.dat"))
         {            
             //Load Data
             BinaryFormatter bf = new BinaryFormatter();
@@ -129,8 +94,7 @@ public class SaveAndLoadManager : MonoBehaviour
             SaveData saveData = (SaveData)bf.Deserialize(file);
             file.Close();
 
-            Debug.Log("Total Loaded count = " + (saveData.axeSaveList.Count + saveData.shovelSaveList.Count + saveData.bucketSaveList.Count
-                + saveData.sickleSaveList.Count + saveData.hammerSaveList.Count + saveData.itemSaveList.Count + saveData.livestockSaveList.Count).ToString());
+            Debug.Log("Total Loaded count = " + (saveData.questSaveList.Count).ToString());
 
 
 
@@ -147,8 +111,8 @@ public class SaveAndLoadManager : MonoBehaviour
                 livestock.gameObject.SetActive(false);
                 Destroy(livestock.gameObject);
             }
-            BuildingIdentifier[] buildings = FindObjectsOfType<BuildingIdentifier>();
-            foreach (BuildingIdentifier building in buildings)
+            BuildingIdentifier[] buildingsIdentifiers = FindObjectsOfType<BuildingIdentifier>();
+            foreach (BuildingIdentifier building in buildingsIdentifiers)
             {
                 building.gameObject.SetActive(false);
                 Destroy(building.gameObject);
@@ -170,6 +134,12 @@ public class SaveAndLoadManager : MonoBehaviour
             {
                 rock.gameObject.SetActive(false);
                 Destroy(rock.gameObject);
+            }
+            Building[] buildings = FindObjectsOfType<Building>();
+            foreach (Building building in buildings)
+            {
+                building.gameObject.SetActive(false);
+                Destroy(building.gameObject);
             }
             //Debug.Log("Attemptign to destroy " + trees.Length.ToString() + " trees");
 
@@ -212,13 +182,9 @@ public class SaveAndLoadManager : MonoBehaviour
             {
                 plotSave.LoadObject();
             }
-            foreach (BuildingSave buildingSave in saveData.buildingSaveList)
+            foreach (BuildingIdentifierSave buildingSave in saveData.buildingIdentifierSaveList)
             {
                 buildingSave.LoadObject();
-            }
-            foreach(PlotSave plotSave in saveData.plotSaveList)
-            {
-                plotSave.LoadObject();
             }
             foreach (TreeSave treeSave in saveData.treeSaveList)
             {
@@ -232,6 +198,24 @@ public class SaveAndLoadManager : MonoBehaviour
             {
                 rockSave.LoadObject();
             }            
+            foreach (QuestSave questSave in saveData.questSaveList)
+            {
+                questSave.LoadObject();
+            }
+            saveData.questManagerSave.LoadObject();
+            saveData.dayNightControllerSave.LoadObject();
+            foreach (SellChestSave sellChestSave in saveData.sellChestSaveList)
+            {
+                sellChestSave.LoadObject();
+            }
+            saveData.craftingRecipeManagerSave.LoadObject();
+            saveData.blueprintSave.LoadObject();
+
+            foreach (BuildingSave buildingSave in saveData.buildingSaveList)
+            {
+                buildingSave.LoadObject();
+            }
+            //Debug.Log("savedata.buildingsavelist.count = " + saveData.buildingSaveList.Count);
             Invoke("ClearNullLists", 00001);
         }
     }
@@ -242,9 +226,9 @@ public class SaveAndLoadManager : MonoBehaviour
 }
 
 [System.Serializable]
-class SaveData
+public class SaveData
 {
-    public PlayerSave playerSaveData;
+    public PlayerSave playerSaveData = null;
     public List<AxeSave> axeSaveList = new List<AxeSave>();
     public List<ShovelSave> shovelSaveList = new List<ShovelSave>();
     public List<BucketSave> bucketSaveList = new List<BucketSave>();
@@ -255,10 +239,18 @@ class SaveData
     public List<LivestockSave> livestockSaveList = new List<LivestockSave>();
     public List<NPCSave> npcSaveList = new List<NPCSave>();
     public List<PlotSave> plotSaveList = new List<PlotSave>();
-    public List<BuildingSave> buildingSaveList = new List<BuildingSave>();
+    public List<BuildingIdentifierSave> buildingIdentifierSaveList = new List<BuildingIdentifierSave>();
     public List<TreeSave> treeSaveList = new List<TreeSave>();
     public List<RespawnNodeSave> respawnNodeList = new List<RespawnNodeSave>();
     public List<RockSave> rockSaveList = new List<RockSave>();
+    public List<QuestSave> questSaveList = new List<QuestSave>();
+    public QuestManagerSave questManagerSave = null;
+    public DayNightControllerSave dayNightControllerSave = null;
+    public List<SellChestSave> sellChestSaveList = new List<SellChestSave>();
+    public CraftingRecipeManagerSave craftingRecipeManagerSave = null;
+    public BlueprintSave blueprintSave = null;
+    public List<BuildingSave> buildingSaveList = new List<BuildingSave>();
+    public List<NoticeBoardSave> noticeBoardSaveList = new List<NoticeBoardSave>();
 }
 
 

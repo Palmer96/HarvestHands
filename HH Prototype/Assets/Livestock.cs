@@ -163,7 +163,7 @@ public class Livestock : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.livestockSaveList.Add(new LivestockSave(this));
+        SaveAndLoadManager.instance.saveData.livestockSaveList.Add(new LivestockSave(this));
     }
 
 }
@@ -179,6 +179,7 @@ public class LivestockSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
     float currentHappiness;
     float currentHunger;
     float currentProduceTimer;
@@ -192,6 +193,7 @@ public class LivestockSave
         rotX = livestock.transform.rotation.x;
         rotY = livestock.transform.rotation.y;
         rotZ = livestock.transform.rotation.z;
+        rotW = livestock.transform.rotation.w;
         currentHappiness = livestock.currentHappiness;
         currentHunger = livestock.currentHunger;
         currentProduceTimer = livestock.currentProduceTimer;
@@ -208,7 +210,7 @@ public class LivestockSave
             if (livestockPrefab.livestockID == livestockID)
             {
                 //Debug.Log("Loading Livestock");
-                GameObject livestock = (GameObject)Object.Instantiate(objectPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject livestock = (GameObject)Object.Instantiate(objectPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 Livestock livestockScript = livestock.GetComponent<Livestock>();
                 livestockScript.currentHappiness = currentHappiness;
                 livestockScript.currentHunger = currentHunger;

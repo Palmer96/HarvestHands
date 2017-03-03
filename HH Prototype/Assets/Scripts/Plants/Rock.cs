@@ -16,7 +16,7 @@ public class Rock : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.rockSaveList.Add(new RockSave(this));
+        SaveAndLoadManager.instance.saveData.rockSaveList.Add(new RockSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -49,6 +49,7 @@ public class RockSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public RockSave(Rock rock)
     {
@@ -60,6 +61,7 @@ public class RockSave
         rotX = rock.transform.rotation.x;
         rotY = rock.transform.rotation.y;
         rotZ = rock.transform.rotation.z;
+        rotW = rock.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -73,7 +75,7 @@ public class RockSave
             if (rockPrefab.ID == ID)
             {
             //Debug.Log("Loading Bucket");
-            GameObject rock = (GameObject)Object.Instantiate(rockPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+            GameObject rock = (GameObject)Object.Instantiate(rockPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
             rock.GetComponent<Rock>().rockAvaliable = rockAvailable;
             return rock;
             }

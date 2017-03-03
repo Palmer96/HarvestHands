@@ -45,6 +45,7 @@ public class DayNightController : MonoBehaviour
             instance = this;
         else
             Destroy(this);
+        SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
@@ -159,9 +160,49 @@ public class DayNightController : MonoBehaviour
         }
     }
 
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
+
+    public void Save()
+    {
+        SaveAndLoadManager.instance.saveData.dayNightControllerSave = new DayNightControllerSave(this);
+        //Debug.Log("Saved item = " + name);
+    }
 
     void OnApplicationQuit()
     {
         skybox.SetColor("_SkyTint", new Color(76.0f / 255, 91.0f / 255, 128.0f / 255));
+    }
+}
+
+[System.Serializable]
+public class DayNightControllerSave
+{
+    int ingameDay;
+    float currentTimeOfDay;
+    bool raining;
+
+    public DayNightControllerSave(DayNightController DNCont)
+    {
+        ingameDay = DNCont.ingameDay;
+        currentTimeOfDay = DNCont.currentTimeOfDay;
+        raining = DNCont.Rain.activeSelf;
+    }
+
+    public GameObject LoadObject()
+    {
+        if (DayNightController.instance != null)
+        {
+            DayNightController.instance.ingameDay = ingameDay;
+            DayNightController.instance.currentTimeOfDay = currentTimeOfDay;
+            DayNightController.instance.Rain.SetActive(raining);
+            PlantManager.instance.Raining(raining);
+
+            return DayNightController.instance.gameObject;
+        }
+        Debug.Log("Failed to load DayNightController, DayNightController.instance == null");
+        return null;
     }
 }

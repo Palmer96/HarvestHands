@@ -79,7 +79,7 @@ public class Hammer : Item
     }
     public override void Save()
     {
-        SaveAndLoadManager.instance.hammerSaveList.Add(new HammerSave(this));
+        SaveAndLoadManager.instance.saveData.hammerSaveList.Add(new HammerSave(this));
     }
 
     void OnDestroy()
@@ -98,6 +98,7 @@ public class HammerSave
     float rotX;
     float rotY;
     float rotZ;
+    float rotW;
 
     public HammerSave(Hammer hammer)
     {
@@ -108,6 +109,7 @@ public class HammerSave
         rotX = hammer.transform.rotation.x;
         rotY = hammer.transform.rotation.y;
         rotZ = hammer.transform.rotation.z;
+        rotW = hammer.transform.rotation.w;
     }
 
     public GameObject LoadObject()
@@ -121,7 +123,7 @@ public class HammerSave
             if (hammerPrefab.level == level)
             {
                 //Debug.Log("Loading Hammer");
-                GameObject hammer = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, 0));
+                GameObject hammer = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 return hammer;
             }
         }

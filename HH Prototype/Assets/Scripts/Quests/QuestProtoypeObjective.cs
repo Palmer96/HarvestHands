@@ -36,4 +36,16 @@ public class QuestProtoypeObjective : MonoBehaviour
         objectiveDone = true;
         PrototypeQuestManager.UpdateQuests();
     }
+
+    //Helps with save/load
+    public virtual int GetCurrentObjectiveValue()
+    {
+        return 0;
+    }
+
+    //Helps with save/load
+    public virtual void SetCurrentObjectiveValue(int amount)
+    {
+
+    }
 }

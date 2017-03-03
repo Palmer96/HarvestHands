@@ -312,14 +312,14 @@ public class Plant : MonoBehaviour
                 if (level > 1)
                 {
                     GameObject produce2 = (GameObject)Instantiate(harvestProduce, transform.position + transform.up, transform.rotation);
-                    produce.transform.position = transform.position;
-                    produce.transform.position += new Vector3(0, 1, 0);
+                    produce2.transform.position = transform.position;
+                    produce2.transform.position += new Vector3(0, 1, 0);
                 }
                 if (level > 2)
                 {
                     GameObject produce3 = (GameObject)Instantiate(harvestProduce, transform.position + (transform.up * 2), transform.rotation);
-                    produce.transform.position = transform.position;
-                    produce.transform.position += new Vector3(0, 1, 0);
+                    produce3.transform.position = transform.position;
+                    produce3.transform.position += new Vector3(0, 1, 0);
                 }
             }
 
