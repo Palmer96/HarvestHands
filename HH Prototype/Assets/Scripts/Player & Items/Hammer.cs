@@ -99,6 +99,7 @@ public class HammerSave
     float rotY;
     float rotZ;
     float rotW;
+    int inventorySlot;
 
     public HammerSave(Hammer hammer)
     {
@@ -110,6 +111,20 @@ public class HammerSave
         rotY = hammer.transform.rotation.y;
         rotZ = hammer.transform.rotation.z;
         rotW = hammer.transform.rotation.w;
+        if (hammer.beingHeld)
+        {
+            for (int i = 0; i < PlayerInventory.instance.heldObjects.Count; ++i)
+            {
+                if (hammer.gameObject == PlayerInventory.instance.heldObjects[i])
+                {
+                    inventorySlot = i;
+                }
+            }
+        }
+        else
+        {
+            inventorySlot = -1;
+        }
     }
 
     public GameObject LoadObject()
@@ -124,6 +139,10 @@ public class HammerSave
             {
                 //Debug.Log("Loading Hammer");
                 GameObject hammer = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+                if (inventorySlot != -1)
+                {
+                    PlayerInventory.instance.AddItemInSlot(hammer, inventorySlot);
+                }
                 return hammer;
             }
         }

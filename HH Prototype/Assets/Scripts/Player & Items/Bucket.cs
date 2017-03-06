@@ -185,6 +185,7 @@ public class BucketSave
     float rotY;
     float rotZ;
     float rotW;
+    int inventorySlot;
 
     public BucketSave(Bucket bucket)
     {
@@ -196,7 +197,21 @@ public class BucketSave
         rotX = bucket.transform.rotation.x;
         rotY = bucket.transform.rotation.y;
         rotZ = bucket.transform.rotation.z;
-        rotW = bucket.transform.rotation.w;        
+        rotW = bucket.transform.rotation.w;
+        if (bucket.beingHeld)
+        {
+            for (int i = 0; i < PlayerInventory.instance.heldObjects.Count; ++i)
+            {
+                if (bucket.gameObject == PlayerInventory.instance.heldObjects[i])
+                {
+                    inventorySlot = i;
+                }
+            }
+        }
+        else
+        {
+            inventorySlot = -1;
+        }
     }
 
     public GameObject LoadObject()
@@ -212,6 +227,10 @@ public class BucketSave
                 //Debug.Log("Loading Bucket");
                 GameObject bucket = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 bucket.GetComponent<Bucket>().currentWaterLevel = currentWaterLevel;
+                if (inventorySlot != -1)
+                {
+                    PlayerInventory.instance.AddItemInSlot(bucket, inventorySlot);
+                }
                 return bucket;
             }
         }

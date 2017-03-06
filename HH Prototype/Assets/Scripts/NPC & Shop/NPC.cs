@@ -87,10 +87,13 @@ public class NPCSave
     float rotZ;
     float rotW;
     //List of questpool quests
+    List<string> questPool;
+    List<string> acceptableQuests;
     //List of acceptable quests //or just search questppol for accepted ones instead of saving two lists
 
     public NPCSave(NPC npc)
     {
+        
         npcName = npc.npcName;
         arousalValue = npc.arousalValue;
         videOverrideNode = npc.GetComponent<VIDE_Assign>().overrideStartNode;
@@ -101,14 +104,25 @@ public class NPCSave
         rotY = npc.transform.rotation.y;
         rotZ = npc.transform.rotation.z;
         rotW = npc.transform.rotation.w;
-
         //Quests and stuff
+        questPool = new List<string>();
+        acceptableQuests = new List<string>();
+        foreach (QuestPrototype quest in npc.questPool)
+        {
+            questPool.Add(quest.questName);
+        }
+        foreach (QuestPrototype quest in npc.acceptableQuests)
+        {
+            acceptableQuests.Add(quest.questName);
+        }
     }
 
     public GameObject LoadObject()
     {
         foreach (NPC npcPrefab in NPC.npcList)
-        {           
+        {
+            npcPrefab.acceptableQuests = new List<QuestPrototype>();
+            npcPrefab.questPool = new List<QuestPrototype>();
             if (npcPrefab.npcName == npcName)
             {
                 //Debug.Log("Loading Hammer");                
@@ -116,8 +130,24 @@ public class NPCSave
                 npcPrefab.GetComponent<VIDE_Assign>().overrideStartNode = videOverrideNode;
                 npcPrefab.transform.position = new Vector3(posX, posY, posZ);
                 npcPrefab.transform.rotation = new Quaternion(rotX, rotY, rotZ, rotW);
-
                 //Quest stuff
+                foreach (QuestPrototype quest in QuestGrabber.questList)
+                {
+                    foreach (string questName in acceptableQuests)
+                    {
+                        if (questName == quest.questName)
+                        {
+                            npcPrefab.acceptableQuests.Add(quest);
+                        }                        
+                    }
+                    foreach (string questName in questPool)
+                    {
+                        if (questName == quest.questName)
+                        {
+                            npcPrefab.questPool.Add(quest);
+                        }
+                    }
+                }                
                 return npcPrefab.gameObject;
             }
         }

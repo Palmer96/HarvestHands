@@ -132,6 +132,7 @@ public class AxeSave
     float rotY;
     float rotZ;
     float rotW;
+    int inventorySlot;
 
     public AxeSave(Axe axe)
     {
@@ -143,6 +144,20 @@ public class AxeSave
         rotY = axe.transform.rotation.y;
         rotZ = axe.transform.rotation.z;
         rotW = axe.transform.rotation.w;
+        if (axe.beingHeld)
+        {
+            for (int i = 0; i < PlayerInventory.instance.heldObjects.Count; ++i)
+            {
+                if (axe.gameObject == PlayerInventory.instance.heldObjects[i])
+                {
+                    inventorySlot = i;
+                }
+            }
+        }
+        else
+        {
+            inventorySlot = -1;
+        }
     }
 
     public GameObject LoadObject()
@@ -157,6 +172,10 @@ public class AxeSave
             {
                 //Debug.Log("Loading Axe");
                 GameObject axe = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+                if (inventorySlot != -1)
+                {
+                    PlayerInventory.instance.AddItemInSlot(axe, inventorySlot);
+                }
                 return axe;
             }
         }

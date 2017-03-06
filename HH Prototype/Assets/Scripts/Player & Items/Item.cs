@@ -37,6 +37,7 @@ public class Item : MonoBehaviour
     public Material multiMaterial;
 
     public bool dontUpdate;
+    public bool beingHeld = false;
 
     // Use this for initialization
     void Start()
@@ -192,7 +193,7 @@ public class Item : MonoBehaviour
     {
         SaveAndLoadManager.instance.saveData.itemSaveList.Add(new ItemSave(this));
         //Debug.Log("Saved item = " + name);
-    }
+    }    
 
     void OnDestroy()
     {
@@ -212,6 +213,7 @@ public class ItemSave
     float rotY;
     float rotZ;
     float rotW;
+    public int inventorySlot;
 
     public ItemSave(Item item)
     {
@@ -224,6 +226,20 @@ public class ItemSave
         rotY = item.transform.rotation.y;
         rotZ = item.transform.rotation.z;
         rotW = item.transform.rotation.w;
+        if (item.beingHeld)
+        {
+            for (int i = 0; i < PlayerInventory.instance.heldObjects.Count; ++i)
+            {
+                if (item.gameObject == PlayerInventory.instance.heldObjects[i])
+                {
+                    inventorySlot = i;
+                }
+            }
+        }
+        else
+        {
+            inventorySlot = -1;
+        }
     }
 
     public GameObject LoadObject()
@@ -239,6 +255,10 @@ public class ItemSave
                 //Debug.Log("Loading Item");
                 GameObject item = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
                 item.GetComponent<Item>().quantity = quantity;
+                if (inventorySlot != -1)
+                {
+                    PlayerInventory.instance.AddItemInSlot(item, inventorySlot);
+                }
                 return item;
             }
         }

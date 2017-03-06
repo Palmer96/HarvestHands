@@ -141,6 +141,12 @@ public class SaveAndLoadManager : MonoBehaviour
                 building.gameObject.SetActive(false);
                 Destroy(building.gameObject);
             }
+            PrototypeObjectiveBoard[] objectiveBoards = FindObjectsOfType<PrototypeObjectiveBoard>();
+            foreach (PrototypeObjectiveBoard noticeBoard in objectiveBoards)
+            {
+                noticeBoard.gameObject.SetActive(false);
+                Destroy(noticeBoard.gameObject);
+            }
             //Debug.Log("Attemptign to destroy " + trees.Length.ToString() + " trees");
 
 
@@ -214,6 +220,10 @@ public class SaveAndLoadManager : MonoBehaviour
             foreach (BuildingSave buildingSave in saveData.buildingSaveList)
             {
                 buildingSave.LoadObject();
+            }
+            foreach (NoticeBoardSave noticeBoard in saveData.noticeBoardSaveList)
+            {
+                noticeBoard.LoadObject();
             }
             //Debug.Log("savedata.buildingsavelist.count = " + saveData.buildingSaveList.Count);
             Invoke("ClearNullLists", 00001);

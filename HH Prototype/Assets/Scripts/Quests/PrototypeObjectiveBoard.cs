@@ -11,14 +11,21 @@ public class PrototypeObjectiveBoard : MonoBehaviour
 
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start ()
+    {
+        SaveAndLoadManager.OnSave += Save;
+    }
+
+    public virtual void Save()
+    {
+        SaveAndLoadManager.instance.saveData.noticeBoardSaveList.Add(new NoticeBoardSave(this));
+        //Debug.Log("Saved item = " + name);
+    }
+
+    void OnDestroy()
+    {
+        SaveAndLoadManager.OnSave -= Save;
+    }
 
     public void GetRandomQuest()
     {
@@ -55,6 +62,8 @@ public class NoticeBoardSave
 
     public NoticeBoardSave(PrototypeObjectiveBoard board)
     {
+        potentialQuests = new List<string>();
+        acceptedQuests = new List<string>();
         posX = board.transform.position.x;
         posY = board.transform.position.y;
         posZ = board.transform.position.z;

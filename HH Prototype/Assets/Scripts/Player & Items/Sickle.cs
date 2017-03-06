@@ -107,6 +107,7 @@ public class SickleSave
     float rotY;
     float rotZ;
     float rotW;
+    int inventorySlot;
 
     public SickleSave(Sickle sickle)
     {
@@ -118,6 +119,20 @@ public class SickleSave
         rotY = sickle.transform.rotation.y;
         rotZ = sickle.transform.rotation.z;
         rotW = sickle.transform.rotation.w;
+        if (sickle.beingHeld)
+        {
+            for (int i = 0; i < PlayerInventory.instance.heldObjects.Count; ++i)
+            {
+                if (sickle.gameObject == PlayerInventory.instance.heldObjects[i])
+                {
+                    inventorySlot = i;
+                }
+            }
+        }
+        else
+        {
+            inventorySlot = -1;
+        }
     }
 
     public GameObject LoadObject()
@@ -132,6 +147,10 @@ public class SickleSave
             {
                 //Debug.Log("Loading Axe");
                 GameObject sickle = (GameObject)Object.Instantiate(toolPrefab, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+                if (inventorySlot != -1)
+                {
+                    PlayerInventory.instance.AddItemInSlot(sickle, inventorySlot);
+                }
                 return sickle;
             }
         }

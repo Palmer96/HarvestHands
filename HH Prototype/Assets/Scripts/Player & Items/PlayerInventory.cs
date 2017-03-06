@@ -375,6 +375,7 @@ public class PlayerInventory : MonoBehaviour
                     if (WaveManager.instance != null)
                         WaveManager.instance.rabbitsLeft--;
                 }
+                heldObjects[i].GetComponent<Item>().beingHeld = true;
 
                 return true;
             }
@@ -422,6 +423,45 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum] = null;
             }
         }
+    }
+
+    //Helper function for readding items after loading
+    public bool AddItemInSlot(GameObject item, int slot)
+    {
+        //if (heldObjects[slot] == null)
+        //{
+            heldObjects[slot] = item;
+            heldObjects[slot].transform.SetParent(transform.GetChild(0));
+            heldObjects[slot].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+            heldObjects[slot].GetComponent<Rigidbody>().isKinematic = true;
+            heldObjects[slot].layer = 2;
+            heldObjects[slot].GetComponent<Collider>().enabled = false;
+
+            heldObjects[slot].transform.rotation = transform.GetChild(0).rotation;
+
+            if (heldObjects[slot].GetComponent<Item>().itemID == 21)
+                heldObjects[slot].transform.Rotate(0, 0, -60);
+            else if (heldObjects[slot].GetComponent<Item>().itemID == 6)
+                heldObjects[slot].transform.Rotate(-90, 80, 0);
+            else
+                heldObjects[slot].transform.Rotate(0, 0, 30);
+
+        item.GetComponent<Item>().beingHeld = true;
+
+            if (heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+            {
+                heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+                if (WaveManager.instance != null)
+                    WaveManager.instance.rabbitsLeft--;
+            }
+
+            return true;
+        //}
+        //else
+        //{
+        //    Debug.Log("PlayerInventory.AddItemInSlot failed, slot " + slot.ToString() + " is full");
+        //    return false;
+        //}
     }
 
 
@@ -650,10 +690,22 @@ public class PlayerSave
         rotZ = playerInventory.transform.rotation.z;
         rotW = playerInventory.transform.rotation.w;
 
-        camrotX = playerInventory.transform.GetChild(0).rotation.x;
+        camrotX = playerInventory.transform.GetChild(0).localRotation.x;
         camrotY = playerInventory.transform.GetChild(0).rotation.y;
         camrotZ = playerInventory.transform.GetChild(0).rotation.z;
         camrotW = playerInventory.transform.GetChild(0).rotation.w;
+
+        for (int i = 0; i < playerInventory.heldObjects.Count; ++i)
+        {
+            if (playerInventory.heldObjects[i] == null)
+                continue;
+            Item item = playerInventory.heldObjects[i].GetComponent<Item>();
+            if (item == null)
+            {
+                Debug.Log("PlayerInventory trying to save held item without Item script?, Item.name = " + item.name);
+                continue;
+            }
+        }
     }
 
     public GameObject LoadObject()
@@ -663,8 +715,18 @@ public class PlayerSave
         {
             PlayerInventory.instance.money = money;
             PlayerInventory.instance.transform.position = new Vector3(posX, posY, posZ);
+          //  PlayerInventory.instance.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().disabled = true;
+          //  PlayerInventory.instance.transform.rotation = Quaternion.identity;
+           // PlayerInventory.instance.transform.Rotate(0, rotY, 0);
+
+          //  PlayerInventory.instance.transform.GetChild(0).rotation = Quaternion.identity;
+          //  PlayerInventory.instance.transform.GetChild(0).Rotate(camrotX, 0, 0);
+
+
             PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, rotW);
-            PlayerInventory.instance.transform.GetChild(0).rotation = new Quaternion(camrotX, camrotY, camrotZ, camrotW);
+            PlayerInventory.instance.transform.GetChild(0).localRotation = new Quaternion(camrotX, 0, 0, 0);
+
+            
         }
         else
         {
