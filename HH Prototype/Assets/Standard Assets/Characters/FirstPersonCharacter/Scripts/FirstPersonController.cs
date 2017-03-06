@@ -248,6 +248,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
                 newCameraPosition = m_Camera.transform.localPosition;
                 if (!swimming)
                     newCameraPosition.y = m_OriginalCameraPosition.y - m_JumpBob.Offset();
+
             }
             m_Camera.transform.localPosition = newCameraPosition;
         }
