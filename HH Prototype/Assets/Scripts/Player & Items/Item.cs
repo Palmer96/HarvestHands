@@ -72,6 +72,8 @@ public class Item : MonoBehaviour
             {
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
+            else
+            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
     }
 

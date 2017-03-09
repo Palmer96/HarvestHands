@@ -21,12 +21,20 @@ public class Building : MonoBehaviour
     public GameObject builtVersion;
     public ResourceRequired[] resources;
 
+    private Vector3 oldPosition;
+    private Quaternion oldRotation;
+
     TextMesh text;
+
+    bool moving;
+
+    public GameObject Construct;
     // Use this for initialization
     void Start()
     {
         text = transform.GetChild(0).GetComponent<TextMesh>();
         SaveAndLoadManager.OnSave += Save;
+        moving = false;
     }
 
     // Update is called once per frame
@@ -37,6 +45,7 @@ public class Building : MonoBehaviour
 
     public void AddResource(GameObject item)
     {
+
         for (int i = 0; i < resources.Length; i++)
         {
             if (item.GetComponent<Item>() != null)
@@ -69,6 +78,7 @@ public class Building : MonoBehaviour
     {
         AddResource(col.gameObject);
     }
+    
 
 
     public void Build()
@@ -113,7 +123,7 @@ public class Building : MonoBehaviour
                 //   Debug.Log
                 Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
 
-                GameObject obj = ResourceManager.instance.GetResource(resources[i].resource.ToString());
+                GameObject obj = SaveAndLoadManager.instance.instantiateableItems[i];
                 if (obj != null)
                 {
                     // if (PlayerInventory.instance.AddItem(obj))
@@ -135,6 +145,23 @@ public class Building : MonoBehaviour
     {
         SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
         //Debug.Log("Saved item = " + name);
+    }
+
+
+    public void Move()
+    {
+        GameObject obj = Instantiate(Construct, transform.position, transform.rotation);
+        obj.GetComponent<Construct>().isNew = false;
+        obj.GetComponent<Construct>().resources = resources;
+        Blueprint.instance.currentConstruct = obj;
+        PlayerInventory.instance.bookOpen = true;
+        Destroy(gameObject);
+    }
+
+    void Cancel()
+    {
+        transform.position = oldPosition;
+        transform.rotation = oldRotation;
     }
 }
 

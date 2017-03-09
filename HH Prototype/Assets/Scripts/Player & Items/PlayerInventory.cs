@@ -53,6 +53,7 @@ public class PlayerInventory : MonoBehaviour
     private float scrollTimer;
 
     public bool disableLeft;
+    public bool disableRight;
 
     public float lClickTimer = 0;
     public float lClickRate = 0.5f;
@@ -74,7 +75,7 @@ public class PlayerInventory : MonoBehaviour
     public ControllerInput iInteract;
     public ControllerInput iPrimaryUse;
     public ControllerInput iSecondaryUse;
-    public ControllerInput iPickup;
+    //  public ControllerInput iPickup;
     public ControllerInput iDrop;
     public ControllerInput iSelectUp;
     public ControllerInput iSelectDown;
@@ -82,6 +83,7 @@ public class PlayerInventory : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+
         if (instance == null)
             instance = this;
         else
@@ -98,6 +100,7 @@ public class PlayerInventory : MonoBehaviour
         }
 
         disableLeft = true;
+        disableRight = true;
 
         lClickTimer = 0;
         rClickTimer = 0;
@@ -106,8 +109,6 @@ public class PlayerInventory : MonoBehaviour
 
         SaveAndLoadManager.OnSave += Save;
     }
-
-
 
     // Update is called once per frame
     void Update()
@@ -135,7 +136,7 @@ public class PlayerInventory : MonoBehaviour
                 /////////////--- Q Press --- DROP
                 //////////////////////////////////////////////////////
 
-                if (Input.GetKey(KeyCode.E) || Input.GetButton("Controller_" + iInteract)) // Interact
+                if (Input.GetKey(KeyCode.E) || Input.GetButton("Controller_" + iInteract) || Input.GetAxis("Controller_" + iInteract) != 0) // Interact
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
@@ -180,7 +181,6 @@ public class PlayerInventory : MonoBehaviour
                                     AddItem(hit.transform.gameObject);
                                 }
                                 break;
-
                             case "Shelf":
                                 if (hit.transform.GetComponent<Shelf>().storedObject != null)
                                 {
@@ -207,10 +207,18 @@ public class PlayerInventory : MonoBehaviour
                         holdSlider.fillAmount = eTimer * 2;
                     }
                 }
+                /////////////--- E Press --- INTERACT ---
+                //////////////////////////////////////////////////////
+
+                if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + iInteract))
+                {
+                    eTimer = 0;
+                    holdSlider.fillAmount = 0;
+                }
 
                 if (heldObjects[selectedItemNum] != null)
                 {
-                    if (Input.GetKey(KeyCode.Q) || Input.GetButton("Controller_" + iDrop)) // Drop
+                    if (Input.GetKey(KeyCode.Q) || Input.GetButton("Controller_" + iDrop) || Input.GetAxis("Controller_" + iDrop) != 0) // Drop
                     {
                         qTimer += Time.deltaTime;
                         holdSlider.fillAmount = qTimer / qRate;
@@ -221,7 +229,7 @@ public class PlayerInventory : MonoBehaviour
                             DropAllofItem();
                         }
                     }
-                    if (Input.GetKeyUp(KeyCode.Q) || Input.GetButtonUp("Controller_" + iDrop))
+                    if (Input.GetKeyUp(KeyCode.Q) || Input.GetButtonUp("Controller_" + iDrop))// || Input.GetAxis("Controller_" + iDrop) == 0)
                     {
                         qTimer = 0;
                         holdSlider.fillAmount = 0;
@@ -248,19 +256,12 @@ public class PlayerInventory : MonoBehaviour
                         }
 
                     }
-                    /////////////--- E Press --- INTERACT ---
-                    //////////////////////////////////////////////////////
 
-                    if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + iInteract))
-                    {
-                        eTimer = 0;
-                        holdSlider.fillAmount = 0;
-                    }
 
                     /////////////--- Left Click --- USE ---
                     //////////////////////////////////////////////////////
 
-                    if ((Input.GetMouseButton(0) || Input.GetButton("Controller_" + iPrimaryUse)) && disableLeft) // Drop
+                    if ((Input.GetMouseButton(0) || Input.GetButton("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) != 0) && disableLeft) // Drop
                     {
                         lClickTimer += Time.deltaTime;
                         rClickTimer = 0;
@@ -269,50 +270,46 @@ public class PlayerInventory : MonoBehaviour
                         {
                             if (Physics.Raycast(ray, out hit, 5))
                             {
-                                if (hit.transform.CompareTag("Shelf"))
-                                {
-                                    hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
-                                    //instance.lClickTimer = 0;
-                                    //instance.rClickTimer = 0;
-                                    //instance.qTimer = 0;
-                                    //instance.eTimer = 0;
 
+                                if (hit.transform.CompareTag("Shelf"))
+                            {
+                                hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
+                                lClickTimer = 0;
+                                holdSlider.fillAmount = 0;
+                            }
+                            else
+                            {
+                                heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                                {
                                     lClickTimer = 0;
                                     holdSlider.fillAmount = 0;
+                                    disableLeft = false;
                                 }
-                                else
-                                {
-                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
-                                    if (heldObjects[selectedItemNum] != null) //Thanks shelves..
-                                    {
-                                        if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
-                                        {
-                                            lClickTimer = 0;
-                                            holdSlider.fillAmount = 0;
-                                            disableLeft = false;
-                                        }
-                                    }
-                                }
+                            }
                             }
                         }
                     }
 
                     if (Input.GetMouseButtonUp(0) || Input.GetButtonUp("Controller_" + iPrimaryUse))
                     {
-                        if (lClickTimer < lClickRate)
+                        if (disableLeft)
                         {
-                            if (heldObjects[selectedItemNum] != null)
+                            if (lClickTimer < lClickRate)
                             {
-                                //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                                heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                                if (heldObjects[selectedItemNum] != null)
+                                {
+                                    //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                                }
                             }
                         }
                         disableLeft = true;
                         holdSlider.fillAmount = 0;
                         lClickTimer = 0;
                     }
-
-                    if (Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse)) // Drop
+                    //123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+                    if ((Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse) || Input.GetAxis("Controller_" + iSecondaryUse) != 0) && disableRight) // Drop
                     {
                         rClickTimer += Time.deltaTime;
                         //  lClickTimer = 0;
@@ -320,15 +317,22 @@ public class PlayerInventory : MonoBehaviour
                         if (rClickTimer > rClickRate)
                         {
                             heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Hold);
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                            {
+                                lClickTimer = 0;
+                                holdSlider.fillAmount = 0;
+                                disableRight = false;
+                            }
                         }
                     }
 
-                    if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))
+                    if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))// || (Input.GetAxis("Controller_" + iSecondaryUse) <= 0.1f && Input.GetAxis("Controller_" + iSecondaryUse) != 0)) 
                     {
                         if (rClickTimer < rClickRate)
                         {
                             heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Single);
                         }
+                        disableRight = true;
                         holdSlider.fillAmount = 0;
                         rClickTimer = 0;
                     }
@@ -336,12 +340,12 @@ public class PlayerInventory : MonoBehaviour
             }
             else
             {
-                if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Controller_" + iPrimaryUse)) // Primary Use
+                if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) > 0) // Primary Use
                 {
                     Blueprint.instance.PrimaryUse();
                     bookOpen = false;
                 }
-                if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("Controller_" + iPrimaryUse)) // Pickup
+                if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) > 0) // Pickup
                 {
                     Blueprint.instance.SecondaryUse();
                     bookOpen = false;
@@ -357,6 +361,7 @@ public class PlayerInventory : MonoBehaviour
             return false;
         if (item.GetComponent<Item>() == null)
             return false;
+
 
         for (int i = 0; i < heldObjects.Count; i++)
         {
@@ -465,7 +470,6 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    //Helper function, this was copy pasted and probs needs testing
     public void RemoveItem(int inventorySlot)
     {
         if (heldObjects[inventorySlot] != null)
@@ -898,17 +902,17 @@ public class PlayerSave
 
 
 
-//-----------------------------------------MMMMMMMMM
-//---------_______________________---------MMMMMMMMM
-//---------| Goblin Hammer Games |---------MMMMMMMMM
-//---------|    Harvest Hands    |---------MMMMMMMMM
-//---------_______________________---------MMMMMMMMM
-//---------_______________________---------MMMMMMMMM
-//---------|    Last Modified    |---------MMMMMMMMM
-//---------|      27/2/2017      |---------MMMMMMMMM
-//---------|         By          |---------MMMMMMMMM
-//---------|    Kayne Palmer     |---------MMMMMMMMM
-//---------_______________________---------MMMMMMMMM
-//-----------------------------------------MMMMMMMMM
+//-----------------------------------------//
+//---------_______________________---------//
+//---------| Goblin Hammer Games |---------//
+//---------|    Harvest Hands    |---------//
+//---------_______________________---------//
+//---------_______________________---------//
+//---------|    Last Modified    |---------//
+//---------|      27/2/2017      |---------//
+//---------|         By          |---------//
+//---------|    Kayne Palmer     |---------//
+//---------_______________________---------//
+//-----------------------------------------//
 
 

@@ -57,7 +57,6 @@ public class Seed : Item
 
     public override void PrimaryUse(ClickType click)
     {
-        if (click == ClickType.Single)
         PrimaryUse();
     }
     public override void PrimaryUse()
@@ -76,17 +75,10 @@ public class Seed : Item
                     soil.PlantSeed(plantPrefab);
                     EventManager.PlantEvent(plantPrefab.GetComponent<Plant>().plantName);
                     UpdateMesh();
-                    //TODO: if 0 seeds, play staff animation
                 }
             }
-            else if (hit.transform.CompareTag("Shelf"))
-            {
-                hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
-                PlayerInventory.instance.lClickTimer = 0;
-                PlayerInventory.instance.rClickTimer = 0;
-                //PlayerInventory.instance.qTimer = 0;
-                //PlayerInventory.instance.eTimer = 0;
-            }
+            else
+            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
         if (quantity <= 0)
         {

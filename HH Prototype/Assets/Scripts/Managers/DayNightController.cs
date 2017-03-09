@@ -61,7 +61,7 @@ public class DayNightController : MonoBehaviour
             DayJump();
 
 
-        skybox.SetColor("_SkyTint", lightColour.Evaluate(currentTimeOfDay / 24));
+        skybox.SetColor("_TintColor", Color.green);// lightColour.Evaluate(currentTimeOfDay / 24));
         //  worldLight.color = gradient1.Evaluate(currentTimeOfDay / 24);
         float Scale1 = currentTimeOfDay / 12;
 

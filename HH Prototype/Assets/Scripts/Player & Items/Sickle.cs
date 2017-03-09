@@ -58,6 +58,15 @@ public class Sickle : Item
                             used = true;
                             useTimer = useRate;
                         }
+                        else if (hit.transform.CompareTag("Soil"))
+                        {
+                            if (hit.transform.childCount > 0)
+                                hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
+                            used = true;
+                            useTimer = useRate;
+                        }
+                        else
+                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
                 }
                 break;

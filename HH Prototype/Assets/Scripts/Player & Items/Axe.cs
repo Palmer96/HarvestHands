@@ -72,6 +72,8 @@ public class Axe : Item
                                 hit.transform.GetComponent<Tree>().Harvest();
                             //    Instantiate(wood, hit.point, transform.rotation);
                         }
+                        else
+                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                         //else if (hit.transform.CompareTag("Shelf"))
                         //{
                         //    hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
@@ -107,6 +109,8 @@ public class Axe : Item
                             hit.transform.GetComponent<Tree>().Harvest();
                             //    Instantiate(wood, hit.point, transform.rotation);
                         }
+                        else
+                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
                 }
                 break;

@@ -35,6 +35,23 @@ public class Hammer : Item
             case ClickType.Single:
                 ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
+                Debug.Log("Hammer2");
+                if (Physics.Raycast(ray, out hit, rayMaxDist))
+                {
+                    if (hit.transform.CompareTag("Building"))
+                    {
+                        Debug.Log("Building2");
+                        used = true;
+                        useTimer = useRate;
+                        hit.transform.GetComponent<Building>().Move();
+                    }
+                    else
+                        ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+                }
+                break;
+            case ClickType.Hold:
+                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
                 Debug.Log("Hammer");
                 if (Physics.Raycast(ray, out hit, rayMaxDist))
                 {
@@ -45,9 +62,20 @@ public class Hammer : Item
                         useTimer = useRate;
                         hit.transform.GetComponent<Building>().Build();
                     }
+                    else
+                        ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                 }
                 break;
 
+                //     case ClickType.Hold:
+        }
+
+    }
+
+    public override void SecondaryUse(ClickType click)
+    {
+        switch (click)
+        {
             case ClickType.Hold:
                 // if (!used)
                 {
@@ -58,7 +86,7 @@ public class Hammer : Item
                     {
                         switch (hit.transform.tag)
                         {
-                            case "BUilding":
+                            case "Building":
                                 used = true;
                                 useTimer = useRate;
                                 hit.transform.GetComponent<Building>().Deconstruct();
@@ -66,10 +94,12 @@ public class Hammer : Item
                             case "Built":
                                 Destroy(hit.transform.gameObject);
                                 break;
-                        }
-                        if (hit.transform.CompareTag("Building"))
-                        {
-
+                            case "Soil":
+                                Destroy(hit.transform.parent.gameObject);
+                                break;
+                            default:
+                                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+                                break;
                         }
                     }
                 }
@@ -77,6 +107,8 @@ public class Hammer : Item
         }
 
     }
+
+
     public override void Save()
     {
         SaveAndLoadManager.instance.saveData.hammerSaveList.Add(new HammerSave(this));

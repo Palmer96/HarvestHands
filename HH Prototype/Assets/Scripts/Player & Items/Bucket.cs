@@ -91,7 +91,10 @@ public class Bucket : Item
             case ClickType.Hold:
                 if (!used)
                 {
+                    if (currentWaterLevel > 0)
                     currentWaterLevel -= waterDrain;
+                    else
+                        ScreenMessage.instance.CreateMessage("Your " + itemName + " is empty");
 
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 

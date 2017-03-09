@@ -15,11 +15,18 @@ public class NPC : MonoBehaviour
 	void Start () {
         npcList.Add(this);
         SaveAndLoadManager.OnSave += Save;
+
+		
+        //GetComponent<VIDE_Assign>().dialogueName = "Bob";
+        //GetComponent<VIDE_Assign>().assignedDialogue = "Bob";  
+        //Debug.Log(GetComponent<VIDE_Assign>().assignedDialogue);
+
+
+
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
 	}
 
     public void ChangeConversationStartNode(int i)

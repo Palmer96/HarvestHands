@@ -9,15 +9,20 @@ public class Construct : MonoBehaviour
     public bool canBuild;
     public Material[] mat;
 
-   public bool colliding;
-   public bool upRight;
+    public bool colliding;
+    public bool upRight;
     public bool onGround;
+
+    public bool isNew = true;
+    public Vector3 oldPos;
+    public Quaternion oldRot;
+    public Building.ResourceRequired[] resources;
     // Use this for initialization
     void Start()
     {
         if (transform.GetComponent<Renderer>() != null)
         {
-        mat = new Material[transform.childCount + 1];
+            mat = new Material[transform.childCount + 1];
             mat[transform.childCount] = transform.GetComponent<Renderer>().material;
         }
         else
@@ -27,7 +32,13 @@ public class Construct : MonoBehaviour
             mat[i] = transform.GetChild(i).GetComponent<Renderer>().material;
         }
         if (transform.GetComponent<Renderer>() != null)
-        mat[transform.childCount] = transform.GetComponent<Renderer>().material;
+            mat[transform.childCount] = transform.GetComponent<Renderer>().material;
+
+
+        oldPos = transform.position;
+        oldRot = transform.rotation;
+
+        
     }
 
     // Update is called once per frame
@@ -47,7 +58,7 @@ public class Construct : MonoBehaviour
         }
 
 
-        
+
         if (onGround && upRight && !colliding)
         {
             canBuild = true;
@@ -61,13 +72,21 @@ public class Construct : MonoBehaviour
                 mat[i].color = new Color(1, 0, 0, 0.5f);
         }
 
-      //  colliding = false;
+        //  colliding = false;
     }
 
     public void Place()
     {
-        Instantiate(selfObject, transform.position, transform.rotation);
+        GameObject obj = Instantiate(selfObject, transform.position, transform.rotation);
+        if (!isNew)
+        obj.GetComponent<Building>().resources = resources;
         Destroy(gameObject);
+    }
+    public void Cancel()
+    {
+        transform.position = oldPos;
+        transform.rotation = oldRot;
+        Place();
     }
 
     void OnTriggerStay(Collider col)
@@ -79,5 +98,6 @@ public class Construct : MonoBehaviour
     {
         colliding = false;
     }
+
 
 }

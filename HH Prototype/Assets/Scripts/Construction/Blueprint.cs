@@ -149,7 +149,11 @@ public class Blueprint : MonoBehaviour
 
     public void ConstructionCancel()
     {
-        Destroy(currentConstruct);
+        if (currentConstruct.GetComponent<Construct>().isNew)
+            Destroy(currentConstruct);
+        else
+            currentConstruct.GetComponent<Construct>().Cancel();
+
     }
 
 
