@@ -84,6 +84,7 @@ public class HandTool : MonoBehaviour
                 {
                     hit.transform.GetComponent<Livestock>().Interact();
                 }
+              
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha1))

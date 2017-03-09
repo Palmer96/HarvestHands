@@ -79,6 +79,14 @@ public class Seed : Item
                     //TODO: if 0 seeds, play staff animation
                 }
             }
+            else if (hit.transform.CompareTag("Shelf"))
+            {
+                hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
+                PlayerInventory.instance.lClickTimer = 0;
+                PlayerInventory.instance.rClickTimer = 0;
+                //PlayerInventory.instance.qTimer = 0;
+                //PlayerInventory.instance.eTimer = 0;
+            }
         }
         if (quantity <= 0)
         {

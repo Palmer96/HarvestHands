@@ -85,6 +85,10 @@ public class Item : MonoBehaviour
             {
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
+            else if (hit.transform.CompareTag("Shelf"))
+            {
+                hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
+            }
         }
     }
 

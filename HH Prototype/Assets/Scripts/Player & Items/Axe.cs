@@ -72,6 +72,14 @@ public class Axe : Item
                                 hit.transform.GetComponent<Tree>().Harvest();
                             //    Instantiate(wood, hit.point, transform.rotation);
                         }
+                        //else if (hit.transform.CompareTag("Shelf"))
+                        //{
+                        //    hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
+                        //    PlayerInventory.instance.lClickTimer = 0;
+                        //    PlayerInventory.instance.rClickTimer = 0;
+                        //    //PlayerInventory.instance.qTimer = 0;
+                        //    //PlayerInventory.instance.eTimer = 0;
+                        //}
                     }
                 }
                 break;

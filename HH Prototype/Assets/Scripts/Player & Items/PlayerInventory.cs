@@ -180,6 +180,21 @@ public class PlayerInventory : MonoBehaviour
                                     AddItem(hit.transform.gameObject);
                                 }
                                 break;
+
+                            case "Shelf":
+                                if (hit.transform.GetComponent<Shelf>().storedObject != null)
+                                {
+                                    eTimer += Time.deltaTime;
+                                    holdSlider.fillAmount = eTimer / pickupRate;
+
+                                    if (eTimer > pickupRate)
+                                    {
+                                        eTimer = 0;
+                                        holdSlider.fillAmount = 0;
+                                        AddItem(hit.transform.GetComponent<Shelf>().TakeOutItem());
+                                    }
+                                }
+                                break;
                             default:
                                 eTimer = 0;
                                 holdSlider.fillAmount = eTimer * 2;
@@ -252,12 +267,32 @@ public class PlayerInventory : MonoBehaviour
                         holdSlider.fillAmount = lClickTimer / lClickRate;
                         if (lClickTimer > lClickRate)
                         {
-                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
-                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                            if (Physics.Raycast(ray, out hit, 5))
                             {
-                                lClickTimer = 0;
-                                holdSlider.fillAmount = 0;
-                                disableLeft = false;
+                                if (hit.transform.CompareTag("Shelf"))
+                                {
+                                    hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
+                                    //instance.lClickTimer = 0;
+                                    //instance.rClickTimer = 0;
+                                    //instance.qTimer = 0;
+                                    //instance.eTimer = 0;
+
+                                    lClickTimer = 0;
+                                    holdSlider.fillAmount = 0;
+                                }
+                                else
+                                {
+                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                                    if (heldObjects[selectedItemNum] != null) //Thanks shelves..
+                                    {
+                                        if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                                        {
+                                            lClickTimer = 0;
+                                            holdSlider.fillAmount = 0;
+                                            disableLeft = false;
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -318,6 +353,11 @@ public class PlayerInventory : MonoBehaviour
 
     public bool AddItem(GameObject item)
     {
+        if (item == null)
+            return false;
+        if (item.GetComponent<Item>() == null)
+            return false;
+
         for (int i = 0; i < heldObjects.Count; i++)
         {
             if (heldObjects[i] != null)
@@ -425,37 +465,90 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
+    //Helper function, this was copy pasted and probs needs testing
+    public void RemoveItem(int inventorySlot)
+    {
+        if (heldObjects[inventorySlot] != null)
+        {
+            if (heldObjects[inventorySlot].GetComponent<Item>().quantity > 1)
+            {
+                GameObject droppedItem = Instantiate(heldObjects[inventorySlot], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[inventorySlot].transform.rotation);
+                droppedItem.SetActive(true);
+                droppedItem.GetComponent<Item>().quantity = 1;
+                droppedItem.transform.parent = null;
+                droppedItem.GetComponent<Rigidbody>().isKinematic = false;
+                droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
+                droppedItem.GetComponent<Collider>().enabled = true;
+                if (droppedItem.GetComponent<MeshRenderer>() != null)
+                    droppedItem.GetComponent<MeshRenderer>().enabled = true;
+                droppedItem.layer = 0;
+
+                heldObjects[inventorySlot].GetComponent<Item>().DecreaseQuantity();
+                if (heldObjects[inventorySlot].GetComponent<Item>().itemID > 10)
+                    heldObjects[inventorySlot].GetComponent<Item>().UpdateMesh();
+                if (droppedItem.GetComponent<Item>().itemID > 10)
+                    droppedItem.GetComponent<Item>().UpdateMesh();
+            }
+            else
+            {
+                heldObjects[inventorySlot].transform.position = transform.GetChild(0).position + (transform.GetChild(0).forward * 2);
+                //  heldObjects[selectedItemNum].transform.rotation = transform.rotation;
+                heldObjects[inventorySlot].GetComponent<Rigidbody>().isKinematic = false;
+                heldObjects[inventorySlot].GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
+                heldObjects[inventorySlot].GetComponent<Collider>().enabled = true;
+                heldObjects[inventorySlot].transform.parent = null;
+                heldObjects[inventorySlot].layer = 0;
+                if (heldObjects[inventorySlot].GetComponent<MeshRenderer>() != null)
+                    heldObjects[inventorySlot].GetComponent<MeshRenderer>().enabled = true;
+                if (heldObjects[inventorySlot].GetComponent<Item>().itemID < 10)
+                    heldObjects[inventorySlot].GetComponent<Item>().UpdateMesh();
+                heldObjects[inventorySlot] = null;
+            }
+        }
+    }
+
+    public void RemoveItem(GameObject objectToRemove)
+    {
+        for (int i = 0; i < heldObjects.Count; ++i)
+        {
+            if (heldObjects[i] == objectToRemove)
+            {
+                RemoveItem(i);
+            }
+        }
+    }
+
     //Helper function for readding items after loading
     public bool AddItemInSlot(GameObject item, int slot)
     {
         //if (heldObjects[slot] == null)
         //{
-            heldObjects[slot] = item;
-            heldObjects[slot].transform.SetParent(transform.GetChild(0));
-            heldObjects[slot].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
-            heldObjects[slot].GetComponent<Rigidbody>().isKinematic = true;
-            heldObjects[slot].layer = 2;
-            heldObjects[slot].GetComponent<Collider>().enabled = false;
+        heldObjects[slot] = item;
+        heldObjects[slot].transform.SetParent(transform.GetChild(0));
+        heldObjects[slot].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+        heldObjects[slot].GetComponent<Rigidbody>().isKinematic = true;
+        heldObjects[slot].layer = 2;
+        heldObjects[slot].GetComponent<Collider>().enabled = false;
 
-            heldObjects[slot].transform.rotation = transform.GetChild(0).rotation;
+        heldObjects[slot].transform.rotation = transform.GetChild(0).rotation;
 
-            if (heldObjects[slot].GetComponent<Item>().itemID == 21)
-                heldObjects[slot].transform.Rotate(0, 0, -60);
-            else if (heldObjects[slot].GetComponent<Item>().itemID == 6)
-                heldObjects[slot].transform.Rotate(-90, 80, 0);
-            else
-                heldObjects[slot].transform.Rotate(0, 0, 30);
+        if (heldObjects[slot].GetComponent<Item>().itemID == 21)
+            heldObjects[slot].transform.Rotate(0, 0, -60);
+        else if (heldObjects[slot].GetComponent<Item>().itemID == 6)
+            heldObjects[slot].transform.Rotate(-90, 80, 0);
+        else
+            heldObjects[slot].transform.Rotate(0, 0, 30);
 
         item.GetComponent<Item>().beingHeld = true;
 
-            if (heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-            {
-                heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-                if (WaveManager.instance != null)
-                    WaveManager.instance.rabbitsLeft--;
-            }
+        if (heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+        {
+            heldObjects[slot].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+            if (WaveManager.instance != null)
+                WaveManager.instance.rabbitsLeft--;
+        }
 
-            return true;
+        return true;
         //}
         //else
         //{
@@ -715,23 +808,23 @@ public class PlayerSave
         {
             PlayerInventory.instance.money = money;
             PlayerInventory.instance.transform.position = new Vector3(posX, posY, posZ);
-          //  PlayerInventory.instance.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().disabled = true;
-          //  PlayerInventory.instance.transform.rotation = Quaternion.identity;
-           // PlayerInventory.instance.transform.Rotate(0, rotY, 0);
+            //  PlayerInventory.instance.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().disabled = true;
+            //  PlayerInventory.instance.transform.rotation = Quaternion.identity;
+            // PlayerInventory.instance.transform.Rotate(0, rotY, 0);
 
-          //  PlayerInventory.instance.transform.GetChild(0).rotation = Quaternion.identity;
-          //  PlayerInventory.instance.transform.GetChild(0).Rotate(camrotX, 0, 0);
+            //  PlayerInventory.instance.transform.GetChild(0).rotation = Quaternion.identity;
+            //  PlayerInventory.instance.transform.GetChild(0).Rotate(camrotX, 0, 0);
 
 
             PlayerInventory.instance.transform.rotation = new Quaternion(rotX, rotY, rotZ, rotW);
             PlayerInventory.instance.transform.GetChild(0).localRotation = new Quaternion(camrotX, 0, 0, 0);
 
-            
+
         }
         else
         {
             Debug.Log("Failed to load player inventory, PlayerInventory.instance = " + PlayerInventory.instance);
-        }        
+        }
         return null;
     }
 }
