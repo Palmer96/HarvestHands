@@ -61,7 +61,7 @@ public class DayNightController : MonoBehaviour
             DayJump();
 
 
-        skybox.SetColor("_TintColor", Color.green);// lightColour.Evaluate(currentTimeOfDay / 24));
+        skybox.SetColor("_Tint", lightColour.Evaluate(currentTimeOfDay / 24));
         //  worldLight.color = gradient1.Evaluate(currentTimeOfDay / 24);
         float Scale1 = currentTimeOfDay / 12;
 
@@ -173,7 +173,7 @@ public class DayNightController : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        skybox.SetColor("_SkyTint", new Color(76.0f / 255, 91.0f / 255, 128.0f / 255));
+        skybox.SetColor("_Tint", new Color(128.0f / 255, 128.0f / 255, 128.0f / 255));
     }
 }
 

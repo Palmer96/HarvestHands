@@ -314,7 +314,7 @@ public class PlayerInventory : MonoBehaviour
                         holdSlider.fillAmount = 0;
                         lClickTimer = 0;
                     }
-                    //123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890
+
                     if ((Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse) || Input.GetAxis("Controller_" + iSecondaryUse) != 0) && disableRight) // Drop
                     {
                         rClickTimer += Time.deltaTime;
@@ -666,7 +666,7 @@ public class PlayerInventory : MonoBehaviour
 
             if ((Input.GetAxis("Mouse ScrollWheel") < -0.05f) || Input.GetButton("Controller_" + iSelectUp))
             {
-                if (selectedItemNum < itemText.Count - 1)
+                if (selectedItemNum < heldObjects.Capacity - 1)
                 {
                     selectedItemNum++;
                     scrollTimer = 0.1f;
