@@ -253,6 +253,12 @@ public class PlayerInventory : MonoBehaviour
                                         hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
                                 }
                                 break;
+                            case "Shelf":
+                                if (hit.transform.GetComponent<Shelf>() != null)
+                                {
+                                    hit.transform.GetComponent<Shelf>().highlighted = true;
+                                }
+                                break;
                         }
 
                     }
@@ -272,21 +278,21 @@ public class PlayerInventory : MonoBehaviour
                             {
 
                                 if (hit.transform.CompareTag("Shelf"))
-                            {
-                                hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
-                                lClickTimer = 0;
-                                holdSlider.fillAmount = 0;
-                            }
-                            else
-                            {
-                                heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
                                 {
+                                    hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
                                     lClickTimer = 0;
                                     holdSlider.fillAmount = 0;
-                                    disableLeft = false;
                                 }
-                            }
+                                else
+                                {
+                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
+                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                                    {
+                                        lClickTimer = 0;
+                                        holdSlider.fillAmount = 0;
+                                        disableLeft = false;
+                                    }
+                                }
                             }
                         }
                     }
