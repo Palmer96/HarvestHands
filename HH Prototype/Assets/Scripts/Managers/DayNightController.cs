@@ -135,6 +135,10 @@ public class DayNightController : MonoBehaviour
                 Rain.SetActive(false);
                 PlantManager.instance.Raining(false);
             }
+            if (Random.Range(1, 5) == 1)
+            {
+                PlantManager.instance.GlobalWeedSpread();
+            }
         }
     }
 
@@ -153,10 +157,15 @@ public class DayNightController : MonoBehaviour
             Rain.SetActive(true);
             PlantManager.instance.Raining(true);
         }
+
         else
         {
             Rain.SetActive(false);
             PlantManager.instance.Raining(false);
+        }
+        if (Random.Range(1, 5) == 1)
+        {
+            PlantManager.instance.GlobalWeedSpread();
         }
     }
 

@@ -249,8 +249,16 @@ public class PlayerInventory : MonoBehaviour
                             case "Soil":
                                 if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                 {
-                                    if (hit.transform.childCount > 0)
-                                        hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                    //if (hit.transform.childCount > 0)
+                                    //    hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                    //Compensate for weeds, but no plants on a soil
+                                    for (int i = 0; i < hit.transform.childCount; ++i)
+                                    {
+                                        if (hit.transform.GetChild(i).GetComponent<Plant>() != null)
+                                        {
+                                            hit.transform.GetChild(i).GetComponent<Plant>().highlighted = true;
+                                        }
+                                    }
                                 }
                                 break;
                             case "Shelf":

@@ -72,16 +72,23 @@ public class Axe : Item
                                 hit.transform.GetComponent<Tree>().Harvest();
                             //    Instantiate(wood, hit.point, transform.rotation);
                         }
+                        else if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
+                        {
+                            used = true;
+                            useTimer = useRate;
+                            //Get soil
+                            Soil soil;
+                            if (hit.transform.CompareTag("Soil"))
+                                soil = hit.transform.GetComponent<Soil>();
+                            else
+                                soil = hit.transform.parent.GetComponent<Soil>();
+                            //Remove Weed
+                            if (soil != null)
+                                if (soil.weedInfestation != null)
+                                    soil.weedInfestation.RemoveWeed();                            
+                        }
                         else
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                        //else if (hit.transform.CompareTag("Shelf"))
-                        //{
-                        //    hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
-                        //    PlayerInventory.instance.lClickTimer = 0;
-                        //    PlayerInventory.instance.rClickTimer = 0;
-                        //    //PlayerInventory.instance.qTimer = 0;
-                        //    //PlayerInventory.instance.eTimer = 0;
-                        //}
                     }
                 }
                 break;

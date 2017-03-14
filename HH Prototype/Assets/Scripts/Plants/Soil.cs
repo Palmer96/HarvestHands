@@ -4,6 +4,7 @@ using System.Collections;
 public class Soil : MonoBehaviour
 {
     public bool occupied = false;
+    public Weed weedInfestation;
 	// Use this for initialization
 	void Start ()
     {

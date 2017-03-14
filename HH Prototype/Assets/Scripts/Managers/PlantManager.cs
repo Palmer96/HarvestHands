@@ -12,6 +12,9 @@ public class PlantManager : MonoBehaviour
     public float rainWater = 0.01f;
 
     public bool isRaining = false;
+    public GameObject WeedPrefab;
+    public float weedSpawnChance = 5f;
+
 
     // Use this for initialization
     void Start()
@@ -34,6 +37,11 @@ public class PlantManager : MonoBehaviour
                 plant.RainPlant(rainWater);
             }
         }
+
+        //if (Input.GetKeyDown(KeyCode.O))
+        //{
+        //    GlobalWeedSpread();
+        //}
     }
 
     public void AddPlant(Plant plant)
@@ -99,5 +107,24 @@ public class PlantManager : MonoBehaviour
     public void Raining(bool rain)
     {
         isRaining = rain;
+    }
+
+    public void GlobalWeedSpread()
+    {
+        Debug.Log("inside weed spread");
+        if (WeedPrefab == null)
+            return;
+
+        for (int i = 0; i < soilList.Count; ++i)
+        {
+            Debug.Log("inside soil list count thing");
+            float spawnChance = Random.Range(0, 100);
+            if (spawnChance < weedSpawnChance)
+            {
+                Debug.Log("inside weed instantiation");
+                GameObject newWeed = Instantiate(WeedPrefab);
+                newWeed.GetComponent<Weed>().InfestSoil(soilList[i]);                
+            }
+        }
     }
 }
