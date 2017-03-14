@@ -83,7 +83,6 @@ public class PlayerInventory : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
         if (instance == null)
             instance = this;
         else
@@ -98,6 +97,7 @@ public class PlayerInventory : MonoBehaviour
         {
             itemText[i] = ItemHotbar.transform.GetChild(i).GetComponent<Text>();
         }
+        itemText[0].color = Color.yellow;
 
         disableLeft = true;
         disableRight = true;
@@ -159,6 +159,7 @@ public class PlayerInventory : MonoBehaviour
                                     }
                                 }
                                 break;
+
                             case "Bed":
                                 eTimer += Time.deltaTime;
                                 holdSlider.fillAmount = eTimer / eRate;
@@ -170,6 +171,7 @@ public class PlayerInventory : MonoBehaviour
                                     DayNightController.instance.BedDayJump();
                                 }
                                 break;
+
                             case "Item":
                                 eTimer += Time.deltaTime;
                                 holdSlider.fillAmount = eTimer / pickupRate;
@@ -181,6 +183,7 @@ public class PlayerInventory : MonoBehaviour
                                     AddItem(hit.transform.gameObject);
                                 }
                                 break;
+
                             case "Shelf":
                                 if (hit.transform.GetComponent<Shelf>().storedObject != null)
                                 {
@@ -193,6 +196,42 @@ public class PlayerInventory : MonoBehaviour
                                         holdSlider.fillAmount = 0;
                                         AddItem(hit.transform.GetComponent<Shelf>().TakeOutItem());
                                     }
+                                }
+                                break;
+
+                            case "NoticeBoard":
+                                eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer / eRate;
+
+                                if (eTimer > eRate)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = 0;
+                                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+                                }
+                                break;
+
+                            case "CraftingBench":
+                                eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer / eRate;
+
+                                if (eTimer > eRate)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = 0;
+                                    CraftingMenu.instance.ActivateMenu();
+                                }
+                                break;
+
+                            case "Livestock":
+                                eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer / eRate;
+
+                                if (eTimer > eRate)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = 0;
+                                    hit.transform.GetComponent<Livestock>().Interact();
                                 }
                                 break;
                             default:
@@ -249,9 +288,8 @@ public class PlayerInventory : MonoBehaviour
                             case "Soil":
                                 if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                 {
-                                    //if (hit.transform.childCount > 0)
-                                    //    hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
-                                    //Compensate for weeds, but no plants on a soil
+                                 //   if (hit.transform.childCount > 0)
+                                 //       hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
                                     for (int i = 0; i < hit.transform.childCount; ++i)
                                     {
                                         if (hit.transform.GetChild(i).GetComponent<Plant>() != null)
@@ -623,39 +661,113 @@ public class PlayerInventory : MonoBehaviour
 
     void UpdateImages()
     {
-        for (int i = 0; i < heldObjects.Count; i++)
+        int num = selectedItemNum;
+
+        if (heldObjects[num] != null)
         {
-
-            if (i == selectedItemNum)
-            {
-                itemText[i].color = Color.yellow;
-                itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.yellow;
-            }
+            itemText[0].text = heldObjects[num].GetComponent<Item>().itemName;
+            if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                itemText[0].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
             else
-            {
-                itemText[i].color = Color.white;
-                itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.grey;
-            }
+                itemText[0].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        else
+        {
+            itemText[0].text = "-";
+            itemText[0].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        ////////////////////////////////////////////
+        for (int i = 1; i < itemText.Capacity; i++)
+        {
+            num = selectedItemNum + i;
+            if (num >= heldObjects.Capacity)
+                num -= heldObjects.Capacity;
+            else if (num <= 0)
+                num += heldObjects.Capacity;
 
-
-            if (heldObjects[i] != null)
+            if (heldObjects[num] != null)
             {
-                itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
-                if (heldObjects[i].GetComponent<Item>().quantity > 1)
-                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
+                itemText[i].text = heldObjects[num].GetComponent<Item>().itemName;
+                if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
                 else
                     itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
             else
             {
-                itemText[i].transform.GetComponentInChildren<Text>().text = "-";
+                itemText[i].text = "-";
                 itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
         }
+
+        //    for (int i = 0 ; i < itemText.Capacity; i++)
+        //    {
+        //        int num = selectedItemNum;
+        //        if (num <= 0)
+        //            num += heldObjects.Capacity;
+        //        else if (num >= heldObjects.Capacity)
+        //            num -= heldObjects.Capacity;
+        //
+        //        if (heldObjects[num] != null)
+        //            itemText[i].text = heldObjects[num].GetComponent<Item>().itemName;
+        //        else
+        //            itemText[i].text = "";
+        //    }
+
+
+        //for (int i = 0; i < itemText.Count; i++)
+        //{
+        //    if (heldObjects[i] != null)
+        //    {
+        //        itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
+        //        if (heldObjects[i].GetComponent<Item>().quantity > 1)
+        //            itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
+        //        else
+        //            itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        //    }
+        //    else
+        //    {
+        //        itemText[i].transform.GetComponentInChildren<Text>().text = "-";
+        //        itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        //    }
+        //}
+
+
+
+        //  for (int i = 0; i < heldObjects.Count; i++)
+        //  {
+        //  
+        //      if (i == selectedItemNum)
+        //      {
+        //          itemText[i].color = Color.yellow;
+        //          itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.yellow;
+        //      }
+        //      else
+        //      {
+        //          itemText[i].color = Color.white;
+        //          itemText[i].transform.GetChild(1).GetComponent<Image>().color = Color.grey;
+        //      }
+        //  
+        //  
+        //      if (heldObjects[i] != null)
+        //      {
+        //          itemText[i].text = heldObjects[i].GetComponent<Item>().itemName;
+        //          if (heldObjects[i].GetComponent<Item>().quantity > 1)
+        //              itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[i].GetComponent<Item>().quantity.ToString();
+        //          else
+        //              itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        //      }
+        //      else
+        //      {
+        //          itemText[i].transform.GetComponentInChildren<Text>().text = "-";
+        //          itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        //      }
+        //  }
     }
 
     void UpdateInventory()
     {
+
         if (scrollTimer < 0)
         {
             if ((Input.GetAxis("Mouse ScrollWheel") > 0.05f) || Input.GetButton("Controller_" + iSelectDown))
@@ -684,6 +796,35 @@ public class PlayerInventory : MonoBehaviour
             }
             oldnum = selectedItemNum;
         }
+
+        // if (scrollTimer < 0)
+        // {
+        //     if ((Input.GetAxis("Mouse ScrollWheel") > 0.05f) || Input.GetButton("Controller_" + iSelectDown))
+        //     {
+        //
+        //         if (selectedItemNum > 0)
+        //         {
+        //             selectedItemNum--;
+        //             scrollTimer = 0.1f;
+        //         }
+        //         else
+        //         {
+        //             selectedItemNum = heldObjects.Capacity - 1;
+        //         }
+        //     }
+        //
+        //     if ((Input.GetAxis("Mouse ScrollWheel") < -0.05f) || Input.GetButton("Controller_" + iSelectUp))
+        //     {
+        //         if (selectedItemNum < heldObjects.Capacity - 1)
+        //         {
+        //             selectedItemNum++;
+        //             scrollTimer = 0.1f;
+        //         }
+        //         else
+        //             selectedItemNum = 0;
+        //     }
+        //     oldnum = selectedItemNum;
+        // }
     }
 
     void UpdateItemMesh()

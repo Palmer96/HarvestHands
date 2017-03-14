@@ -33,10 +33,10 @@ public class HandTool : MonoBehaviour
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
             if (Physics.Raycast(ray, out hit, rayMaxDist))
             {
-                if (hit.transform.tag == "NoticeBoard")
-                {
-                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
-                }
+                //   if (hit.transform.tag == "NoticeBoard")
+                //   {
+                //       hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+                //   }
                 if (hit.transform.GetComponent<VIDE_Assign>())
                 {
                     //Lets grab the NPC's DialogueAssign script... if there's any
@@ -70,21 +70,21 @@ public class HandTool : MonoBehaviour
                         Conversation.instance.NextNode();
                     }
                 }
-                if (hit.transform.tag == "CraftingBenchButton")
-                {
-                    //hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
-                    CraftingMenu.instance.ActivateMenu();
-                }
-                if (hit.transform.tag == "CraftingBench")
-                {
-                    //hit.transform.GetComponent<CraftingBench>().MakeItem();
-                    CraftingMenu.instance.ActivateMenu();
-                }
-                if (hit.transform.tag == "Livestock")
-                {
-                    hit.transform.GetComponent<Livestock>().Interact();
-                }
-              
+                //  if (hit.transform.tag == "CraftingBenchButton")
+                //  {
+                //      //hit.transform.GetComponent<CraftingBenchButton>().ActivateButton();
+                //      CraftingMenu.instance.ActivateMenu();
+                //  }
+                //  if (hit.transform.tag == "CraftingBench")
+                //  {
+                //      //hit.transform.GetComponent<CraftingBench>().MakeItem();
+                //      CraftingMenu.instance.ActivateMenu();
+                //  }
+                //  if (hit.transform.tag == "Livestock")
+                //  {
+                //      hit.transform.GetComponent<Livestock>().Interact();
+                //  }
+
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha1))
