@@ -446,6 +446,35 @@ public class PlayerInventory : MonoBehaviour
                 }
             }
         }
+
+        if (heldObjects[selectedItemNum] == null)
+        {
+            heldObjects[selectedItemNum] = item;
+            heldObjects[selectedItemNum].transform.SetParent(transform.GetChild(0));
+            heldObjects[selectedItemNum].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+            heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = true;
+            heldObjects[selectedItemNum].layer = 2;
+            heldObjects[selectedItemNum].GetComponent<Collider>().enabled = false;
+                        
+            heldObjects[selectedItemNum].transform.rotation = transform.GetChild(0).rotation;
+
+            if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 21)
+                heldObjects[selectedItemNum].transform.Rotate(0, 0, -60);
+       else if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 6)
+                heldObjects[selectedItemNum].transform.Rotate(-90, 80, 0);
+            else
+                heldObjects[selectedItemNum].transform.Rotate(0, 0, 30);
+
+            if (heldObjects[selectedItemNum].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
+            {
+                heldObjects[selectedItemNum].GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
+                if (WaveManager.instance != null)
+                    WaveManager.instance.rabbitsLeft--;
+            }
+            heldObjects[selectedItemNum].GetComponent<Item>().beingHeld = true;
+
+            return true;
+        }
         for (int i = 0; i < heldObjects.Count; i++)
         {
             if (heldObjects[i] == null)

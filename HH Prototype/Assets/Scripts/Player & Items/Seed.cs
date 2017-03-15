@@ -8,6 +8,7 @@ public class Seed : Item
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         UpdateMesh();
 
         //  if (GetComponent<MeshFilter>().mesh != null)

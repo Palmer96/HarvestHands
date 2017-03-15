@@ -39,9 +39,12 @@ public class Item : MonoBehaviour
     public bool dontUpdate;
     public bool beingHeld = false;
 
+    public Vector3 startScale;
+
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         if (!dontUpdate)
         {
             if (singleMesh == null)
@@ -60,6 +63,7 @@ public class Item : MonoBehaviour
             itemCap = 20;
         }
         SaveAndLoadManager.OnSave += Save;
+
     }
 
     public virtual void PrimaryUse()

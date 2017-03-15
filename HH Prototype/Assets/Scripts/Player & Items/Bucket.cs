@@ -15,6 +15,7 @@ public class Bucket : Item
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         itemID = 5;
         itemCap = 1;
         SaveAndLoadManager.OnSave += Save;

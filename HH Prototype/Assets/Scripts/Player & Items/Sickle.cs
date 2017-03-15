@@ -7,6 +7,7 @@ public class Sickle : Item
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         itemID = 6;
         itemCap = 1;
         SaveAndLoadManager.OnSave += Save;

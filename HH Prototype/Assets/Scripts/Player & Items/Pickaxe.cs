@@ -9,6 +9,7 @@ public class Pickaxe : Item
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         itemID = 7;
         itemCap = 1;
     }

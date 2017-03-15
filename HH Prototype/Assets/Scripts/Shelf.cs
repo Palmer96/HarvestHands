@@ -54,6 +54,7 @@ public class Shelf : MonoBehaviour
 	
     public bool StoreItem(GameObject thingToStore)
     {
+        thingToStore.transform.localScale = transform.localScale;
         if (storedObject == null)
         {
             if (particleSystem != null)
@@ -141,6 +142,7 @@ public class Shelf : MonoBehaviour
         //theItem.transform.SetParent(null);
         theItem.transform.localScale = storedScale;
         storedScale = new Vector3(1, 1, 1);
+        theItem.transform.localScale = theItem.GetComponent<Item>().startScale;
         return theItem;
     }
 

@@ -11,6 +11,7 @@ public class Axe : Item
     // Use this for initialization
     void Start()
     {
+        startScale = transform.lossyScale;
         itemID = 3;
         itemCap = 1;
         SaveAndLoadManager.OnSave += Save;
