@@ -351,11 +351,11 @@ public class PlayerInventory : MonoBehaviour
                             {
                                 if (heldObjects[selectedItemNum] != null)
                                 {
-                                    //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                                    //if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                                    //  heldObjects[selectedItemNum]
-                                    //      else
-                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                                    if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                        if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                            heldObjects[selectedItemNum].GetComponent<Hammer>().HammerUp();
+                                        else
+                                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
 
                                 }
                             }
@@ -494,8 +494,6 @@ public class PlayerInventory : MonoBehaviour
 
                 if (heldObjects[i].GetComponent<Item>().itemID == 21)
                     heldObjects[i].transform.Rotate(0, 0, -60);
-                else if (heldObjects[i].GetComponent<Item>().itemID == 6)
-                    heldObjects[i].transform.Rotate(-90, 80, 0);
                 else
                     heldObjects[i].transform.Rotate(0, 0, 30);
 
