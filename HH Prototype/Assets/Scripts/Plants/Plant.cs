@@ -215,11 +215,40 @@ public class Plant : MonoBehaviour
 
     public void TimeJump(float time)
     {
+        if (!isAlive || readyToHarvest)
+            return;
+
         harvestTimer -= time;
-        waterLevel -= time;
+        waterLevel -= time * dryMultiplier;
         saplingMeshDuration -= time;
 
-        if (harvestTimer < 0)
+        if (waterLevel < 0 && harvestTimer < 0)
+        {
+            float timeToDryOut = waterLevel / dryMultiplier;    //Time for plant to die from no water
+            float timeToGrow = harvestTimer;                    //time for plant to grow fully
+            //If plant would die first
+            if (timeToDryOut <= timeToGrow)
+            {
+                isAlive = false;
+                plantState = PlantState.Dead;
+                currentPlantMaterial = PlantMaterial.Dead;
+            }
+            //Plant would grow fist
+            else
+            {
+                //Create harvest particles
+                particleCreated = true;
+                GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+                particle.transform.SetParent(transform);
+
+                //Update mesh and stuff
+                readyToHarvest = true;
+                plantState = PlantState.Grown;
+                currentPlantMaterial = PlantMaterial.Grown;
+                transform.GetChild(0).GetComponent<TextMesh>().text = "";
+            }
+        }
+        else if (harvestTimer < 0)
         {
             //Create harvest particles
             particleCreated = true;
