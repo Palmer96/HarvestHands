@@ -75,7 +75,10 @@ public class Plant : MonoBehaviour
     public float deathTimer = 1;
     public float deathTimerRate = 1;
 
+    public float saplingMeshDuration = 1;
+
     private float startTime;
+    public float sliderWidth;
     // Use this for initialization
     void Start()
     {
@@ -84,14 +87,54 @@ public class Plant : MonoBehaviour
         transform.GetChild(1).GetChild(0).GetComponent<Slider>().maxValue = maxWater;
         startTime = harvestTimer;
         //SaveAndLoadManager.OnSave += Save;
+
+        //Get sliders width
+        sliderWidth = transform.GetChild(1).GetChild(0).GetComponent<RectTransform>().sizeDelta.x;
+
+        //Low Water Zone
+        RectTransform rectTrans = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>();
+        float rectTransSize = (lowWater / maxWater) * sliderWidth;
+        float rectRansPos = rectTransSize / 2;
+        rectTrans.anchoredPosition = new Vector3(rectRansPos, 0, 0);
+        rectTrans.sizeDelta = new Vector2(rectTransSize, 7);
+
+        //High Water Zone
+        rectTrans = transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>();
+        rectTransSize = ((maxWater - highWater) / maxWater) * sliderWidth;
+        rectRansPos = -(rectTransSize / 2); //cuz anchors
+        rectTrans.anchoredPosition = new Vector3(rectRansPos, 0, 0);
+        rectTrans.sizeDelta = new Vector2(rectTransSize, 7);
+
+
+        //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>().sizeDelta = new Vector2((lowWater / maxWater) * sliderWidth, 7);
+        //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector3(transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>().localPosition.x + (lowWater / maxWater) * sliderWidth / 2, 0, 0);
+        //
+        //sliderWidth = transform.GetChild(1).GetChild(0).GetComponent<RectTransform>().sizeDelta.x;
+        //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().sizeDelta = new Vector2(((maxWater - highWater) / maxWater) * sliderWidth, 7);
+        //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector3(transform.GetChild(1).GetChild(0).GetChild(0).GetChild(1).GetComponent<RectTransform>().localPosition.x + ((maxWater - highWater) / maxWater) * sliderWidth / 2, 0, 0);
+
+
+        //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().localPosition += new Vector3(0, 10, 0);
+
     }
 
     // Update is called once per frame
     void Update()
     {
+
         if (isAlive && !readyToHarvest)
         {
             harvestTimer -= DayNightController.instance.timePast;
+            //If still sapling, check if need to grow up
+            if (saplingMeshDuration > 0)
+            {
+                saplingMeshDuration -= DayNightController.instance.timePast;
+                if (saplingMeshDuration <= 0)
+                {
+                    plantState = PlantState.Growing;
+                }
+            }
+
             if (waterLevel > 0)
             {
                 if (harvestTimer < 0)
@@ -124,7 +167,7 @@ public class Plant : MonoBehaviour
 
             if (waterLevel < lowWater)
             {
-                plantState = PlantState.Growing;
+                //plantState = PlantState.Growing;
                 currentPlantMaterial = PlantMaterial.Dry;
             }
             else if (waterLevel > highWater)
@@ -133,7 +176,7 @@ public class Plant : MonoBehaviour
             }
             else
             {
-                plantState = PlantState.Growing;
+                //plantState = PlantState.Growing;
                 currentPlantMaterial = PlantMaterial.Grown;
             }
 
@@ -143,7 +186,7 @@ public class Plant : MonoBehaviour
                 transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
                 transform.GetChild(1).gameObject.SetActive(true);
                 transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
-                transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>().fillAmount = harvestTimer/startTime;
+                transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>().fillAmount = harvestTimer / startTime;
 
                 transform.parent.GetComponent<MeshRenderer>().enabled = true;
             }
@@ -162,10 +205,6 @@ public class Plant : MonoBehaviour
             transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
             transform.parent.GetComponent<MeshRenderer>().enabled = false;
         }
-
-
-
-
     }
 
 
@@ -239,6 +278,7 @@ public class Plant : MonoBehaviour
     {
         harvestTimer -= time;
         waterLevel -= time;
+        saplingMeshDuration -= time;
     }
 
 
