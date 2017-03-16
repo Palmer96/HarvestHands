@@ -76,6 +76,10 @@ public class Item : MonoBehaviour
             {
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
+           else if (hit.transform.CompareTag("SellZone"))
+            {
+                hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+            }
             else
             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
@@ -95,6 +99,11 @@ public class Item : MonoBehaviour
             {
                 hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
             }
+            else if (hit.transform.CompareTag("SellZone"))
+            {
+                if (click == ClickType.Hold)
+                hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+            }
         }
     }
 
@@ -107,6 +116,10 @@ public class Item : MonoBehaviour
             if (hit.transform.CompareTag("Building"))
             {
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
+            }
+            else if (hit.transform.CompareTag("SellZone"))
+            {
+                hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
             }
         }
     }

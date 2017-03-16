@@ -16,6 +16,8 @@ public class HandTool : MonoBehaviour
     public bool usingHand;
 
     public string Interact;
+
+    private bool pressed;
     // Use this for initialization
     void Start()
     {
@@ -27,7 +29,7 @@ public class HandTool : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetButton("Controller_" + Interact))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetButton("Controller_" + Interact) || Input.GetButton("Controller_A"))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -37,37 +39,42 @@ public class HandTool : MonoBehaviour
                 //   {
                 //       hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
                 //   }
+
                 if (hit.transform.GetComponent<VIDE_Assign>())
                 {
-                    //Lets grab the NPC's DialogueAssign script... if there's any
-                    VIDE_Assign assigned;
-                    if (hit.collider.GetComponent<VIDE_Assign>() != null)
-                        assigned = hit.collider.GetComponent<VIDE_Assign>();
-                    else return;
 
-                    if (!Conversation.instance.dialogue.isLoaded)
+                    if (!pressed)
                     {
-                        //Check if have quest to talk to NPC, returns -1 if no
-                        int startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
-                        //else check if npc has new potential quest
-                        if (startNode == -1)
+                        pressed = true;
+
+                        //Lets grab the NPC's DialogueAssign script... if there's any
+                        VIDE_Assign assigned;
+                        if (hit.collider.GetComponent<VIDE_Assign>() != null)
+                            assigned = hit.collider.GetComponent<VIDE_Assign>();
+                        else return;
+                        if (!Conversation.instance.dialogue.isLoaded)
                         {
-                            NPC npc = hit.transform.GetComponent<NPC>();
-                            if (npc != null)
+                            //Check if have quest to talk to NPC, returns -1 if no
+                            int startNode = PrototypeQuestManager.instance.CheckTalkChat(hit.transform.GetComponent<NPC>().npcName);
+                            //else check if npc has new potential quest
+                            if (startNode == -1)
                             {
-                                npc.CheckForNewPotentialQuests();
-                                npc.AcceptQuest();
-                                startNode = PrototypeQuestManager.instance.CheckTalkChat(npc.npcName);
+                                NPC npc = hit.transform.GetComponent<NPC>();
+                                if (npc != null)
+                                {
+                                    npc.CheckForNewPotentialQuests();
+                                    npc.AcceptQuest();
+                                    startNode = PrototypeQuestManager.instance.CheckTalkChat(npc.npcName);
+                                }
                             }
+                            //... and use NPC's DialogueAssign to begin the conversation
+                            Conversation.instance.BeginConversation(assigned, startNode);
                         }
-
-                        //... and use NPC's DialogueAssign to begin the conversation
-                        Conversation.instance.BeginConversation(assigned, startNode);
-                    }
-                    else
-                    {
-                        //If conversation already began, let's just progress through it
-                        Conversation.instance.NextNode();
+                        else
+                        {
+                            //If conversation already began, let's just progress through it
+                            Conversation.instance.NextNode();
+                        }
                     }
                 }
                 //  if (hit.transform.tag == "CraftingBenchButton")
@@ -87,19 +94,11 @@ public class HandTool : MonoBehaviour
 
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + Interact) || Input.GetButtonUp("Controller_A"))
         {
-            Debug.Log("Inside handtool F Pressed");
-            RaycastHit hit;
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit, rayMaxDist))
-            {
-                if (hit.transform.tag == "CraftingBench")
-                {
-                    hit.transform.GetComponent<CraftingBench>().NextRecipeChoice();
-                }
-            }
+            pressed = false;
         }
+
     }
     //       if (Input.GetMouseButtonDown(0))
     //       {

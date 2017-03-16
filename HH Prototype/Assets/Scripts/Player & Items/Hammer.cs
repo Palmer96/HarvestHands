@@ -109,6 +109,10 @@ public class Hammer : Item
 
     }
 
+    public void HammerUp()
+    {
+
+    }
 
     public override void Save()
     {

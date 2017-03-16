@@ -24,17 +24,41 @@ public class SellChest : MonoBehaviour
     {
         if (col.transform.CompareTag("Item") || col.transform.CompareTag("Rabbit"))
         {
-            Item item = col.transform.GetComponent<Item>();
+            AddToSell(col.gameObject);
+        }
+
+    }
+
+    public void AddToSell(GameObject sold)
+    {
+        if (sold.GetComponent<Item>() != null)
+        {
+            Item item = sold.GetComponent<Item>();
             if (item.sellable == true)
             {
                 if (item.GetComponent<Item>())
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
                 //Debug.Log(col.transform.name);
                 valueOfItems += item.value * item.quantity;
-                Destroy(col.gameObject);
+                Destroy(sold);
             }
         }
-
+    }
+    public void AddSingleToSell(GameObject sold)
+    {
+        if (sold.GetComponent<Item>() != null)
+        {
+            Item item = sold.GetComponent<Item>();
+            if (item.sellable == true)
+            {
+                if (item.GetComponent<Item>())
+                    EventManager.SellEvent(item.GetComponent<Item>().itemName);
+                //Debug.Log(col.transform.name);
+                if (item.quantity == 1)
+                valueOfItems += item.value * item.quantity;
+                Destroy(sold);
+            }
+        }
     }
 
     public static void SellAllChests()

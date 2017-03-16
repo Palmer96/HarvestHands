@@ -288,8 +288,8 @@ public class PlayerInventory : MonoBehaviour
                             case "Soil":
                                 if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                 {
-                                 //   if (hit.transform.childCount > 0)
-                                 //       hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
+                                    //   if (hit.transform.childCount > 0)
+                                    //       hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
                                     for (int i = 0; i < hit.transform.childCount; ++i)
                                     {
                                         if (hit.transform.GetChild(i).GetComponent<Plant>() != null)
@@ -352,7 +352,11 @@ public class PlayerInventory : MonoBehaviour
                                 if (heldObjects[selectedItemNum] != null)
                                 {
                                     //  if(heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                    //if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                    //  heldObjects[selectedItemNum]
+                                    //      else
                                     heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+
                                 }
                             }
                         }
@@ -403,7 +407,7 @@ public class PlayerInventory : MonoBehaviour
                     bookOpen = false;
                 }
             }
-        }
+        }   
     }
 
 
@@ -455,12 +459,12 @@ public class PlayerInventory : MonoBehaviour
             heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = true;
             heldObjects[selectedItemNum].layer = 2;
             heldObjects[selectedItemNum].GetComponent<Collider>().enabled = false;
-                        
+
             heldObjects[selectedItemNum].transform.rotation = transform.GetChild(0).rotation;
 
             if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 21)
                 heldObjects[selectedItemNum].transform.Rotate(0, 0, -60);
-       else if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 6)
+            else if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 6)
                 heldObjects[selectedItemNum].transform.Rotate(-90, 80, 0);
             else
                 heldObjects[selectedItemNum].transform.Rotate(0, 0, 30);

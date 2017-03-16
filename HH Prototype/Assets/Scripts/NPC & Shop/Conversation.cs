@@ -26,7 +26,8 @@ public class Conversation : MonoBehaviour
     public KeyCode GoUpOptionKey = KeyCode.W;
     public KeyCode GoDownOptionKey = KeyCode.S;
 
-
+    private float changeTimer = 0.2f;
+    private float changeRate = 0.2f;
 
     // Use this for initialization
     void Start ()
@@ -64,19 +65,31 @@ public class Conversation : MonoBehaviour
                 if (i == data.selectedOption) currentOptions[i].color = highlightedOptionColor;
             }
 
+            changeTimer -= Time.deltaTime;
+            if (changeTimer < 0)
+            {
+
             //Scroll through Player dialogue options
             if (!data.pausedAction)
             {
-                if (Input.GetKeyDown(GoDownOptionKey))
+                if (Input.GetKeyDown(GoDownOptionKey) || Input.GetAxis("Vertical") < -0.2f)
                 {
-                    if (data.selectedOption < currentOptions.Count - 1)
-                        data.selectedOption++;
+                        if (data.selectedOption < currentOptions.Count - 1)
+                            data.selectedOption++;
+                        else
+                            data.selectedOption = 0;
+
+                        changeTimer = changeRate;
                 }
-                if (Input.GetKeyDown(GoUpOptionKey))
+                if (Input.GetKeyDown(GoUpOptionKey) || Input.GetAxis("Vertical") > 0.2f)
                 {
-                    if (data.selectedOption > 0)
-                        data.selectedOption--;
-                }
+                        if (data.selectedOption > 0)
+                            data.selectedOption--;
+                        else
+                            data.selectedOption = currentOptions.Count - 1;
+                        changeTimer = changeRate;
+                    }
+            }
             }
         }
     }
