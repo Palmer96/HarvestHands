@@ -494,6 +494,8 @@ public class PlayerInventory : MonoBehaviour
 
                 if (heldObjects[i].GetComponent<Item>().itemID == 21)
                     heldObjects[i].transform.Rotate(0, 0, -60);
+               else if (heldObjects[i].GetComponent<Item>().itemID == 6)
+                    heldObjects[i].transform.Rotate(-160, -10, 160);
                 else
                     heldObjects[i].transform.Rotate(0, 0, 30);
 
@@ -622,7 +624,7 @@ public class PlayerInventory : MonoBehaviour
         if (heldObjects[slot].GetComponent<Item>().itemID == 21)
             heldObjects[slot].transform.Rotate(0, 0, -60);
         else if (heldObjects[slot].GetComponent<Item>().itemID == 6)
-            heldObjects[slot].transform.Rotate(-90, 80, 0);
+            heldObjects[slot].transform.Rotate(-160, -10, 160);
         else
             heldObjects[slot].transform.Rotate(0, 0, 30);
 
