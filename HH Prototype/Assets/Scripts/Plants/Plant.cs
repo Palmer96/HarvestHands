@@ -115,96 +115,33 @@ public class Plant : MonoBehaviour
 
 
         //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().localPosition += new Vector3(0, 10, 0);
-
+        UpdateStatus();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (isAlive && !readyToHarvest)
-        {
-            harvestTimer -= DayNightController.instance.timePast;
-            //If still sapling, check if need to grow up
-            if (saplingMeshDuration > 0)
-            {
-                saplingMeshDuration -= DayNightController.instance.timePast;
-                if (saplingMeshDuration <= 0)
-                {
-                    plantState = PlantState.Growing;
-                }
-            }
-
-            if (waterLevel > 0)
-            {
-                if (harvestTimer < 0)
-                {
-                    if (!particleCreated)
-                    {
-                        particleCreated = true;
-                        GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
-                        particle.transform.SetParent(transform);
-                    }
-
-                    readyToHarvest = true;
-                    plantState = PlantState.Grown;
-                    currentPlantMaterial = PlantMaterial.Grown;
-                    transform.GetChild(0).GetComponent<TextMesh>().text = "";
-
-                    UpdatePlants();
-                }
-            }
-
-            if (waterLevel <= 0 || waterLevel >= maxWater)
-            {
-                isAlive = false;
-                plantState = PlantState.Dead;
-                currentPlantMaterial = PlantMaterial.Dead;
-                //   UpdatePlantMat
-            }
-            else
-                waterLevel -= DayNightController.instance.timePast * dryMultiplier;
-
-            if (waterLevel < lowWater)
-            {
-                //plantState = PlantState.Growing;
-                currentPlantMaterial = PlantMaterial.Dry;
-            }
-            else if (waterLevel > highWater)
-            {
-
-            }
-            else
-            {
-                //plantState = PlantState.Growing;
-                currentPlantMaterial = PlantMaterial.Grown;
-            }
-
-            if (highlighted)
-            {
-                highlighted = false;
-                transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
-                transform.GetChild(1).gameObject.SetActive(true);
-                transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
-                transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>().fillAmount = harvestTimer / startTime;
-
-                transform.parent.GetComponent<MeshRenderer>().enabled = true;
-            }
-            else
-            {
-                transform.GetChild(0).GetComponent<TextMesh>().text = "";
-                transform.GetChild(1).gameObject.SetActive(false);
-                transform.parent.GetComponent<MeshRenderer>().enabled = false;
-            }
-
-            UpdatePlants();
-        }
-        else
+        //Dead plants
+        if (!isAlive)
         {
             transform.GetChild(0).GetComponent<TextMesh>().text = "";
             transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
             transform.parent.GetComponent<MeshRenderer>().enabled = false;
+            return;
         }
+        //Ready to harvest plants
+        if (readyToHarvest)
+        {
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+            transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            transform.parent.GetComponent<MeshRenderer>().enabled = false;
+            return;
+        }
+
+        harvestTimer -= DayNightController.instance.timePast;
+        waterLevel -= DayNightController.instance.timePast * dryMultiplier;
+
+        UpdateStatus();                
     }
 
 
@@ -279,6 +216,90 @@ public class Plant : MonoBehaviour
         harvestTimer -= time;
         waterLevel -= time;
         saplingMeshDuration -= time;
+        UpdateStatus();
+    }
+
+    public void UpdateStatus()
+    {
+        //If still sapling, check if need to grow up
+        if (saplingMeshDuration > 0)
+        {
+            saplingMeshDuration -= DayNightController.instance.timePast;
+            if (saplingMeshDuration <= 0)
+            {
+                plantState = PlantState.Growing;
+            }
+        }
+
+        //If low water
+        if (waterLevel < lowWater)
+        {
+            //If dried to death
+            if (waterLevel < 0)
+            {
+                isAlive = false;
+                plantState = PlantState.Dead;
+                currentPlantMaterial = PlantMaterial.Dead;
+            }
+            else
+            {
+                currentPlantMaterial = PlantMaterial.Dry;
+            }
+        }
+        //If high water
+        else if (waterLevel > highWater)
+        {
+            //If drowned
+            if (waterLevel > maxWater)
+            {
+                isAlive = false;
+                plantState = PlantState.Dead;
+                currentPlantMaterial = PlantMaterial.Dead;
+            }
+        }
+        //If normal Water
+        else
+        {
+            currentPlantMaterial = PlantMaterial.Grown;
+        }
+
+        if (isAlive)
+        {
+            //If ready to harvest
+            if (harvestTimer < 0)
+            {
+                //Create harvest particles
+                particleCreated = true;
+                GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+                particle.transform.SetParent(transform);
+
+                //Update mesh and stuff
+                readyToHarvest = true;
+                plantState = PlantState.Grown;
+                currentPlantMaterial = PlantMaterial.Grown;
+                transform.GetChild(0).GetComponent<TextMesh>().text = "";
+            }
+        }
+
+        if (highlighted)
+        {
+            highlighted = false;
+            transform.GetChild(0).GetComponent<TextMesh>().text = ((int)waterLevel).ToString();
+            transform.GetChild(1).gameObject.SetActive(true);
+            transform.GetChild(1).GetChild(0).GetComponent<Slider>().value = waterLevel;
+            transform.GetChild(1).GetChild(1).GetChild(0).GetComponent<Image>().fillAmount = harvestTimer / startTime;
+
+            transform.parent.GetComponent<MeshRenderer>().enabled = true;
+        }
+        else
+        {
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+            transform.GetChild(1).gameObject.SetActive(false);
+            transform.parent.GetComponent<MeshRenderer>().enabled = false;
+        }
+
+        //Update plant visuals
+        UpdatePlants();
     }
 
 
