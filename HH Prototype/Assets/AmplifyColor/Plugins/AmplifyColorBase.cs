@@ -211,7 +211,7 @@ public class AmplifyColorBase : MonoBehaviour
 		if ( ( lutTex2d != null && lutTex2d.mipmapCount > 1 ) || ( lutBlendTex2d != null && lutBlendTex2d.mipmapCount > 1 ) )
 			Debug.LogError( "[AmplifyColor] Please disable \"Generate Mip Maps\" import settings on all LUT textures to avoid visual glitches. " +
 				"Change Texture Type to \"Advanced\" to access Mip settings." );
-        
+
 #if TRIAL
 		watermark = new Texture2D( 4, 4 ) { hideFlags = HideFlags.HideAndDontSave };
 		watermark.LoadImage( AmplifyColor.Watermark.ImageData );
