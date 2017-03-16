@@ -465,7 +465,7 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 21)
                 heldObjects[selectedItemNum].transform.Rotate(0, 0, -60);
             else if (heldObjects[selectedItemNum].GetComponent<Item>().itemID == 6)
-                heldObjects[selectedItemNum].transform.Rotate(-90, 80, 0);
+                heldObjects[selectedItemNum].transform.Rotate(-160, -10, 160);
             else
                 heldObjects[selectedItemNum].transform.Rotate(0, 0, 30);
 
