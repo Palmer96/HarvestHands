@@ -126,6 +126,7 @@ public class Plant : MonoBehaviour
         {
             transform.GetChild(0).GetComponent<TextMesh>().text = "";
             transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
             transform.parent.GetComponent<MeshRenderer>().enabled = false;
             return;
         }
@@ -134,6 +135,7 @@ public class Plant : MonoBehaviour
         {
             transform.GetChild(0).GetComponent<TextMesh>().text = "";
             transform.GetChild(1).GetChild(0).gameObject.SetActive(false);
+            transform.GetChild(1).GetChild(1).gameObject.SetActive(false);
             transform.parent.GetComponent<MeshRenderer>().enabled = false;
             return;
         }
@@ -216,7 +218,33 @@ public class Plant : MonoBehaviour
         harvestTimer -= time;
         waterLevel -= time;
         saplingMeshDuration -= time;
-        UpdateStatus();
+
+        if (harvestTimer < 0)
+        {
+            //Create harvest particles
+            particleCreated = true;
+            GameObject particle = Instantiate(finishedShine, transform.position, finishedShine.transform.rotation);
+            particle.transform.SetParent(transform);
+
+            //Update mesh and stuff
+            readyToHarvest = true;
+            plantState = PlantState.Grown;
+            currentPlantMaterial = PlantMaterial.Grown;
+            transform.GetChild(0).GetComponent<TextMesh>().text = "";
+        }
+        else if (waterLevel <= 0)
+        {
+            isAlive = false;
+            plantState = PlantState.Dead;
+            currentPlantMaterial = PlantMaterial.Dead;
+        }
+        else
+        {
+            UpdateStatus();
+        }
+            
+        //UpdateStatus();
+        UpdatePlants();
     }
 
     public void UpdateStatus()
