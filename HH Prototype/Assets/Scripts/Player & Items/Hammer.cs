@@ -13,64 +13,70 @@ public class Hammer : Item
         startScale = transform.lossyScale;
         itemID = 3;
         itemCap = 1;
+
+        if (singleMesh == null)
+            singleMesh = GetComponent<MeshFilter>().mesh;
+        if (multiMesh == null)
+            multiMesh = GetComponent<MeshFilter>().mesh;
+        if (singleMaterial == null)
+            singleMaterial = GetComponent<MeshRenderer>().material;
+        if (multiMaterial == null)
+            multiMaterial = GetComponent<MeshRenderer>().material;
+
+
         SaveAndLoadManager.OnSave += Save;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (used)
-        {
-            useTimer -= Time.deltaTime;
-            if (useTimer < 0)
-            {
-                used = false;
-            }
-        }
+
     }
 
     public override void PrimaryUse(ClickType click)
     {
-        switch (click)
+        if (!used)
         {
-            case ClickType.Single:
-                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            switch (click)
+            {
+                case ClickType.Single:
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                Debug.Log("Hammer2");
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
-                {
-                    if (hit.transform.CompareTag("Building"))
+                    Debug.Log("Hammer2");
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
-                        Debug.Log("Building2");
-                        used = true;
-                        useTimer = useRate;
-                        hit.transform.GetComponent<Building>().Move();
+                        if (hit.transform.CompareTag("Building"))
+                        {
+                            Debug.Log("Building2");
+                            used = true;
+                            useTimer = useRate;
+                            hit.transform.GetComponent<Building>().Move();
+                        }
+                        else
+                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
-                    else
-                        ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                }
-                break;
-            case ClickType.Hold:
-                ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                    break;
+                case ClickType.Hold:
+                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                Debug.Log("Hammer");
-                if (Physics.Raycast(ray, out hit, rayMaxDist))
-                {
-                    if (hit.transform.CompareTag("Building"))
+                    Debug.Log("Hammer");
+                    if (Physics.Raycast(ray, out hit, rayMaxDist))
                     {
-                        Debug.Log("Building");
-                        used = true;
-                        useTimer = useRate;
-                        hit.transform.GetComponent<Building>().Build();
+                        if (hit.transform.CompareTag("Building"))
+                        {
+                            Debug.Log("Building");
+                            used = true;
+                            useTimer = useRate;
+                            hit.transform.GetComponent<Building>().Build();
+                        }
+                        else
+                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
-                    else
-                        ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                }
-                break;
+                    break;
 
-                //     case ClickType.Hold:
+                    //     case ClickType.Hold:
+            }
         }
-
     }
 
     public override void SecondaryUse(ClickType click)
@@ -88,7 +94,6 @@ public class Hammer : Item
                         switch (hit.transform.tag)
                         {
                             case "Building":
-                                used = true;
                                 useTimer = useRate;
                                 hit.transform.GetComponent<Building>().Deconstruct();
                                 break;
@@ -111,7 +116,7 @@ public class Hammer : Item
 
     public void HammerUp()
     {
-
+        used = false;
     }
 
     public override void Save()
