@@ -87,24 +87,8 @@ public class Item : MonoBehaviour
 
     public virtual void PrimaryUse(ClickType click)
     {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
-        {
-            if (hit.transform.CompareTag("Building"))
-            {
-                hit.transform.GetComponent<Building>().AddResource(gameObject);
-            }
-            else if (hit.transform.CompareTag("Shelf"))
-            {
-                hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
-            }
-            else if (hit.transform.CompareTag("SellZone"))
-            {
-                if (click == ClickType.Hold)
-                hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
-            }
-        }
+        if (AttemptInteract(click))
+            return;
     }
 
     public virtual void PrimaryUse(GameObject gameObj)
@@ -132,7 +116,7 @@ public class Item : MonoBehaviour
 
     public virtual void SecondaryUse(ClickType click)
     {
-
+        
     }
 
     public virtual void SecondaryUse(GameObject gameObj)
@@ -212,6 +196,50 @@ public class Item : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    public virtual bool AttemptInteract(ClickType click)
+    {
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            if (hit.transform.CompareTag("Building"))
+            {
+                hit.transform.GetComponent<Building>().AddResource(gameObject);
+                return true;
+            }
+            else if (hit.transform.CompareTag("Shelf"))
+            {
+                hit.transform.GetComponent<Shelf>().StoreItem(gameObject);
+                return true;
+            }
+            else if (hit.transform.CompareTag("SellZone"))
+            {
+                if (click == ClickType.Single)
+                {
+                    if (quantity > 1)
+                    {
+                        GameObject sellingObject = Instantiate(gameObject);
+                        sellingObject.GetComponent<Item>().quantity = 1;
+                        hit.transform.GetComponent<SellChest>().AddToSell(sellingObject);
+                        DecreaseQuantity();
+                    }
+                    else
+                    {
+                        hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+                    }
+                    return true;
+                }
+                else if (click == ClickType.Hold)
+                {
+                    hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public virtual void Save()
     {
         SaveAndLoadManager.instance.saveData.itemSaveList.Add(new ItemSave(this));

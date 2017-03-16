@@ -58,6 +58,8 @@ public class Seed : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (AttemptInteract(click))
+            return;
         PrimaryUse();
     }
     public override void PrimaryUse()

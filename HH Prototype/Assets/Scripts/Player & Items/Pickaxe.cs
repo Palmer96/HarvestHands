@@ -29,6 +29,8 @@ public class Pickaxe : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (AttemptInteract(click))
+            return;
         switch (click)
         {
             //  case ClickType.Single:

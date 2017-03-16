@@ -47,48 +47,10 @@ public class Bucket : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (AttemptInteract(click))
+            return;
         switch (click)
         {
-           // case ClickType.Single:
-           //     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-           //
-           //     if (Physics.Raycast(ray, out hit, rayMaxDist))
-           //     {
-           //         if (hit.transform.CompareTag("WaterSource"))
-           //             currentWaterLevel = maxWaterLevel;
-           //         else if (hit.transform.CompareTag("Plant"))
-           //         {
-           //             if (currentWaterLevel > 0)
-           //             {
-           //                 if (hit.transform.GetComponent<Plant>().WaterPlant(waterDrain))
-           //                 {
-           //                     currentWaterLevel -= waterDrain;
-           //                     EventManager.WaterEvent(hit.transform.GetComponent<Plant>().plantName.ToString());
-           //                     used = true;
-           //                     useTimer = useRate;
-           //                 }
-           //             }
-           //         }
-           //         else if (hit.transform.CompareTag("Soil"))
-           //         {
-           //             if (currentWaterLevel > 0)
-           //             {
-           //                 if (hit.transform.childCount > 0)
-           //                 {
-           //
-           //                     if (hit.transform.GetChild(0).GetComponent<Plant>().WaterPlant(waterDrain))
-           //                     {
-           //                         currentWaterLevel -= waterDrain;
-           //                         EventManager.WaterEvent(hit.transform.GetChild(0).GetComponent<Plant>().plantName.ToString());
-           //                         used = true;
-           //                         useTimer = useRate;
-           //                     }
-           //                 }
-           //             }
-           //         }
-           //     }
-           //     break;
-
             case ClickType.Hold:
                 if (!used)
                 {

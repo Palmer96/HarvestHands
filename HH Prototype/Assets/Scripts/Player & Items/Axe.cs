@@ -32,6 +32,8 @@ public class Axe : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (AttemptInteract(click))
+            return;
         switch (click)
         {
             //  case ClickType.Single:

@@ -30,6 +30,8 @@ public class AnimalFeed : Item
 
     public override void PrimaryUse(ClickType click)
     {
+        if (AttemptInteract(click))
+            return;
         if (click == Item.ClickType.Hold)
             PrimaryUse();
     }

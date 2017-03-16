@@ -234,6 +234,19 @@ public class PlayerInventory : MonoBehaviour
                                     hit.transform.GetComponent<Livestock>().Interact();
                                 }
                                 break;
+
+                            case "SellZone":
+                                eTimer += Time.deltaTime;
+                                holdSlider.fillAmount = eTimer / eRate;
+
+                                if (eTimer > eRate)
+                                {
+                                    eTimer = 0;
+                                    holdSlider.fillAmount = 0;
+                                    hit.transform.GetComponent<Livestock>().Interact();
+                                }
+                                break;
+
                             default:
                                 eTimer = 0;
                                 holdSlider.fillAmount = eTimer * 2;
@@ -352,8 +365,11 @@ public class PlayerInventory : MonoBehaviour
                                 if (heldObjects[selectedItemNum] != null)
                                 {
                                     if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                    {
+
                                         if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
                                             heldObjects[selectedItemNum].GetComponent<Hammer>().HammerUp();
+                                    }
                                         else
                                             heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
 
