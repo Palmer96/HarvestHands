@@ -82,6 +82,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
             //     m_AudioSource = GetComponent<AudioSource>();
             m_MouseLook.Init(transform, m_Camera.transform);
             disabled = false;
+           
         }
 
 
@@ -260,11 +261,12 @@ namespace UnityStandardAssets.Characters.FirstPerson
             float vertical = CrossPlatformInputManager.GetAxis("Vertical");
 
             bool waswalking = m_IsWalking;
+            
 
 #if !MOBILE_INPUT
             // On standalone builds, walk/run speed is modified by a key press.
             // keep track of whether or not the character is walking or running
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Left Stick Button"))
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetButton("Controller_LStickClick"))
             {
                 m_IsWalking = false;
             }

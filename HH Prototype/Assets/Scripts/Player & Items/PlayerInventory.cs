@@ -80,6 +80,7 @@ public class PlayerInventory : MonoBehaviour
     public ControllerInput iSelectUp;
     public ControllerInput iSelectDown;
 
+    public bool eUsed;
     // Use this for initialization
     void Start()
     {
@@ -102,10 +103,13 @@ public class PlayerInventory : MonoBehaviour
         disableLeft = true;
         disableRight = true;
 
+        eUsed = false;
+
         lClickTimer = 0;
         rClickTimer = 0;
         qTimer = 0;
         eTimer = 0;
+
 
         SaveAndLoadManager.OnSave += Save;
     }
@@ -200,27 +204,35 @@ public class PlayerInventory : MonoBehaviour
                                 break;
 
                             case "NoticeBoard":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / eRate;
-
-                                if (eTimer > eRate)
+                                // eTimer += Time.deltaTime;
+                                // holdSlider.fillAmount = eTimer / eRate;
+                                //
+                                // if (eTimer > eRate)
+                                // {
+                                //     eTimer = 0;
+                                //     holdSlider.fillAmount = 0;
+                                if (!eUsed)
                                 {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
                                     hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+                                    eUsed = true;
                                 }
+                                // }
                                 break;
 
                             case "CraftingBench":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / eRate;
-
-                                if (eTimer > eRate)
-                                {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                    CraftingMenu.instance.ActivateMenu();
-                                }
+                              //  eTimer += Time.deltaTime;
+                              //  holdSlider.fillAmount = eTimer / eRate;
+                              //
+                              //  if (eTimer > eRate)
+                              //  {
+                              //      eTimer = 0;
+                              //      holdSlider.fillAmount = 0;
+                            //        if (!eUsed)
+                            //        {
+                                        CraftingMenu.instance.ActivateMenu();
+                             //           eUsed = true;
+                            //        }
+                           //     }
                                 break;
 
                             case "Livestock":
@@ -257,7 +269,7 @@ public class PlayerInventory : MonoBehaviour
                     {
                         eTimer = 0;
                         holdSlider.fillAmount = eTimer * 2;
-                    }
+                                            }
                 }
                 /////////////--- E Press --- INTERACT ---
                 //////////////////////////////////////////////////////
@@ -266,6 +278,7 @@ public class PlayerInventory : MonoBehaviour
                 {
                     eTimer = 0;
                     holdSlider.fillAmount = 0;
+                    eUsed = false;
                 }
 
                 if (heldObjects[selectedItemNum] != null)
@@ -370,8 +383,8 @@ public class PlayerInventory : MonoBehaviour
                                         if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
                                             heldObjects[selectedItemNum].GetComponent<Hammer>().HammerUp();
                                     }
-                                        else
-                                            heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                                    else
+                                        heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
 
                                 }
                             }
@@ -423,7 +436,7 @@ public class PlayerInventory : MonoBehaviour
                     bookOpen = false;
                 }
             }
-        }   
+        }
     }
 
 
@@ -510,7 +523,7 @@ public class PlayerInventory : MonoBehaviour
 
                 if (heldObjects[i].GetComponent<Item>().itemID == 21)
                     heldObjects[i].transform.Rotate(0, 0, -60);
-               else if (heldObjects[i].GetComponent<Item>().itemID == 6)
+                else if (heldObjects[i].GetComponent<Item>().itemID == 6)
                     heldObjects[i].transform.Rotate(-160, -10, 160);
                 else
                     heldObjects[i].transform.Rotate(0, 0, 30);
@@ -526,6 +539,7 @@ public class PlayerInventory : MonoBehaviour
                 return true;
             }
         }
+        ScreenMessage.instance.CreateMessage("Inventory is full");
         return false;
 
     }

@@ -8,6 +8,8 @@ public class Rock : MonoBehaviour
     public GameObject rock;
     public int rockAvaliable;
     public GameObject respawnObject;
+
+    public Transform spawnPoint;
     // Use this for initialization
     void Start()
     {
@@ -27,14 +29,14 @@ public class Rock : MonoBehaviour
 
     public void Harvest()
     {
-        Instantiate(rock, transform.GetChild(0).position, transform.GetChild(0).rotation);
+        Instantiate(rock, spawnPoint.position, spawnPoint.rotation);
 
-        rockAvaliable--;
-        if (rockAvaliable == 0)
-        {
-            Instantiate(respawnObject, transform.position, transform.rotation);
-            Destroy(gameObject);
-        }
+      //  rockAvaliable--;
+     //   if (rockAvaliable == 0)
+      //  {
+      //      Instantiate(respawnObject, transform.position, transform.rotation);
+     //       Destroy(gameObject);
+      //  }
     }
 }
 

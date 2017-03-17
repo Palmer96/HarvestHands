@@ -34,7 +34,7 @@ public class Blueprint : MonoBehaviour
             instance = this;
         //else
         //    Debug.Log("2 blue prints in scene");
-        Debug.Log("Inside Blueprint Start()");
+
         SaveAndLoadManager.OnSave += Save;
     }
 

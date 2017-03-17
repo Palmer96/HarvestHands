@@ -65,7 +65,7 @@ public class DayNightController : MonoBehaviour
         //  worldLight.color = gradient1.Evaluate(currentTimeOfDay / 24);
         float Scale1 = currentTimeOfDay / 12;
 
-        worldLight.intensity = lighting.Evaluate(currentTimeOfDay / 24) * lightMaxIs;
+        worldLight.intensity = (lighting.Evaluate(currentTimeOfDay / 24) * lightMaxIs) * 0.8f;
 
         RenderSettings.fogDensity = fogDensity.Evaluate(currentTimeOfDay / 24) * fogMaxIs;
         RenderSettings.fogColor = fogColour.Evaluate(currentTimeOfDay / 24);

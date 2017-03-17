@@ -17,7 +17,7 @@ public class HandTool : MonoBehaviour
 
     public string Interact;
 
-    private bool pressed;
+    public bool pressed;
     // Use this for initialization
     void Start()
     {
@@ -29,7 +29,7 @@ public class HandTool : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetButton("Controller_" + Interact) || Input.GetButton("Controller_A"))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetButtonDown("Controller_" + Interact) || Input.GetButtonDown("Controller_A"))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -42,11 +42,6 @@ public class HandTool : MonoBehaviour
 
                 if (hit.transform.GetComponent<VIDE_Assign>())
                 {
-
-                    if (!pressed)
-                    {
-                        pressed = true;
-
                         //Lets grab the NPC's DialogueAssign script... if there's any
                         VIDE_Assign assigned;
                         if (hit.collider.GetComponent<VIDE_Assign>() != null)
@@ -75,7 +70,6 @@ public class HandTool : MonoBehaviour
                             //If conversation already began, let's just progress through it
                             Conversation.instance.NextNode();
                         }
-                    }
                 }
                 //  if (hit.transform.tag == "CraftingBenchButton")
                 //  {
@@ -94,11 +88,6 @@ public class HandTool : MonoBehaviour
 
             }
         }
-        if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + Interact) || Input.GetButtonUp("Controller_A"))
-        {
-            pressed = false;
-        }
-
     }
     //       if (Input.GetMouseButtonDown(0))
     //       {

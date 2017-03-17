@@ -8,7 +8,8 @@ public class BookMenuManager : MonoBehaviour
     public GameObject activeMenu = null;
     public GameObject parentMenu = null;
     public KeyCode menuKey;
-
+    public PlayerInventory.ControllerInput menuController;
+    public PlayerInventory.ControllerInput menuExit;
     // Use this for initialization
     void Start()
     {
@@ -21,7 +22,8 @@ public class BookMenuManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(menuKey))
+        
+        if (Input.GetKeyDown(menuKey) || Input.GetButtonDown("Controller_" + menuController))
         {
             if (PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled == true)
             {
@@ -56,6 +58,10 @@ public class BookMenuManager : MonoBehaviour
                 Cursor.lockState = CursorLockMode.None;
                 Debug.Log(Cursor.visible.ToString());
             }
+        }
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetButtonDown("Controller_" + menuExit))
+        {
+            CloseMenusAll();
         }
     }
 
