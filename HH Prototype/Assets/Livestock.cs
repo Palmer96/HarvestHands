@@ -90,26 +90,22 @@ public class Livestock : MonoBehaviour
             //If player in range
             if (Vector3.Distance(PlayerInventory.instance.transform.position, transform.position) < playerApproachRadius)
             {
-                chasingPlayer = true;
-                navMeshAgent.SetDestination(PlayerInventory.instance.transform.position);
-            }
-            else
-            {
-                //If player moved out of chase range
-                if (chasingPlayer)
+                if (PlayerInventory.instance.heldObjects[PlayerInventory.instance.selectedItemNum] != null)
                 {
-                    chasingPlayer = false;
-                    MoveRandomPosition();
-                }
-                else if (movementTimer < 0)
-                {
-                    MoveRandomPosition();
+                    //If player holding feed
+                    if (PlayerInventory.instance.heldObjects[PlayerInventory.instance.selectedItemNum].GetComponent<AnimalFeed>() != null)
+                    {
+                        chasingPlayer = true;
+                        navMeshAgent.SetDestination(PlayerInventory.instance.transform.position);
+                        movementTimer = .2f;
+                    }
                 }
             }
         }
-        //If doesnt approach player
-        else if (movementTimer < 0)
+        //If not chasing player
+        if (movementTimer < 0)
         {
+            chasingPlayer = false;
             MoveRandomPosition();
         }
     }
