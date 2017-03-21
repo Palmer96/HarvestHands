@@ -29,6 +29,7 @@ public class Tree : MonoBehaviour
             woodAvaliable--;
             if (woodAvaliable == 0)
             {
+                if (stump!= null)
                 Instantiate(stump, transform.position, transform.rotation);
                 Destroy(gameObject);
             }

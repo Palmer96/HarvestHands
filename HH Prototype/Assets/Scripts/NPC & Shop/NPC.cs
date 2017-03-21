@@ -16,7 +16,7 @@ public class NPC : MonoBehaviour
         npcList.Add(this);
         SaveAndLoadManager.OnSave += Save;
 
-		
+        MinimapManager.instance.CreateImage(transform, Color.green);
         //GetComponent<VIDE_Assign>().dialogueName = "Bob";
         //GetComponent<VIDE_Assign>().assignedDialogue = "Bob";  
         //Debug.Log(GetComponent<VIDE_Assign>().assignedDialogue);

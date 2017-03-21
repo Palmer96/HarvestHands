@@ -120,7 +120,7 @@ public class PlayerInventory : MonoBehaviour
         scrollTimer -= Time.deltaTime;
         UpdateItemMesh();
         UpdateImages();
-
+        
         if (!inMenu)
         {
             if (!bookOpen)
@@ -462,11 +462,15 @@ public class PlayerInventory : MonoBehaviour
                         int difference = heldObjects[i].GetComponent<Item>().itemCap - heldObjects[i].GetComponent<Item>().quantity;
                         item.GetComponent<Item>().DecreaseQuantity(difference);
                         heldObjects[i].GetComponent<Item>().IncreaseQuantity(difference);
+                        ScreenMessage.instance.CreateMessage("Added " + difference + " " + item.GetComponent<Item>().itemName);
                         AddItem(item);
                         return true;
                     }
                     else
+                    {
                         heldObjects[i].GetComponent<Item>().IncreaseQuantity(item.GetComponent<Item>().quantity);
+                        ScreenMessage.instance.CreateMessage("Added " + item.GetComponent<Item>().quantity + " " + item.GetComponent<Item>().itemName);
+                    }
 
                     if (WaveManager.instance != null)
                     {
@@ -505,7 +509,7 @@ public class PlayerInventory : MonoBehaviour
                     WaveManager.instance.rabbitsLeft--;
             }
             heldObjects[selectedItemNum].GetComponent<Item>().beingHeld = true;
-
+            ScreenMessage.instance.CreateMessage("Added " + item.GetComponent<Item>().quantity + " " + item.GetComponent<Item>().itemName);
             return true;
         }
         for (int i = 0; i < heldObjects.Count; i++)
@@ -535,7 +539,7 @@ public class PlayerInventory : MonoBehaviour
                         WaveManager.instance.rabbitsLeft--;
                 }
                 heldObjects[i].GetComponent<Item>().beingHeld = true;
-
+                ScreenMessage.instance.CreateMessage("Added " + item.GetComponent<Item>().quantity + " " + item.GetComponent<Item>().itemName);
                 return true;
             }
         }

@@ -17,17 +17,16 @@ public class SellChest : MonoBehaviour
 
     void Update()
     {
-        transform.GetChild(0).GetComponent<TextMesh>().text = "$" + valueOfItems.ToString();
+        transform.GetChild(0).GetComponent<TextMesh>().text = "Todays Profit: $" + valueOfItems.ToString();
     }
 
-    void OnCollisionEnter(Collision col)
-    {
-        if (col.transform.CompareTag("Item") || col.transform.CompareTag("Rabbit"))
-        {
-            AddToSell(col.gameObject);
-        }
-
-    }
+    //  void OnCollisionEnter(Collision col)
+    //  {
+    //  if (col.transform.CompareTag("Item") || col.transform.CompareTag("Rabbit"))
+    //  {
+    //      AddToSell(col.gameObject);
+    //  }
+    //  }
 
     public void AddToSell(GameObject sold)
     {
@@ -40,6 +39,7 @@ public class SellChest : MonoBehaviour
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
                 //Debug.Log(col.transform.name);
                 valueOfItems += item.value * item.quantity;
+                PlayerInventory.instance.money += item.value * item.quantity;
                 Destroy(sold);
             }
         }
@@ -55,7 +55,8 @@ public class SellChest : MonoBehaviour
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
                 //Debug.Log(col.transform.name);
                 if (item.quantity == 1)
-                valueOfItems += item.value * item.quantity;
+                    valueOfItems += item.value * item.quantity;
+                PlayerInventory.instance.money += item.value * item.quantity;
                 Destroy(sold);
             }
         }
@@ -65,7 +66,7 @@ public class SellChest : MonoBehaviour
     {
         foreach (SellChest chest in sellChests)
         {
-            PlayerInventory.instance.money += chest.valueOfItems;
+            //  PlayerInventory.instance.money += chest.valueOfItems;
             chest.valueOfItems = 0;
         }
     }
@@ -106,4 +107,4 @@ public class SellChestSave
         Debug.Log("Failed to load SellChest, ID = " + ID.ToString() + ", sellValue = " + sellValue.ToString());
         return null;
     }
-} 
+}

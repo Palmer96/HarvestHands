@@ -12,6 +12,7 @@ public class Pickaxe : Item
         startScale = transform.lossyScale;
         itemID = 7;
         itemCap = 1;
+        MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
     }
 
     // Update is called once per frame

@@ -18,6 +18,7 @@ public class Bucket : Item
         startScale = transform.lossyScale;
         itemID = 5;
         itemCap = 1;
+        MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
         SaveAndLoadManager.OnSave += Save;
     }
 

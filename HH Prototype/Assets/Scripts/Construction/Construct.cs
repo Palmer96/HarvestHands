@@ -44,6 +44,10 @@ public class Construct : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Cancel();
+        }
 
         if (transform.eulerAngles.x > 10 &&
               transform.eulerAngles.x < 350 ||

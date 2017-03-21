@@ -23,6 +23,7 @@ public class Hammer : Item
         if (multiMaterial == null)
             multiMaterial = GetComponent<MeshRenderer>().material;
 
+        MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
 
         SaveAndLoadManager.OnSave += Save;
     }

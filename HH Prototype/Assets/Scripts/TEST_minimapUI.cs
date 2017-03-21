@@ -16,9 +16,14 @@ public class TEST_minimapUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // GetComponent<RectTransform>().position = new Vector3(follow.position.x, follow.position.z, -40);
+        if (follow == null)
+            Destroy(gameObject);     
+        else
         transform.position = follow.transform.position;// new Vector3(follow.position.x,-40, follow.position.z);
-       //  GetComponent<RectTransform>().position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-        
+        // GetComponent<RectTransform>().position = new Vector3(follow.position.x, follow.position.z, -40);
+                                                       //  GetComponent<RectTransform>().position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+
     }
+
+
 }

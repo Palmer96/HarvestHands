@@ -16,6 +16,7 @@ public class Shovel : Item
         startScale = transform.lossyScale;
         itemID = 4;
         itemCap = 1;
+        MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
         SaveAndLoadManager.OnSave += Save;
     }
 

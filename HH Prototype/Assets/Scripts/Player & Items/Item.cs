@@ -62,6 +62,9 @@ public class Item : MonoBehaviour
         {
             itemCap = 20;
         }
+
+        MinimapManager.instance.CreateImage(transform, Color.blue);
+
         SaveAndLoadManager.OnSave += Save;
 
     }
