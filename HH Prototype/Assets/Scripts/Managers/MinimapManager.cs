@@ -8,7 +8,7 @@ public class MinimapManager : MonoBehaviour {
     public static MinimapManager instance = null;
     public GameObject img;
 	// Use this for initialization
-	void Start () {
+	void Awake () {
         if (instance == null)
             instance = this;
         else

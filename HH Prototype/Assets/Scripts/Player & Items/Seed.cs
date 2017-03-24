@@ -12,6 +12,7 @@ public class Seed : Item
         UpdateMesh();
 
         MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
+
         //  if (GetComponent<MeshFilter>().mesh != null)
         //      ownMesh = GetComponent<MeshFilter>();
         //  if (ownMesh == null)

@@ -162,6 +162,11 @@ public class ConstructionMenu : ScrollMenu
             Debug.Log("NULL BITCHES");
             return;
         }
+
+        if (Blueprint.instance.currentConstruct != null)
+        {
+            Destroy(Blueprint.instance.currentConstruct);
+        }
         Debug.Log("Assinginged current construct");
         Blueprint.instance.currentConstruct = Instantiate((selectedButton as ConstructionMenuButton).recipe.gameObject);
         Blueprint.instance.currentConstruct.SetActive(true);

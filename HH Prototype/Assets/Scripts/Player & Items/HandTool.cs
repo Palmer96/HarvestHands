@@ -39,9 +39,10 @@ public class HandTool : MonoBehaviour
                 //   {
                 //       hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
                 //   }
-
-                if (hit.transform.GetComponent<VIDE_Assign>())
+                if (PlayerInventory.instance.inMenu == false && PlayerInventory.instance.bookOpen == false)
                 {
+                    if (hit.transform.GetComponent<VIDE_Assign>())
+                    {
                         //Lets grab the NPC's DialogueAssign script... if there's any
                         VIDE_Assign assigned;
                         if (hit.collider.GetComponent<VIDE_Assign>() != null)
@@ -70,6 +71,7 @@ public class HandTool : MonoBehaviour
                             //If conversation already began, let's just progress through it
                             Conversation.instance.NextNode();
                         }
+                    }
                 }
                 //  if (hit.transform.tag == "CraftingBenchButton")
                 //  {
