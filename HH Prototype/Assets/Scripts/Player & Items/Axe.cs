@@ -16,48 +16,43 @@ public class Axe : Item
         itemCap = 1;
         MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
         SaveAndLoadManager.OnSave += Save;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (used)
+        if (moveing)
         {
-            useTimer -= Time.deltaTime;
-            if (useTimer < 0)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
             {
-                used = false;
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
         }
     }
 
-    public override void PrimaryUse(ClickType click)
+    public override void Move()
     {
-        if (AttemptInteract(click))
-            return;
-        switch (click)
-        {
-            //  case ClickType.Single:
-            //      ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            //
-            //      //Debug.Log("Axe");
-            //      if (Physics.Raycast(ray, out hit, rayMaxDist))
-            //      {
-            //          if (hit.transform.CompareTag("Tree"))
-            //          {
-            //              used = true;
-            //              useTimer = useRate;
-            //              hit.transform.GetComponent<Tree>().Harvest();
-            //              if (level > 1)
-            //                  hit.transform.GetComponent<Tree>().Harvest();
-            //              if (level > 2)
-            //                  hit.transform.GetComponent<Tree>().Harvest();
-            //              //    Instantiate(wood, hit.point, transform.rotation);
-            //          }
-            //      }
-            //      break;
+        base.Move();
+    }
+    public override void PrimaryUse()
+    {
 
-            case ClickType.Hold:
                 //   if (!used)
                 {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -95,39 +90,30 @@ public class Axe : Item
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
                 }
-                break;
-        }
-
     }
 
-    public override void SecondaryUse(ClickType click)
-    {
-        switch (click)
-        {
-            case ClickType.Hold:
-                //   if (!used)
-                {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        if (hit.transform.CompareTag("Tree"))
-                        {
-                            used = true;
-                            useTimer = useRate;
-                            hit.transform.GetComponent<Tree>().Harvest();
-                            hit.transform.GetComponent<Tree>().Harvest();
-                            hit.transform.GetComponent<Tree>().Harvest();
-                            //    Instantiate(wood, hit.point, transform.rotation);
-                        }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
-                }
-                break;
-        }
-
-    }
+//   public override void SecondaryUse()
+//   {
+//               //   if (!used)
+//               {
+//                   ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+//
+//                   if (Physics.Raycast(ray, out hit, rayMaxDist))
+//                   {
+//                       if (hit.transform.CompareTag("Tree"))
+//                       {
+//                           used = true;
+//                           useTimer = useRate;
+//                           hit.transform.GetComponent<Tree>().Harvest();
+//                           hit.transform.GetComponent<Tree>().Harvest();
+//                           hit.transform.GetComponent<Tree>().Harvest();
+//                           //    Instantiate(wood, hit.point, transform.rotation);
+//                       }
+//                       else
+//                           ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+//                   }
+//               }
+//   }
         
 
     void OnDestroy()

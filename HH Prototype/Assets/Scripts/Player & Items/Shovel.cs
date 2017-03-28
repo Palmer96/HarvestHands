@@ -23,73 +23,37 @@ public class Shovel : Item
     // Update is called once per frame
     void Update()
     {
-        if (used)
+        if (moveing)
         {
-            useTimer -= Time.deltaTime;
-            if (useTimer < 0)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
             {
-                used = false;
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
         }
     }
 
-    public override void PrimaryUse(ClickType click)
+    public override void Move()
     {
-        if (AttemptInteract(click))
-            return;
-        switch (click)
-        {
-            //  case ClickType.Single:
-            //      ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            //
-            //      Debug.Log("Shovel");
-            //      if (Physics.Raycast(ray, out hit))
-            //      {
-            //          if (hit.transform.CompareTag("Ground"))
-            //          {
-            //              Debug.Log("Shovel");
-            //              used = true;
-            //              useTimer = useRate;
-            //
-            //              /*
-            //              TerrainData terrainData = hit.transform.GetComponent<Terrain>().terrainData;
-            //              int heightmapWidth = terrainData.heightmapWidth;
-            //              int heightmapHeight = terrainData.heightmapHeight;
-            //
-            //              float[,] currentHeights = terrainData.GetHeights(0, 0, heightmapWidth, heightmapHeight);
-            //
-            //              float[,] newHeights = new float[heightmapWidth, heightmapHeight];
-            //              float terrainHeight = terrainData.size.y;
-            //              
-            //              int xPos = (int)Mathf.Round(hit.point.x);
-            //              int zPos = (int)Mathf.Round(hit.point.z);
-            //
-            //              for (int y = 0; y < heightmapWidth; y++)
-            //              {
-            //                  for (int x = 0; x < heightmapHeight; x++)
-            //                  {
-            //                      if (Vector2.Distance( new Vector2(x,y), new Vector2(xPos + (heightmapWidth /2), zPos + (heightmapWidth / 2))) < size)
-            //                      {
-            //                          newHeights[y, x] = Mathf.Clamp01(currentHeights[y, x] + (depth / terrainHeight));
-            //                      }
-            //                      else
-            //                          newHeights[y, x] = currentHeights[y, x];
-            //                  }
-            //              }
-            //              terrainData.SetHeights(0, 0, newHeights);
-            //              */
-            //
-            //                Instantiate(dirt, hit.point, transform.rotation);
-            //               if (level > 1)
-            //                   Instantiate(dirt, hit.point + (transform.up * 1.5f), transform.rotation);
-            //               if (level > 2)
-            //                   Instantiate(dirt, hit.point + (transform.up * 3), transform.rotation);
-            //          }
-            //      }
-            //      break;
+        base.Move();
+    }
 
-            case ClickType.Hold:
-                if (!used)
+    public override void PrimaryUse()
+    {
                 {
                     //   base.UseTool();
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -111,8 +75,7 @@ public class Shovel : Item
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
                 }
-                break;
-        }
+
     }
 
     public override void Save()

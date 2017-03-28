@@ -17,40 +17,38 @@ public class Sickle : Item
     // Update is called once per frame
     void Update()
     {
-        if (used)
+        if (moveing)
         {
-            useTimer -= Time.deltaTime;
-            if (useTimer < 0)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
             {
-                used = false;
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
         }
     }
 
-    public override void PrimaryUse(ClickType click)
+    public override void Move()
     {
-        if (AttemptInteract(click))
-            return;
-        switch (click)
-        {
-            //       case ClickType.Single:
-            //           ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            //
-            //           Debug.Log("Sickle");
-            //           if (Physics.Raycast(ray, out hit, rayMaxDist))
-            //           {
-            //               if (hit.transform.CompareTag("Plant"))
-            //               {
-            //                   hit.transform.GetComponent<Plant>().HarvestPlant(level);
-            //                   used = true;
-            //                   useTimer = useRate;
-            //               }
-            //           }
-            //           break;
+        base.Move();
+    }
 
-            case ClickType.Hold:
-                if (!used)
-                {
+    public override void PrimaryUse()
+    {
+        {
                     ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
                     Debug.Log("Sickle");
@@ -73,9 +71,6 @@ public class Sickle : Item
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
                     }
                 }
-                break;
-        }
-
     }
 
     void OnTriggerEnter(Collider col)

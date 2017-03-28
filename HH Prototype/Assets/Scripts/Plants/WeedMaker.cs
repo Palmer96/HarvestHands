@@ -7,15 +7,15 @@ public class WeedMaker : Item
     public GameObject weed;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         itemID = 302378;
         itemCap = 1;
         SaveAndLoadManager.OnSave += Save;
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         if (used)
         {
@@ -27,77 +27,70 @@ public class WeedMaker : Item
         }
     }
 
-    public override void PrimaryUse(ClickType click)
+    public override void PrimaryUse()
     {
-        switch (click)
-        {
-            case ClickType.Hold:
-                //   if (!used)
-                {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                    //Debug.Log("Axe");
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {                        
-                        if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
+        //   if (!used)
+        {
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            //Debug.Log("Axe");
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
+                {
+                    used = true;
+                    useTimer = useRate;
+                    //Get soil
+                    Soil soil;
+                    if (hit.transform.CompareTag("Soil"))
+                        soil = hit.transform.GetComponent<Soil>();
+                    else
+                        soil = hit.transform.parent.GetComponent<Soil>();
+                    //Add Weed
+                    if (soil != null)
+                        if (soil.weedInfestation == null)
                         {
-                            used = true;
-                            useTimer = useRate;
-                            //Get soil
-                            Soil soil;
-                            if (hit.transform.CompareTag("Soil"))
-                                soil = hit.transform.GetComponent<Soil>();
-                            else
-                                soil = hit.transform.parent.GetComponent<Soil>();
-                            //Add Weed
-                            if (soil != null)
-                                if (soil.weedInfestation == null)
-                                {                                    
-                                    GameObject newWeed = Instantiate(weed);
-                                    newWeed.GetComponent<Weed>().InfestSoil(soil);
-                                }
+                            GameObject newWeed = Instantiate(weed);
+                            newWeed.GetComponent<Weed>().InfestSoil(soil);
                         }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
                 }
-                break;
+                else
+                    ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+            }
         }
+
     }
 
-    public override void SecondaryUse(ClickType click)
-    {
-        switch (click)
-        {
-            case ClickType.Hold:
-                //   if (!used)
-                {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
-                        {
-                            used = true;
-                            useTimer = useRate;
-                            //Get soil
-                            Soil soil;
-                            if (hit.transform.CompareTag("Soil"))
-                                soil = hit.transform.GetComponent<Soil>();
-                            else
-                                soil = hit.transform.parent.GetComponent<Soil>();
-                            //Add Weed
-                            if (soil != null)
-                                if (soil.weedInfestation == null)
-                                {
-                                    GameObject newWeed = Instantiate(weed);
-                                    newWeed.GetComponent<Weed>().InfestSoil(soil);
-                                }
-                        }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
-                }
-                break;
-        }
-    }
+   // public override void SecondaryUse()
+   // {
+   //     //   if (!used)
+   //     {
+   //         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+   //         if (Physics.Raycast(ray, out hit, rayMaxDist))
+   //         {
+   //             if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
+   //             {
+   //                 used = true;
+   //                 useTimer = useRate;
+   //                 //Get soil
+   //                 Soil soil;
+   //                 if (hit.transform.CompareTag("Soil"))
+   //                     soil = hit.transform.GetComponent<Soil>();
+   //                 else
+   //                     soil = hit.transform.parent.GetComponent<Soil>();
+   //                 //Add Weed
+   //                 if (soil != null)
+   //                     if (soil.weedInfestation == null)
+   //                     {
+   //                         GameObject newWeed = Instantiate(weed);
+   //                         newWeed.GetComponent<Weed>().InfestSoil(soil);
+   //                     }
+   //             }
+   //             else
+   //                 ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+   //         }
+   //     }
+   //
+   // }
 }

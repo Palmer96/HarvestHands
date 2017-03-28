@@ -41,6 +41,8 @@ public class Item : MonoBehaviour
 
     public Vector3 startScale;
 
+   public bool moveing;
+   public bool moveBack;
     // Use this for initialization
     void Start()
     {
@@ -63,38 +65,47 @@ public class Item : MonoBehaviour
             itemCap = 20;
         }
 
-     //   MinimapManager.instance.CreateImage(transform, Color.blue);
+        //   MinimapManager.instance.CreateImage(transform, Color.blue);
 
         SaveAndLoadManager.OnSave += Save;
-
+        moveing = false;
+        moveBack = false;
     }
 
-    public virtual void PrimaryUse()
+    void Update()
     {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        HitUpdate();
+    }
 
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
+    public void HitUpdate()
+    {
+if (moveing)
         {
-            if (hit.transform.CompareTag("Building"))
+             if (moveBack)
+                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+             else
+                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.1f);
+           
+             if (transform.localPosition.z > 2.4f)
+                 moveBack = true;
+             if (moveBack)
             {
-                hit.transform.GetComponent<Building>().AddResource(gameObject);
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
-           else if (hit.transform.CompareTag("SellZone"))
-            {
-                hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
-            }
-            else
-            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
     }
-
-    public virtual void PrimaryUse(ClickType click)
+    public virtual void Move()
     {
-        if (AttemptInteract(click))
-            return;
+        //if (moveing == false)
+        moveing = true;
+      //  moveBack = false;
     }
-
-    public virtual void PrimaryUse(GameObject gameObj)
+    public virtual void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
@@ -108,24 +119,49 @@ public class Item : MonoBehaviour
             {
                 hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
             }
+            else
+                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
     }
 
+ //   public virtual void PrimaryUse(ClickType click)
+ //   {
+ //       if (AttemptInteract(click))
+ //           return;
+ //   }
+ //
+ //   public virtual void PrimaryUse(GameObject gameObj)
+ //   {
+ //       ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+ //
+ //       if (Physics.Raycast(ray, out hit, rayMaxDist))
+ //       {
+ //           if (hit.transform.CompareTag("Building"))
+ //           {
+ //               hit.transform.GetComponent<Building>().AddResource(gameObject);
+ //           }
+ //           else if (hit.transform.CompareTag("SellZone"))
+ //           {
+ //               hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+ //           }
+ //       }
+ //   }
 
-    public virtual void SecondaryUse()
-    {
 
-    }
+   public virtual void SecondaryUse()
+  {
 
-    public virtual void SecondaryUse(ClickType click)
-    {
-        
-    }
+  }
 
-    public virtual void SecondaryUse(GameObject gameObj)
-    {
-
-    }
+ //  public virtual void SecondaryUse(ClickType click)
+ //  {
+ //
+ //  }
+ //
+ //  public virtual void SecondaryUse(GameObject gameObj)
+ //  {
+ //
+ //  }
 
 
 
@@ -247,7 +283,7 @@ public class Item : MonoBehaviour
     {
         SaveAndLoadManager.instance.saveData.itemSaveList.Add(new ItemSave(this));
         //Debug.Log("Saved item = " + name);
-    }    
+    }
 
     void OnDestroy()
     {

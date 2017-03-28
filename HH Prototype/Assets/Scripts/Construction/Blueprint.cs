@@ -48,10 +48,6 @@ public class Blueprint : MonoBehaviour
         }
 
 
-        if (PlayerInventory.instance.selectedItemNum == 0 && currentConstruct == null)
-            ChangeSelect();
-
-
         //transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
 
 
@@ -67,7 +63,7 @@ public class Blueprint : MonoBehaviour
                 //{
                 //    currentConstruct.GetComponent<Construct>().canBuild = false;
                 //}
-                currentConstruct.transform.position = GridPos(new Vector3(hit.point.x, hit.point.y + 0.25f, hit.point.z));
+                currentConstruct.transform.position = GridPos(hit.point);
                 currentConstruct.transform.up = hit.normal;
                 currentConstruct.transform.Rotate(0, 90 * rotations, 0);
                 if (hit.transform.CompareTag("Ground"))
@@ -156,28 +152,6 @@ public class Blueprint : MonoBehaviour
 
     }
 
-
-   public void ChangeSelect()
-    {
-        if (inUse)
-        {
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                if (selectedConstruct < Constructs.Count - 1)
-                {
-                    selectedConstruct++;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                if (selectedConstruct > 0)
-                {
-                    selectedConstruct--;
-                }
-            }
-        }
-    }
 
     void OnDestroy()
     {

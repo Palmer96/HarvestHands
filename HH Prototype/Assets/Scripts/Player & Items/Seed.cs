@@ -50,7 +50,33 @@ public class Seed : Item
     // Update is called once per frame
     void Update()
     {
+        if (moveing)
+        {
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
 
+            if (transform.localPosition.z > 2.4f)
+            {
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
+            }
+        }
+    }
+
+    public override void Move()
+    {
+        base.Move();
     }
 
     void OnDestroy()
@@ -58,12 +84,12 @@ public class Seed : Item
         SaveAndLoadManager.OnSave -= Save;
     }
 
-    public override void PrimaryUse(ClickType click)
-    {
-        if (AttemptInteract(click))
-            return;
-        PrimaryUse();
-    }
+ //   public override void PrimaryUse(ClickType click)
+ //   {
+ //       if (AttemptInteract(click))
+ //           return;
+ //       PrimaryUse();
+ //   }
     public override void PrimaryUse()
     {
         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
@@ -91,31 +117,31 @@ public class Seed : Item
         }
     }
 
-    public override void PrimaryUse(GameObject gameObj)
-    {
-        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        if (Physics.Raycast(ray, out hit, rayMaxDist))
-        {
-
-            if (hit.transform.CompareTag("Soil"))
-            {
-                Soil soil = hit.transform.GetComponent<Soil>();
-                Debug.Log(soil.name);
-                if (soil.occupied == false)
-                {
-                    soil.PlantSeed(plantPrefab);
-                    quantity--;
-
-                    //TODO: if 0 seeds, play staff animation
-                }
-            }
-        }
-        if (quantity <= 0)
-        {
-            PlayerInventory.instance.DestroyItem();
-        }
-    }
+//  public override void PrimaryUse()
+//  {
+//      ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+//
+//      if (Physics.Raycast(ray, out hit, rayMaxDist))
+//      {
+//
+//          if (hit.transform.CompareTag("Soil"))
+//          {
+//              Soil soil = hit.transform.GetComponent<Soil>();
+//              Debug.Log(soil.name);
+//              if (soil.occupied == false)
+//              {
+//                  soil.PlantSeed(plantPrefab);
+//                  quantity--;
+//
+//                  //TODO: if 0 seeds, play staff animation
+//              }
+//          }
+//      }
+//      if (quantity <= 0)
+//      {
+//          PlayerInventory.instance.DestroyItem();
+//      }
+//  }
 
     void OnTriggerStay(Collider col)
     {

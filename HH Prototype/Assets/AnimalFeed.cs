@@ -28,13 +28,13 @@ public class AnimalFeed : Item
         SaveAndLoadManager.OnSave += Save;
     }
 
-    public override void PrimaryUse(ClickType click)
-    {
-        if (AttemptInteract(click))
-            return;
-        if (click == Item.ClickType.Hold)
-            PrimaryUse();
-    }
+  //  public override void PrimaryUse(ClickType click)
+  //  {
+  //      if (AttemptInteract(click))
+  //          return;
+  //      if (click == Item.ClickType.Hold)
+  //          PrimaryUse();
+  //  }
 
     public override void PrimaryUse()
     {

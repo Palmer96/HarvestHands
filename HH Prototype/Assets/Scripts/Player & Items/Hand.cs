@@ -5,87 +5,46 @@ using UnityEngine;
 public class Hand : Item
 {
 
-    public GameObject heldItem;
     // Use this for initialization
     void Start()
     {
-        itemID = 1;
-        itemCap = 1;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    public override void PrimaryUse(GameObject item)
-    {
-        if (heldItem != null)
+        if (moveing)
         {
-            Drop();
-        }
-        else
-        {
-            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(-0.8f, -3.9f, -1.5f), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(-0.8f, -3.9f, -1), 0.2f);
+
+            if (transform.localPosition.z > -1.05f)//swap
             {
-                if (hit.transform.CompareTag("Item"))
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < -1.49f)
                 {
-                    PickUp(item);
+                    transform.localPosition = new Vector3(-0.8f, -3.9f, -1.5f);
+                    moveing = false;
+                    moveBack = false;
                 }
             }
         }
     }
 
-    public void SecondaryUse()
+    public override void Move()
     {
-        Throw();
+        base.Move();
+    }
+    public override void PrimaryUse()
+    {
+
     }
 
-    public void PickUp(GameObject item)
-    {
-        if (!heldItem)
-        {
-            heldItem = item;
-            heldItem.transform.SetParent(transform.parent);
-            heldItem.transform.localPosition = new Vector3(1, 0, 2);
-            heldItem.GetComponent<Rigidbody>().isKinematic = true;
 
-            heldItem.layer = 2;
-
-            if (heldItem.GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-            {
-                //Destroy(heldItem.GetComponent<NavMeshAgent>());
-                // heldItem.GetComponent<NavMeshAgent>().updatePosition = false;
-                // heldItem.GetComponent<NavMeshAgent>().updateRotation = false;
-                heldItem.GetComponent<UnityEngine.AI.NavMeshAgent>().enabled = false;
-            }
-        }
-    }
-
-    public void Throw()
-    {
-        if (heldItem)
-        {
-            heldItem.GetComponent<Rigidbody>().isKinematic = false;
-            heldItem.GetComponent<Rigidbody>().AddForce(transform.parent.forward * 500, ForceMode.Force);
-            heldItem.GetComponent<Rigidbody>().transform.parent = null;
-            heldItem.layer = 0;
-
-            heldItem = null;
-        }
-    }
-
-    public void Drop()
-    {
-        if (heldItem != null)
-        {
-            heldItem.GetComponent<Rigidbody>().isKinematic = false;
-            heldItem.GetComponent<Rigidbody>().transform.parent = null;
-            heldItem.layer = 0;
-
-            heldItem = null;
-        }
-    }
 }

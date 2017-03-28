@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Building : MonoBehaviour
 {
@@ -15,11 +16,15 @@ public class Building : MonoBehaviour
         public ResourceType resource;
         public int numRequired;
         public int numHave;
+
+        public int nameA;
+        public int nameB;
     }
+
 
     public string constructName = "";
     public GameObject builtVersion;
-    public ResourceRequired[] resources;
+    public List<ResourceRequired> resources;
 
     private Vector3 oldPosition;
     private Quaternion oldRotation;
@@ -35,6 +40,7 @@ public class Building : MonoBehaviour
         text = transform.GetChild(0).GetComponent<TextMesh>();
         SaveAndLoadManager.OnSave += Save;
         moving = false;
+                                                          
     }
 
     // Update is called once per frame
@@ -46,7 +52,7 @@ public class Building : MonoBehaviour
     public void AddResource(GameObject item)
     {
 
-        for (int i = 0; i < resources.Length; i++)
+        for (int i = 0; i < resources.Count; i++)
         {
             if (item.GetComponent<Item>() != null)
             {
@@ -84,14 +90,14 @@ public class Building : MonoBehaviour
     public void Build()
     {
         int count = 0;
-        for (int i = 0; i < resources.Length; i++)
+        for (int i = 0; i < resources.Count; i++)
         {
             if (resources[i].numHave >= resources[i].numRequired)
             {
                 count++;
             }
         }
-        if (resources.Length == count)
+        if (resources.Count == count)
         {
             GameObject build = Instantiate(builtVersion, transform.position, transform.rotation);
             build.tag = "Built";
@@ -107,7 +113,7 @@ public class Building : MonoBehaviour
     public string GetText()
     {
         string line = "";
-        for (int i = 0; i < resources.Length; i++)
+        for (int i = 0; i < resources.Count; i++)
         {
             line += resources[i].resource + ": " + resources[i].numHave.ToString() + "/" + resources[i].numRequired.ToString() + "\n";
         }
@@ -116,7 +122,7 @@ public class Building : MonoBehaviour
 
     public void Deconstruct()
     {
-        for (int i = 0; i < resources.Length; i++)
+        for (int i = 0; i < resources.Count; i++)
         {
             for (int j = 0; j < resources[i].numHave; j++)
             {
@@ -143,7 +149,7 @@ public class Building : MonoBehaviour
 
     public virtual void Save()
     {
-        SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
+     //   SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -179,36 +185,36 @@ public class BuildingSave
     float rotZ;
     float rotW;
 
-    public BuildingSave(Building building)
-    {
-        constructName = building.constructName;
-        resources = building.resources;
-        posX = building.transform.position.x;
-        posY = building.transform.position.y;
-        posZ = building.transform.position.z;
-        rotX = building.transform.rotation.x;
-        rotY = building.transform.rotation.y;
-        rotZ = building.transform.rotation.z;
-        rotW = building.transform.rotation.w;
-    }
-
-    public GameObject LoadObject()
-    {
-        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
-        {
-            Building buildingPrefab = buildingPrefabType.GetComponent<Building>();
-            if (buildingPrefab == null)
-                continue;
-
-            if (buildingPrefab.constructName == constructName)
-            {
-                //Debug.Log("Loading Axe");
-                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
-                building.GetComponent<Building>().resources = resources;
-                return building;
-            }
-        }
-        Debug.Log("Failed to load Building, constructName = " + constructName.ToString());
-        return null;
-    }
+//    public BuildingSave(Building building)
+//    {
+//        constructName = building.constructName;
+//        resources = building.resources;
+//        posX = building.transform.position.x;
+//        posY = building.transform.position.y;
+//        posZ = building.transform.position.z;
+//        rotX = building.transform.rotation.x;
+//        rotY = building.transform.rotation.y;
+//        rotZ = building.transform.rotation.z;
+//        rotW = building.transform.rotation.w;
+//    }
+//
+//    public GameObject LoadObject()
+//    {
+//        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
+//        {
+//            Building buildingPrefab = buildingPrefabType.GetComponent<Building>();
+//            if (buildingPrefab == null)
+//                continue;
+//
+//            if (buildingPrefab.constructName == constructName)
+//            {
+//                //Debug.Log("Loading Axe");
+//                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+//                building.GetComponent<Building>().resources = resources;
+//                return building;
+//            }
+//        }
+//        Debug.Log("Failed to load Building, constructName = " + constructName.ToString());
+//        return null;
+//    }
 }

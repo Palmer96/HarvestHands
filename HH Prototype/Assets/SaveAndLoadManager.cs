@@ -219,7 +219,7 @@ public class SaveAndLoadManager : MonoBehaviour
 
             foreach (BuildingSave buildingSave in saveData.buildingSaveList)
             {
-                buildingSave.LoadObject();
+            //    buildingSave.LoadObject();
             }
             foreach (NoticeBoardSave noticeBoard in saveData.noticeBoardSaveList)
             {

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Construct : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class Construct : MonoBehaviour
     public bool isNew = true;
     public Vector3 oldPos;
     public Quaternion oldRot;
-    public Building.ResourceRequired[] resources;
+    public List<Building.ResourceRequired> resources;
     // Use this for initialization
     void Start()
     {

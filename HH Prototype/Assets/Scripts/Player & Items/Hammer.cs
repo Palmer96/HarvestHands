@@ -6,6 +6,7 @@ public class Hammer : Item
 {
 
     public int level = 1;
+    public bool primary;
 
     // Use this for initialization
     void Start()
@@ -31,88 +32,86 @@ public class Hammer : Item
     // Update is called once per frame
     void Update()
     {
-
-    }
-
-    public override void PrimaryUse(ClickType click)
-    {
-        if (!used)
+        if (moveing)
         {
-            switch (click)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
             {
-                case ClickType.Single:
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                    Debug.Log("Hammer2");
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        if (hit.transform.CompareTag("Building"))
-                        {
-                            Debug.Log("Building2");
-                            used = true;
-                            useTimer = useRate;
-                            hit.transform.GetComponent<Building>().Move();
-                        }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
-                    break;
-                case ClickType.Hold:
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                    Debug.Log("Hammer");
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        if (hit.transform.CompareTag("Building"))
-                        {
-                            Debug.Log("Building");
-                            used = true;
-                            useTimer = useRate;
-                            hit.transform.GetComponent<Building>().Build();
-                        }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
-                    break;
-
-                    //     case ClickType.Hold:
+                moveBack = true;
+                if (primary)
+                    PrimaryUse();
+                else
+                    SecondaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
         }
     }
 
-    public override void SecondaryUse(ClickType click)
+    public override void Move()
     {
-        switch (click)
-        {
-            case ClickType.Hold:
-                // if (!used)
-                {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+        base.Move();
+        primary = true;
+    }
+    public override void PrimaryUse()
+    {
+        // hit.transform.GetComponent<Building>().Move();
 
-                    Debug.Log("Hammer");
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        switch (hit.transform.tag)
-                        {
-                            case "Building":
-                                useTimer = useRate;
-                                hit.transform.GetComponent<Building>().Deconstruct();
-                                break;
-                            case "Built":
-                                Destroy(hit.transform.gameObject);
-                                break;
-                            case "Soil":
-                                Destroy(hit.transform.parent.gameObject);
-                                break;
-                            default:
-                                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                                break;
-                        }
-                    }
-                }
-                break;
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        Debug.Log("Hammer");
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            if (hit.transform.CompareTag("Building"))
+            {
+                Debug.Log("Building");
+                used = true;
+                useTimer = useRate;
+                hit.transform.GetComponent<Building>().Build();
+            }
+            else
+                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
 
+    }
+
+    public override void SecondaryUse()
+    {
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        Debug.Log("Hammer");
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
+        {
+            Debug.Log("Hit");
+            switch (hit.transform.tag)
+            {
+                case "Building":
+                    useTimer = useRate;
+                    hit.transform.GetComponent<Building>().Deconstruct();
+                    break;
+                case "Built":
+                    Debug.Log("Destroy");
+                    Destroy(hit.transform.gameObject);
+                    break;
+                case "Soil":
+                    Destroy(hit.transform.parent.gameObject);
+                    break;
+                default:
+                    ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+                    break;
+            }
+        }
     }
 
     public void HammerUp()

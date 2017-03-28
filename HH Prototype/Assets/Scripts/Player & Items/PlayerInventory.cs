@@ -30,6 +30,10 @@ public class PlayerInventory : MonoBehaviour
     public GameObject book;
     public GameObject hand;
 
+    public GameObject Grid;
+    Color gridColourUp;
+    Color gridColourDown;
+
     public bool bookOpen;
 
     //  public List<GameObject> heldObjects = new List<GameObject>();
@@ -61,8 +65,8 @@ public class PlayerInventory : MonoBehaviour
     public float rClickRate = 1;
     private float qTimer = 0;
     public float qRate = 0.5f;
-    private float eTimer = 0;
-    public float eRate = 0.5f;
+    // private float eTimer = 0;
+    // public float eRate = 0.5f;
     public float pickupRate = 0.1f;
 
     public Image holdSlider;
@@ -108,8 +112,11 @@ public class PlayerInventory : MonoBehaviour
         lClickTimer = 0;
         rClickTimer = 0;
         qTimer = 0;
-        eTimer = 0;
+        //    eTimer = 0;
 
+        gridColourUp = Grid.GetComponent<Renderer>().material.color;
+        Color col = Grid.GetComponent<Renderer>().material.color;
+        gridColourDown = new Color(col.r, col.g, col.b, 0);
 
         SaveAndLoadManager.OnSave += Save;
     }
@@ -120,11 +127,16 @@ public class PlayerInventory : MonoBehaviour
         scrollTimer -= Time.deltaTime;
         UpdateItemMesh();
         UpdateImages();
-        
+
         if (!inMenu)
         {
             if (!bookOpen)
             {
+                Grid.transform.position = Vector3.Lerp(Grid.transform.position, new Vector3(0.5f, -0.1f, 0.5f), 0.1f);
+                Grid.GetComponent<Renderer>().material.color = Color.Lerp(Grid.GetComponent<Renderer>().material.color, gridColourDown, 0.1f);
+                if (Grid.transform.position.y < -0.09f)
+                    Grid.SetActive(false);
+
                 if (heldObjects[selectedItemNum] != null && heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                 {
                     waterLevel.gameObject.SetActive(true);
@@ -139,149 +151,35 @@ public class PlayerInventory : MonoBehaviour
                 UpdateInventory();
                 /////////////--- Q Press --- DROP
                 //////////////////////////////////////////////////////
-
-                if (Input.GetKey(KeyCode.E) || Input.GetButton("Controller_" + iInteract) || Input.GetAxis("Controller_" + iInteract) != 0) // Interact
-                {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-                    if (Physics.Raycast(ray, out hit, 5))
-                    {
-                        switch (hit.transform.tag)
-                        {
-                            case "StoreItem":
-                                if (hit.transform.GetComponent<StoreItem>().price <= money)
-                                {
-                                    eTimer += Time.deltaTime;
-                                    holdSlider.fillAmount = eTimer / eRate;
-
-                                    if (eTimer > eRate)
-                                    {
-                                        eTimer = 0;
-                                        holdSlider.fillAmount = 0;
-                                        hit.transform.GetComponent<StoreItem>().BuyObject();/////
-
-                                    }
-                                }
-                                break;
-
-                            case "Bed":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / eRate;
-
-                                if (eTimer > eRate)
-                                {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                    DayNightController.instance.BedDayJump();
-                                }
-                                break;
-
-                            case "Item":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / pickupRate;
-
-                                if (eTimer > pickupRate)
-                                {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                    AddItem(hit.transform.gameObject);
-                                }
-                                break;
-
-                            case "Shelf":
-                                if (hit.transform.GetComponent<Shelf>().storedObject != null)
-                                {
-                                    eTimer += Time.deltaTime;
-                                    holdSlider.fillAmount = eTimer / pickupRate;
-
-                                    if (eTimer > pickupRate)
-                                    {
-                                        eTimer = 0;
-                                        holdSlider.fillAmount = 0;
-                                        AddItem(hit.transform.GetComponent<Shelf>().TakeOutItem());
-                                    }
-                                }
-                                break;
-
-                            case "NoticeBoard":
-                                // eTimer += Time.deltaTime;
-                                // holdSlider.fillAmount = eTimer / eRate;
-                                //
-                                // if (eTimer > eRate)
-                                // {
-                                //     eTimer = 0;
-                                //     holdSlider.fillAmount = 0;
-                                if (!eUsed)
-                                {
-                                    hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
-                                    eUsed = true;
-                                }
-                                // }
-                                break;
-
-                            case "CraftingBench":
-                              //  eTimer += Time.deltaTime;
-                              //  holdSlider.fillAmount = eTimer / eRate;
-                              //
-                              //  if (eTimer > eRate)
-                              //  {
-                              //      eTimer = 0;
-                              //      holdSlider.fillAmount = 0;
-                            //        if (!eUsed)
-                            //        {
-                                        CraftingMenu.instance.ActivateMenu();
-                             //           eUsed = true;
-                            //        }
-                           //     }
-                                break;
-
-                            case "Livestock":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / eRate;
-
-                                if (eTimer > eRate)
-                                {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                    hit.transform.GetComponent<Livestock>().Interact();
-                                }
-                                break;
-
-                            case "SellZone":
-                                eTimer += Time.deltaTime;
-                                holdSlider.fillAmount = eTimer / eRate;
-
-                                if (eTimer > eRate)
-                                {
-                                    eTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                    hit.transform.GetComponent<Livestock>().Interact();
-                                }
-                                break;
-
-                            default:
-                                eTimer = 0;
-                                holdSlider.fillAmount = eTimer * 2;
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        eTimer = 0;
-                        holdSlider.fillAmount = eTimer * 2;
-                                            }
-                }
+                //
+                //   if (Input.GetKey(KeyCode.E) || Input.GetButton("Controller_" + iInteract) || Input.GetAxis("Controller_" + iInteract) != 0) // Interact
+                //   {
+                //       ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+                //
+                //       if (Physics.Raycast(ray, out hit, 5))
+                //       {
+                //
+                //       }
+                //       else
+                //       {
+                //           eTimer = 0;
+                //           holdSlider.fillAmount = eTimer * 2;
+                //       }
+                //   }
                 /////////////--- E Press --- INTERACT ---
                 //////////////////////////////////////////////////////
 
-                if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + iInteract))
-                {
-                    eTimer = 0;
-                    holdSlider.fillAmount = 0;
-                    eUsed = false;
-                }
+                //    if (Input.GetKeyUp(KeyCode.E) || Input.GetButtonUp("Controller_" + iInteract))
+                //    {
+                //        eTimer = 0;
+                //        holdSlider.fillAmount = 0;
+                //        eUsed = false;
+                //    }
 
-                if (heldObjects[selectedItemNum] != null)
+
+
+
+             //   if (heldObjects[selectedItemNum] != null)
                 {
                     if (Input.GetKey(KeyCode.Q) || Input.GetButton("Controller_" + iDrop) || Input.GetAxis("Controller_" + iDrop) != 0) // Drop
                     {
@@ -338,93 +236,170 @@ public class PlayerInventory : MonoBehaviour
 
                     /////////////--- Left Click --- USE ---
                     //////////////////////////////////////////////////////
-
-                    if ((Input.GetMouseButton(0) || Input.GetButton("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) != 0) && disableLeft) // Drop
+                    lClickTimer -= Time.deltaTime;
+                    holdSlider.fillAmount = lClickTimer / lClickRate;
+                    if ((Input.GetMouseButton(0) || Input.GetButton("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) != 0))// && disableLeft) // Use
                     {
-                        lClickTimer += Time.deltaTime;
-                        rClickTimer = 0;
-                        holdSlider.fillAmount = lClickTimer / lClickRate;
-                        if (lClickTimer > lClickRate)
-                        {
-                            if (Physics.Raycast(ray, out hit, 5))
-                            {
+                        //     lClickTimer += Time.deltaTime;
+                        //     rClickTimer = 0;
 
-                                if (hit.transform.CompareTag("Shelf"))
-                                {
-                                    hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
-                                    lClickTimer = 0;
-                                    holdSlider.fillAmount = 0;
-                                }
-                                else
-                                {
-                                    heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Hold);
-                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                        //           if (heldObjects[selectedItemNum] == null)
+                        //               heldObjects[selectedItemNum].GetComponent<Item>().Move();
+                        //           else
+                        //               hand.GetComponent<Hand>().Move();
+
+                        if (heldObjects[selectedItemNum] != null)
+                        heldObjects[selectedItemNum].GetComponent<Item>().Move();
+                        else
+                            hand.GetComponent<Item>().Move();
+
+                        if (lClickTimer < 0 && Physics.Raycast(ray, out hit, 5))
+                        {
+                            switch (hit.transform.tag)
+                            {
+                                case "StoreItem":
+                                    if (hit.transform.GetComponent<StoreItem>().price <= money)
                                     {
-                                        lClickTimer = 0;
+                                        lClickTimer = lClickRate;
+                                        hit.transform.GetComponent<StoreItem>().BuyObject();/////
+                                    }
+                                    break;
+
+                                case "Bed":
+                                    lClickTimer = lClickRate;
+                                    DayNightController.instance.BedDayJump();
+                                    break;
+
+                                case "Item":
+                                    lClickTimer = pickupRate;
+                                    AddItem(hit.transform.gameObject);
+                                    break;
+
+                                case "Shelf":
+                                    if (hit.transform.GetComponent<Shelf>().storedObject != null)
+                                    {
+                                        lClickTimer = lClickRate;
                                         holdSlider.fillAmount = 0;
-                                        disableLeft = false;
-                                    }
-                                }
-                            }
-                        }
-                    }
 
-                    if (Input.GetMouseButtonUp(0) || Input.GetButtonUp("Controller_" + iPrimaryUse))
-                    {
-                        if (disableLeft)
-                        {
-                            if (lClickTimer < lClickRate)
-                            {
-                                if (heldObjects[selectedItemNum] != null)
-                                {
-                                    if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                        if (hit.transform.GetComponent<Shelf>().storedObject != null)
+                                            AddItem(hit.transform.GetComponent<Shelf>().TakeOutItem());
+                                        else if (heldObjects[selectedItemNum] != null)
+                                            hit.transform.GetComponent<Shelf>().StoreItem(heldObjects[selectedItemNum]);
+                                    }
+                                    break;
+
+                                case "NoticeBoard":
+                                    if (!eUsed)
+                                    {
+                                        hit.transform.GetComponent<PrototypeObjectiveBoard>().GetRandomQuest();
+                                        eUsed = true;
+                                    }
+                                    break;
+
+                                case "CraftingBench":
+                                    CraftingMenu.instance.ActivateMenu();
+                                    break;
+
+                                case "Livestock":
+                                    lClickTimer = lClickRate;
+                                    holdSlider.fillAmount = 0;
+                                    hit.transform.GetComponent<Livestock>().Interact();
+                                    break;
+
+
+                                default:
+                                    if (heldObjects[selectedItemNum] != null)
                                     {
 
-                                        if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
-                                            heldObjects[selectedItemNum].GetComponent<Hammer>().HammerUp();
+                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                                        lClickTimer = lClickRate;
+                                    //   if (heldObjects[selectedItemNum].GetComponent<Item>().moveing == false)
+                                    //     heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
                                     }
-                                    else
-                                        heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
 
-                                }
+                                    break;
                             }
                         }
-                        disableLeft = true;
-                        holdSlider.fillAmount = 0;
-                        lClickTimer = 0;
                     }
+
+                    if (Input.GetMouseButtonUp(0))
+                    {
+                        if (heldObjects[selectedItemNum] != null)
+                        {
+
+                        if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                        {
+                            lClickTimer = lClickRate;
+                            heldObjects[selectedItemNum].GetComponent<Bucket>().moveBack = true;
+                            heldObjects[selectedItemNum].GetComponent<Bucket>().used = true;
+                        }
+                        }
+
+                    }
+
+
+                    // if (Input.GetMouseButtonUp(0) || Input.GetButtonUp("Controller_" + iPrimaryUse))
+                    // {
+                    // if (disableLeft)
+                    // {
+                    //     if (lClickTimer < lClickRate)
+                    //     {
+                    //         if (heldObjects[selectedItemNum] != null)
+                    //         {
+                    //             if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                    //             {
+                    //
+                    //                 if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                    //                     heldObjects[selectedItemNum].GetComponent<Hammer>().HammerUp();
+                    //             }
+                    //             else
+                    //                 heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse(Item.ClickType.Single);
+                    //
+                    //         }
+                    //     }
+                    // }
+                    // disableLeft = true;
+                    // holdSlider.fillAmount = 0;
+                    // lClickTimer = 0;
+                    //   }
 
                     if ((Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse) || Input.GetAxis("Controller_" + iSecondaryUse) != 0) && disableRight) // Drop
                     {
-                        rClickTimer += Time.deltaTime;
+                        rClickTimer -= Time.deltaTime;
                         //  lClickTimer = 0;
                         holdSlider.fillAmount = rClickTimer / rClickRate;
-                        if (rClickTimer > rClickRate)
+                        if (rClickTimer < 0)
                         {
-                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Hold);
-                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
+                            if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
                             {
-                                lClickTimer = 0;
+                                heldObjects[selectedItemNum].GetComponent<Hammer>().Move();
+                                heldObjects[selectedItemNum].GetComponent<Hammer>().primary = false;
+                                lClickTimer = rClickRate;
                                 holdSlider.fillAmount = 0;
                                 disableRight = false;
                             }
                         }
                     }
 
-                    if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))// || (Input.GetAxis("Controller_" + iSecondaryUse) <= 0.1f && Input.GetAxis("Controller_" + iSecondaryUse) != 0)) 
-                    {
-                        if (rClickTimer < rClickRate)
-                        {
-                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse(Item.ClickType.Single);
-                        }
-                        disableRight = true;
-                        holdSlider.fillAmount = 0;
-                        rClickTimer = 0;
-                    }
+                    // if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))// || (Input.GetAxis("Controller_" + iSecondaryUse) <= 0.1f && Input.GetAxis("Controller_" + iSecondaryUse) != 0)) 
+                    // {
+                    //     if (rClickTimer < rClickRate)
+                    //     {
+                    //         heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
+                    //     }
+                    //     disableRight = true;
+                    //     holdSlider.fillAmount = 0;
+                    //     rClickTimer = 0;
+                    // }
                 }
             }
             else
             {
+                Grid.SetActive(true);
+                Grid.transform.position = Vector3.Lerp(Grid.transform.position, new Vector3(0.5f, 0.1f, 0.5f), 0.1f);
+                Grid.GetComponent<Renderer>().material.color = Color.Lerp(Grid.GetComponent<Renderer>().material.color, gridColourUp, 0.1f);
+
                 if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) > 0) // Primary Use
                 {
                     Blueprint.instance.PrimaryUse();
@@ -743,6 +718,7 @@ public class PlayerInventory : MonoBehaviour
             itemText[0].text = "-";
             itemText[0].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
         }
+        itemText[0].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
         ////////////////////////////////////////////
         for (int i = 1; i < itemText.Capacity; i++)
         {
@@ -765,6 +741,7 @@ public class PlayerInventory : MonoBehaviour
                 itemText[i].text = "-";
                 itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
+            itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
         }
 
         //    for (int i = 0 ; i < itemText.Capacity; i++)

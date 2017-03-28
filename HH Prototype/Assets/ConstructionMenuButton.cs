@@ -38,10 +38,10 @@ public class ConstructionMenuButton : ScrollMenuButton
         else
             recipeName = recipe.constructName;
 
-        for (int i = 0; i < recipe.selfObject.GetComponent<Building>().resources.Length; i++)
+        for (int i = 0; i < recipe.selfObject.GetComponent<Building>().resources.Count; i++)
         {
             recipeResources += recipe.selfObject.GetComponent<Building>().resources[i].numRequired + " " + recipe.selfObject.GetComponent<Building>().resources[i].resource.ToString();
-            if (i < recipe.selfObject.GetComponent<Building>().resources.Length-1)
+            if (i < recipe.selfObject.GetComponent<Building>().resources.Count - 1)
                 recipeResources += ", ";
         }
         
