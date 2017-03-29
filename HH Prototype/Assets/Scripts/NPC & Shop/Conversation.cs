@@ -19,7 +19,7 @@ public class Conversation : MonoBehaviour
     //We'll be using this to store the current player dialogue options
     private List<UnityEngine.UI.Text> currentOptions = new List<UnityEngine.UI.Text>();
 
-    
+
     public Color highlightedOptionColor = Color.green;
     public Color unhighlightedOptionColor = Color.black;
 
@@ -30,7 +30,7 @@ public class Conversation : MonoBehaviour
     private float changeRate = 0.2f;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
         if (instance == null)
             instance = this;
@@ -39,9 +39,9 @@ public class Conversation : MonoBehaviour
 
         dialogue = gameObject.AddComponent<VIDE_Data>();
     }
-	
-	// Update is called once per frame
-	void Update ()
+
+    // Update is called once per frame
+    void Update()
     {
         var data = dialogue.nodeData;
 
@@ -66,31 +66,34 @@ public class Conversation : MonoBehaviour
             }
 
             changeTimer -= Time.deltaTime;
-            if (changeTimer < 0)
-            {
 
             //Scroll through Player dialogue options
             if (!data.pausedAction)
             {
-                if (Input.GetKeyDown(GoDownOptionKey) || Input.GetAxis("Vertical") < -0.2f)
+                if (Input.GetKeyDown(GoDownOptionKey) || Input.GetKeyDown(KeyCode.DownArrow) || Input.GetAxis("Vertical") < -0.2f)
                 {
+                    if (changeTimer < 0)
                         if (data.selectedOption < currentOptions.Count - 1)
                             data.selectedOption++;
                         else
                             data.selectedOption = 0;
-
-                        changeTimer = changeRate;
+                    changeTimer = changeRate;
                 }
-                if (Input.GetKeyDown(GoUpOptionKey) || Input.GetAxis("Vertical") > 0.2f)
+            }
+            if (Input.GetKeyDown(GoUpOptionKey) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetAxis("Vertical") > 0.2f)
+            {
+                if (changeTimer < 0)
                 {
-                        if (data.selectedOption > 0)
-                            data.selectedOption--;
-                        else
-                            data.selectedOption = currentOptions.Count - 1;
-                        changeTimer = changeRate;
-                    }
+
+                    if (data.selectedOption > 0)
+                        data.selectedOption--;
+                    else
+                        data.selectedOption = currentOptions.Count - 1;
+                    changeTimer = changeRate;
+                }
             }
-            }
+
+
         }
     }
 
@@ -149,7 +152,7 @@ public class Conversation : MonoBehaviour
 
         ////Let's specifically check for dynamic text change
         //if (!data.currentIsPlayer && data.extraData == "itemLookUp" && !data.pausedAction)
-         //   ItemLookUp(data);
+        //   ItemLookUp(data);
 
         //This will update the dialogue.nodeData with the next Node's data
         dialogue.Next();

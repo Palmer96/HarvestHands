@@ -44,6 +44,11 @@ public class PrototypeObjectiveBoard : MonoBehaviour
         potentialQuests.Remove(potentialQuests[index]);
         
         PrototypeQuestManager.instance.UpdateQuestText();
+
+        if (potentialQuests.Count == 0)
+            transform.GetChild(0).gameObject.SetActive(false);
+        else
+            transform.GetChild(0).gameObject.SetActive(true);
     }
 }
 

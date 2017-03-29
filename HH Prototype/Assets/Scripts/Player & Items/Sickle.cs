@@ -49,28 +49,38 @@ public class Sickle : Item
     public override void PrimaryUse()
     {
         {
-                    ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-                    Debug.Log("Sickle");
-                    if (Physics.Raycast(ray, out hit, rayMaxDist))
-                    {
-                        if (hit.transform.CompareTag("Plant"))
-                        {
-                            hit.transform.GetComponent<Plant>().HarvestPlant(level);
-                            used = true;
-                            useTimer = useRate;
-                        }
-                        else if (hit.transform.CompareTag("Soil"))
-                        {
-                            if (hit.transform.childCount > 0)
-                                hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
-                            used = true;
-                            useTimer = useRate;
-                        }
-                        else
-                            ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-                    }
+            Debug.Log("Sickle");
+            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            {
+                Soil soil = null;
+
+                if (hit.transform.CompareTag("Plant"))
+                {
+                    hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                    used = true;
+                    useTimer = useRate;
+                    soil = hit.transform.parent.GetComponent<Soil>();
                 }
+
+                else if (hit.transform.CompareTag("Soil"))
+                {
+                    if (hit.transform.childCount > 0)
+                        hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
+                    used = true;
+                    useTimer = useRate;
+                    soil = hit.transform.GetComponent<Soil>();
+                }
+                else
+                    ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+
+                if (soil != null)
+                    if (soil.weedInfestation != null)
+                        soil.weedInfestation.RemoveWeed();
+            }
+        }
+
     }
 
     void OnTriggerEnter(Collider col)

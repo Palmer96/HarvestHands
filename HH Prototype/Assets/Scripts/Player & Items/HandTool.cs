@@ -28,8 +28,12 @@ public class HandTool : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Conversation.instance.dialogue.EndDialogue();
+        }
 
-        if (Input.GetKeyDown(KeyCode.E) || Input.GetButtonDown("Controller_" + Interact) || Input.GetButtonDown("Controller_A"))
+        if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Controller_" + Interact) || Input.GetButtonDown("Controller_A"))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));

@@ -64,27 +64,8 @@ public class Axe : Item
                         {
                             used = true;
                             useTimer = useRate;
-                            hit.transform.GetComponent<Tree>().Harvest();
-                            if (level > 1)
-                                hit.transform.GetComponent<Tree>().Harvest();
-                            if (level > 2)
-                                hit.transform.GetComponent<Tree>().Harvest();
+                            hit.transform.GetComponent<Tree>().Harvest(hit.point);
                             //    Instantiate(wood, hit.point, transform.rotation);
-                        }
-                        else if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
-                        {
-                            used = true;
-                            useTimer = useRate;
-                            //Get soil
-                            Soil soil;
-                            if (hit.transform.CompareTag("Soil"))
-                                soil = hit.transform.GetComponent<Soil>();
-                            else
-                                soil = hit.transform.parent.GetComponent<Soil>();
-                            //Remove Weed
-                            if (soil != null)
-                                if (soil.weedInfestation != null)
-                                    soil.weedInfestation.RemoveWeed();                            
                         }
                         else
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");

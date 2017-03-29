@@ -23,7 +23,7 @@ public class BookMenuManager : MonoBehaviour
     void Update()
     {
         
-        if (Input.GetKeyDown(menuKey) || Input.GetButtonDown("Controller_" + menuController))
+        if (Input.GetKeyDown(menuKey))// || Input.GetButtonDown("Controller_" + menuController))
         {
             if (PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled == true)
             {

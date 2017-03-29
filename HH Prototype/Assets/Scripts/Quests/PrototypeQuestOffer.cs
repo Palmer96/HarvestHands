@@ -25,11 +25,17 @@ public class PrototypeQuestOffer : MonoBehaviour
             questBoardSource.acceptedQuests.Add(questOffered);
             questOffered.StartQuest();
             //PrototypeQuestManager.instance.UpdateQuestText();
+
+            PlayerInventory.instance.eUsed = false;
+
             Destroy(gameObject);
         }
         else if (Input.GetKeyDown(declineButton))
         {
             questBoardSource.potentialQuests.Add(questOffered);
+
+            PlayerInventory.instance.eUsed = false;
+
             Destroy(gameObject);
         }
     }

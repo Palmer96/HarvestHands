@@ -28,6 +28,9 @@ public class Rabbit : MonoBehaviour
 
     public State state;
 
+    public GameObject scraps;
+    public bool holdingPlant = false;
+
     [Header("Movement")]
     public float roamRadius = 10f;
     public float minMoveTime = 5f;
@@ -254,6 +257,12 @@ public class Rabbit : MonoBehaviour
                 // transform.GetChild(i).GetComponent<Rigidbody>().AddForce(/*(col.transform.position - transform.position).normalized*/ col.transform.up * 1000);
             }
             transform.DetachChildren();
+
+            if (holdingPlant)
+            {
+                Instantiate(scraps, transform.position, transform.rotation);
+            }
+
             Destroy(gameObject);
         }
     }

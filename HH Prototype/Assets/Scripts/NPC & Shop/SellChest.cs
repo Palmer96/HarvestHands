@@ -30,11 +30,14 @@ public class SellChest : MonoBehaviour
 
     public void AddToSell(GameObject sold)
     {
+        Debug.Log("0");
         if (sold.GetComponent<Item>() != null)
         {
+            Debug.Log("1");
             Item item = sold.GetComponent<Item>();
             if (item.sellable == true)
             {
+                Debug.Log("2");
                 if (item.GetComponent<Item>())
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
                 //Debug.Log(col.transform.name);
@@ -46,11 +49,14 @@ public class SellChest : MonoBehaviour
     }
     public void AddSingleToSell(GameObject sold)
     {
+        Debug.Log("00");
         if (sold.GetComponent<Item>() != null)
         {
+            Debug.Log("3");
             Item item = sold.GetComponent<Item>();
             if (item.sellable == true)
             {
+                Debug.Log("4");
                 if (item.GetComponent<Item>())
                     EventManager.SellEvent(item.GetComponent<Item>().itemName);
                 //Debug.Log(col.transform.name);

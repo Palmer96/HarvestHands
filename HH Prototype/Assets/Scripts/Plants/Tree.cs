@@ -12,25 +12,26 @@ public class Tree : MonoBehaviour
     {
         SaveAndLoadManager.OnSave += Save;
     }
-       
+
 
     void OnDestroy()
     {
         SaveAndLoadManager.OnSave -= Save;
     }
 
-    public void Harvest()
+    public void Harvest(Vector3 pos)
     {
         if (woodAvaliable > 0)
         {
-
-            Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
+            // Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
+           // Instantiate(Wood, new Vector3(pos.x, 6.5f, pos.z), transform.rotation);
+            Instantiate(Wood, pos, transform.rotation);
 
             woodAvaliable--;
             if (woodAvaliable == 0)
             {
-                if (stump!= null)
-                Instantiate(stump, transform.position, transform.rotation);
+                if (stump != null)
+                    Instantiate(stump, transform.position, transform.rotation);
                 Destroy(gameObject);
             }
         }
@@ -76,10 +77,10 @@ public class TreeSave
 
             //if (treePrefab.ID == ID)
             //{
-                //Debug.Log("Loading Bucket");
-                GameObject tree = (GameObject)Object.Instantiate(treePrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
-                tree.GetComponent<Tree>().woodAvaliable = woodAvailable;
-                return tree;
+            //Debug.Log("Loading Bucket");
+            GameObject tree = (GameObject)Object.Instantiate(treePrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+            tree.GetComponent<Tree>().woodAvaliable = woodAvailable;
+            return tree;
             //}
         }
         Debug.Log("Failed to load Tree, tree = ");// +.ToString());

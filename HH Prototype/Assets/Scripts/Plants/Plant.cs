@@ -77,7 +77,7 @@ public class Plant : MonoBehaviour
 
     public float saplingMeshDuration = 1;
 
-    private float startTime;
+    public float startTime = 0;
     public float sliderWidth;
     // Use this for initialization
     void Start()
@@ -85,6 +85,7 @@ public class Plant : MonoBehaviour
         PlantManager.instance.AddPlant(this);
         UpdatePlant(1);
         transform.GetChild(1).GetChild(0).GetComponent<Slider>().maxValue = maxWater;
+        if (startTime == 0)
         startTime = harvestTimer;
         //SaveAndLoadManager.OnSave += Save;
 

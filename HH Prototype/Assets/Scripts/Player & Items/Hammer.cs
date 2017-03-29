@@ -8,6 +8,7 @@ public class Hammer : Item
     public int level = 1;
     public bool primary;
 
+
     // Use this for initialization
     void Start()
     {
@@ -42,10 +43,13 @@ public class Hammer : Item
             if (transform.localPosition.z > 2.4f)
             {
                 moveBack = true;
-                if (primary)
-                    PrimaryUse();
-                else
-                    SecondaryUse();
+           //     if (use)
+                {
+                    if (primary)
+                        PrimaryUse();
+                    else
+                        SecondaryUse();
+                }
             }
             if (moveBack)
             {
@@ -59,10 +63,17 @@ public class Hammer : Item
         }
     }
 
+    // public override void Move()
+    // {
+    //     base.Move();
+    //     primary = true;
+    // }
+
     public override void Move()
     {
         base.Move();
         primary = true;
+      //  use = false;
     }
     public override void PrimaryUse()
     {

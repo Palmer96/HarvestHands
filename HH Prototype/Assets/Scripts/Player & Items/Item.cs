@@ -26,6 +26,7 @@ public class Item : MonoBehaviour
     public float useTimer = 0.25f;
     public float useRate = 0.25f;
 
+
     //  protected MeshFilter ownMesh;
     //  protected Material ownMaterial;
     //  protected MeshCollider ownMeshCollider;
@@ -41,8 +42,12 @@ public class Item : MonoBehaviour
 
     public Vector3 startScale;
 
-   public bool moveing;
-   public bool moveBack;
+    public bool moveing;
+    public bool moveBack;
+
+    public bool use = true;
+
+
     // Use this for initialization
     void Start()
     {
@@ -74,21 +79,37 @@ public class Item : MonoBehaviour
 
     void Update()
     {
+        AllItemUpdate();
         HitUpdate();
     }
 
+    public void AllItemUpdate()
+    {
+        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        if (Physics.Raycast(new Ray(transform.position, new Vector3(0, 1, 0)), out hit))
+        {
+            if ((hit.point.y - 5) > transform.position.y)
+            {
+                if (hit.transform.GetComponent<Terrain>())
+                {
+                    transform.position = hit.point + new Vector3(0, 1, 0);
+                }
+            }
+        }
+    }
     public void HitUpdate()
     {
-if (moveing)
+        if (moveing)
         {
-             if (moveBack)
-                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
-             else
-                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.1f);
-           
-             if (transform.localPosition.z > 2.4f)
-                 moveBack = true;
-             if (moveBack)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.1f);
+
+            if (transform.localPosition.z > 2.4f)
+                moveBack = true;
+            if (moveBack)
             {
                 if (transform.localPosition.z < 2.01f)
                 {
@@ -103,7 +124,7 @@ if (moveing)
     {
         //if (moveing == false)
         moveing = true;
-      //  moveBack = false;
+        //  moveBack = false;
     }
     public virtual void PrimaryUse()
     {
@@ -124,44 +145,45 @@ if (moveing)
         }
     }
 
- //   public virtual void PrimaryUse(ClickType click)
- //   {
- //       if (AttemptInteract(click))
- //           return;
- //   }
- //
- //   public virtual void PrimaryUse(GameObject gameObj)
- //   {
- //       ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
- //
- //       if (Physics.Raycast(ray, out hit, rayMaxDist))
- //       {
- //           if (hit.transform.CompareTag("Building"))
- //           {
- //               hit.transform.GetComponent<Building>().AddResource(gameObject);
- //           }
- //           else if (hit.transform.CompareTag("SellZone"))
- //           {
- //               hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
- //           }
- //       }
- //   }
+
+    //   public virtual void PrimaryUse(ClickType click)
+    //   {
+    //       if (AttemptInteract(click))
+    //           return;
+    //   }
+    //
+    //   public virtual void PrimaryUse(GameObject gameObj)
+    //   {
+    //       ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+    //
+    //       if (Physics.Raycast(ray, out hit, rayMaxDist))
+    //       {
+    //           if (hit.transform.CompareTag("Building"))
+    //           {
+    //               hit.transform.GetComponent<Building>().AddResource(gameObject);
+    //           }
+    //           else if (hit.transform.CompareTag("SellZone"))
+    //           {
+    //               hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
+    //           }
+    //       }
+    //   }
 
 
-   public virtual void SecondaryUse()
-  {
+    public virtual void SecondaryUse()
+    {
 
-  }
+    }
 
- //  public virtual void SecondaryUse(ClickType click)
- //  {
- //
- //  }
- //
- //  public virtual void SecondaryUse(GameObject gameObj)
- //  {
- //
- //  }
+    //  public virtual void SecondaryUse(ClickType click)
+    //  {
+    //
+    //  }
+    //
+    //  public virtual void SecondaryUse(GameObject gameObj)
+    //  {
+    //
+    //  }
 
 
 

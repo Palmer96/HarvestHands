@@ -179,7 +179,7 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-             //   if (heldObjects[selectedItemNum] != null)
+                //   if (heldObjects[selectedItemNum] != null)
                 {
                     if (Input.GetKey(KeyCode.Q) || Input.GetButton("Controller_" + iDrop) || Input.GetAxis("Controller_" + iDrop) != 0) // Drop
                     {
@@ -249,7 +249,7 @@ public class PlayerInventory : MonoBehaviour
                         //               hand.GetComponent<Hand>().Move();
 
                         if (heldObjects[selectedItemNum] != null)
-                        heldObjects[selectedItemNum].GetComponent<Item>().Move();
+                            heldObjects[selectedItemNum].GetComponent<Item>().Move();
                         else
                             hand.GetComponent<Item>().Move();
 
@@ -272,6 +272,8 @@ public class PlayerInventory : MonoBehaviour
 
                                 case "Item":
                                     lClickTimer = pickupRate;
+                                   // if (heldObjects[selectedItemNum] == null)
+                                   // hand.GetComponent<Item>().Move();
                                     AddItem(hit.transform.gameObject);
                                     break;
 
@@ -305,16 +307,21 @@ public class PlayerInventory : MonoBehaviour
                                     holdSlider.fillAmount = 0;
                                     hit.transform.GetComponent<Livestock>().Interact();
                                     break;
-
-
+                               case "SellZone":
+                                   Debug.Log("Sell");
+                                   hit.transform.GetComponent<SellChest>().AddToSell(heldObjects[selectedItemNum]);
+                                    lClickTimer = lClickRate;
+                                    break;
+                                    
                                 default:
                                     if (heldObjects[selectedItemNum] != null)
                                     {
+                                     //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
 
-                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
-                                        lClickTimer = lClickRate;
-                                    //   if (heldObjects[selectedItemNum].GetComponent<Item>().moveing == false)
-                                    //     heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
+                                        if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
+                                            lClickTimer = lClickRate;
+                                        //   if (heldObjects[selectedItemNum].GetComponent<Item>().moveing == false)
+                                        //     heldObjects[selectedItemNum].GetComponent<Item>().PrimaryUse();
                                     }
 
                                     break;
@@ -327,12 +334,12 @@ public class PlayerInventory : MonoBehaviour
                         if (heldObjects[selectedItemNum] != null)
                         {
 
-                        if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                        {
-                            lClickTimer = lClickRate;
-                            heldObjects[selectedItemNum].GetComponent<Bucket>().moveBack = true;
-                            heldObjects[selectedItemNum].GetComponent<Bucket>().used = true;
-                        }
+                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                            {
+                                lClickTimer = lClickRate;
+                                heldObjects[selectedItemNum].GetComponent<Bucket>().moveBack = true;
+                                heldObjects[selectedItemNum].GetComponent<Bucket>().used = true;
+                            }
                         }
 
                     }
@@ -363,25 +370,26 @@ public class PlayerInventory : MonoBehaviour
                     // lClickTimer = 0;
                     //   }
 
-                    if ((Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse) || Input.GetAxis("Controller_" + iSecondaryUse) != 0) && disableRight) // Drop
+                    if ((Input.GetMouseButton(1) || Input.GetButton("Controller_" + iSecondaryUse) || Input.GetAxis("Controller_" + iSecondaryUse) != 0))// && disableRight) // Drop
                     {
-                        rClickTimer -= Time.deltaTime;
+                        ///     rClickTimer -= Time.deltaTime;
                         //  lClickTimer = 0;
-                        holdSlider.fillAmount = rClickTimer / rClickRate;
-                        if (rClickTimer < 0)
+                        //     holdSlider.fillAmount = rClickTimer / rClickRate;
+                        if (lClickTimer < 0 && Physics.Raycast(ray, out hit, 5))
                         {
-                            heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
+                         //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
+                            //  heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
                             if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
                             {
                                 heldObjects[selectedItemNum].GetComponent<Hammer>().Move();
+                             //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
                                 heldObjects[selectedItemNum].GetComponent<Hammer>().primary = false;
                                 lClickTimer = rClickRate;
                                 holdSlider.fillAmount = 0;
-                                disableRight = false;
+                                //  disableRight = false;
                             }
                         }
                     }
-
                     // if (Input.GetMouseButtonUp(1) || Input.GetButtonUp("Controller_" + iSecondaryUse))// || (Input.GetAxis("Controller_" + iSecondaryUse) <= 0.1f && Input.GetAxis("Controller_" + iSecondaryUse) != 0)) 
                     // {
                     //     if (rClickTimer < rClickRate)
@@ -701,6 +709,92 @@ public class PlayerInventory : MonoBehaviour
         heldObjects[selectedItemNum] = null;
     }
 
+
+
+
+    void UpdateImages()
+    {
+        int num = selectedItemNum;
+
+        for (int i = 0; i < itemText.Capacity - 1; i++)
+        {
+            num = selectedItemNum + i;
+            if (num >= heldObjects.Capacity)
+                num -= heldObjects.Capacity;
+            else if (num < 0)
+                num += heldObjects.Capacity;
+
+            if (heldObjects[num] != null)
+            {
+                itemText[i].text = heldObjects[num].GetComponent<Item>().itemName;
+                if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+                else
+                    itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
+            else
+            {
+                itemText[i].text = "-";
+                itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
+         //   itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+        }
+
+
+
+
+        num = selectedItemNum - 2;
+        int txt = itemText.Count - 2;
+        if (num >= heldObjects.Capacity)
+            num -= heldObjects.Capacity;
+        else if (num < 0)
+            num += heldObjects.Capacity;
+
+        if (heldObjects[num] != null)
+        {
+            itemText[txt].text = heldObjects[num].GetComponent<Item>().itemName;
+            if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+            else
+                itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        else
+        {
+            itemText[txt].text = "-";
+            itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+       // itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+
+
+
+
+        num = selectedItemNum - 1;
+        txt = itemText.Count - 1;
+        if (num >= heldObjects.Capacity)
+            num -= heldObjects.Capacity;
+        else if (num < 0)
+            num += heldObjects.Capacity;
+
+        if (heldObjects[num] != null)
+        {
+            itemText[txt].text = heldObjects[num].GetComponent<Item>().itemName;
+            if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+            else
+                itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        else
+        {
+            itemText[txt].text = "-";
+            itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+    }
+
+
+
+
+    /*
     void UpdateImages()
     {
         int num = selectedItemNum;
@@ -808,7 +902,7 @@ public class PlayerInventory : MonoBehaviour
         //      }
         //  }
     }
-
+    */
     void UpdateInventory()
     {
 
