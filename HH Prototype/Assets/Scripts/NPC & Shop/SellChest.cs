@@ -15,10 +15,10 @@ public class SellChest : MonoBehaviour
         SaveAndLoadManager.OnSave += Save;
     }
 
-    void Update()
-    {
-        transform.GetChild(0).GetComponent<TextMesh>().text = "Todays Profit: $" + valueOfItems.ToString();
-    }
+ // void Update()
+ // {
+ //     transform.GetChild(0).GetComponent<TextMesh>().text = "Todays Profit: $" + valueOfItems.ToString();
+ // }
 
     //  void OnCollisionEnter(Collision col)
     //  {

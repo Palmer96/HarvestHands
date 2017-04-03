@@ -46,7 +46,7 @@ public class ConstructionMenuButton : ScrollMenuButton
         }
         
         //Display list prefab thing
-        Debug.Log("nameText.text = recipe name, recipename == " + recipeName);
+      //  Debug.Log("nameText.text = recipe name, recipename == " + recipeName);
         nameText.text = recipeName;
         requirementText.text = recipeResources;
         nameText.color = ConstructionMenu.instance.canMakeColor;

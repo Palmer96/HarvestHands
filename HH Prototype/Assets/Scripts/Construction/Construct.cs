@@ -45,12 +45,7 @@ public class Construct : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            Cancel();
-        }
-
-        if (transform.eulerAngles.x > 10 &&
+                if (transform.eulerAngles.x > 10 &&
               transform.eulerAngles.x < 350 ||
               transform.eulerAngles.z > 10 &&
               transform.eulerAngles.z < 350)
@@ -82,16 +77,23 @@ public class Construct : MonoBehaviour
 
     public void Place()
     {
+       
         GameObject obj = Instantiate(selfObject, transform.position, transform.rotation);
         if (!isNew)
         obj.GetComponent<Building>().resources = resources;
-        Destroy(gameObject);
+      //  PlayerInventory.instance.bookOpen = false;
+      //  Destroy(gameObject);
     }
     public void Cancel()
     {
         transform.position = oldPos;
         transform.rotation = oldRot;
-        Place();
+
+        GameObject obj = Instantiate(selfObject, transform.position, transform.rotation);
+        if (!isNew)
+            obj.GetComponent<Building>().resources = resources;
+        PlayerInventory.instance.bookOpen = false;
+        Destroy(gameObject);
     }
 
     void OnTriggerStay(Collider col)

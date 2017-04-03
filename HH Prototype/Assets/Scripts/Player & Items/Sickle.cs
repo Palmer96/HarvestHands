@@ -4,6 +4,8 @@ using System.Collections;
 public class Sickle : Item
 {
     public int level = 1;
+    public GameObject particle;
+    public GameObject particleDead;
     // Use this for initialization
     void Start()
     {
@@ -58,7 +60,18 @@ public class Sickle : Item
 
                 if (hit.transform.CompareTag("Plant"))
                 {
-                    hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                    int temp = hit.transform.GetComponent<Plant>().HarvestPlant(level);
+                    if (temp > 0)
+                    {
+                        GameObject part = null;
+                        if (temp == 1)
+                            part = Instantiate(particle, hit.point, transform.rotation);
+                        else
+                            part = Instantiate(particleDead, hit.point, transform.rotation);
+                        part.transform.LookAt(transform.position);
+                        part.transform.Rotate(0, 90, 0);
+                        Destroy(hit.transform.gameObject);
+                    }
                     used = true;
                     useTimer = useRate;
                     soil = hit.transform.parent.GetComponent<Soil>();

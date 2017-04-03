@@ -7,6 +7,7 @@ public class Axe : Item
 
     public int level = 1;
     public GameObject wood;
+    public GameObject particle;
 
     // Use this for initialization
     void Start()
@@ -16,7 +17,7 @@ public class Axe : Item
         itemCap = 1;
         MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
         SaveAndLoadManager.OnSave += Save;
-
+        Debug.Log(gameObject.layer);
     }
 
     // Update is called once per frame
@@ -65,7 +66,11 @@ public class Axe : Item
                             used = true;
                             useTimer = useRate;
                             hit.transform.GetComponent<Tree>().Harvest(hit.point);
-                            //    Instantiate(wood, hit.point, transform.rotation);
+                   GameObject part = Instantiate(particle, hit.point, transform.rotation);
+                    part.transform.LookAt(transform.parent.position);
+                 //   part.transform.Rotate(0, 90, 0);
+                    //    Instantiate(wood, hit.point, transform.rotation);
+                   
                         }
                         else
                             ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");

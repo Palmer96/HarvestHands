@@ -28,13 +28,46 @@ public class AnimalFeed : Item
         SaveAndLoadManager.OnSave += Save;
     }
 
-  //  public override void PrimaryUse(ClickType click)
-  //  {
-  //      if (AttemptInteract(click))
-  //          return;
-  //      if (click == Item.ClickType.Hold)
-  //          PrimaryUse();
-  //  }
+    //  public override void PrimaryUse(ClickType click)
+    //  {
+    //      if (AttemptInteract(click))
+    //          return;
+    //      if (click == Item.ClickType.Hold)
+    //          PrimaryUse();
+    //  }
+
+
+    void Update()
+    {
+        if (moveing)
+        {
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
+            {
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
+            }
+        }
+    }
+
+    public override void Move()
+    {
+        base.Move();
+    }
+
 
     public override void PrimaryUse()
     {

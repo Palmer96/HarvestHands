@@ -40,7 +40,7 @@ public class Building : MonoBehaviour
         text = transform.GetChild(0).GetComponent<TextMesh>();
         SaveAndLoadManager.OnSave += Save;
         moving = false;
-                                                          
+
     }
 
     // Update is called once per frame
@@ -80,11 +80,11 @@ public class Building : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision col)
-    {
-        AddResource(col.gameObject);
-    }
-    
+   void OnCollisionEnter(Collision col)
+   {
+       AddResource(col.gameObject);
+   }
+
 
 
     public void Build()
@@ -124,20 +124,26 @@ public class Building : MonoBehaviour
     {
         for (int i = 0; i < resources.Count; i++)
         {
-            for (int j = 0; j < resources[i].numHave; j++)
+            //   Debug.Log
+            Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
+            GameObject obj = null;
+            for (int k = 0; k < ResourceManager.instance.resources.Length; k++)
             {
-                //   Debug.Log
-                Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
-
-                GameObject obj = SaveAndLoadManager.instance.instantiateableItems[i];
-                if (obj != null)
-                {
-                    // if (PlayerInventory.instance.AddItem(obj))
-                    Instantiate(obj, transform.position + transform.up * 2, transform.rotation);
-                }
-                else
-                    Debug.Log("Fail");
+                if (resources[i].resource.ToString() == ResourceManager.instance.resources[k].GetComponent<Item>().itemName)
+                    obj = ResourceManager.instance.resources[k];
             }
+
+            //  GameObject obj = SaveAndLoadManager.instance.instantiateableItems[i];
+
+
+
+            if (obj != null)
+            {
+                GameObject item = Instantiate(obj, transform.position + transform.up * 2, transform.rotation);
+                item.GetComponent<Item>().quantity = resources[i].numHave;
+            }
+            else
+                Debug.Log("Fail");
         }
         Destroy(gameObject);
     }
@@ -149,7 +155,7 @@ public class Building : MonoBehaviour
 
     public virtual void Save()
     {
-     //   SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
+        //   SaveAndLoadManager.instance.saveData.buildingSaveList.Add(new BuildingSave(this));
         //Debug.Log("Saved item = " + name);
     }
 
@@ -185,36 +191,36 @@ public class BuildingSave
     float rotZ;
     float rotW;
 
-//    public BuildingSave(Building building)
-//    {
-//        constructName = building.constructName;
-//        resources = building.resources;
-//        posX = building.transform.position.x;
-//        posY = building.transform.position.y;
-//        posZ = building.transform.position.z;
-//        rotX = building.transform.rotation.x;
-//        rotY = building.transform.rotation.y;
-//        rotZ = building.transform.rotation.z;
-//        rotW = building.transform.rotation.w;
-//    }
-//
-//    public GameObject LoadObject()
-//    {
-//        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
-//        {
-//            Building buildingPrefab = buildingPrefabType.GetComponent<Building>();
-//            if (buildingPrefab == null)
-//                continue;
-//
-//            if (buildingPrefab.constructName == constructName)
-//            {
-//                //Debug.Log("Loading Axe");
-//                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
-//                building.GetComponent<Building>().resources = resources;
-//                return building;
-//            }
-//        }
-//        Debug.Log("Failed to load Building, constructName = " + constructName.ToString());
-//        return null;
-//    }
+    //    public BuildingSave(Building building)
+    //    {
+    //        constructName = building.constructName;
+    //        resources = building.resources;
+    //        posX = building.transform.position.x;
+    //        posY = building.transform.position.y;
+    //        posZ = building.transform.position.z;
+    //        rotX = building.transform.rotation.x;
+    //        rotY = building.transform.rotation.y;
+    //        rotZ = building.transform.rotation.z;
+    //        rotW = building.transform.rotation.w;
+    //    }
+    //
+    //    public GameObject LoadObject()
+    //    {
+    //        foreach (GameObject buildingPrefabType in SaveAndLoadManager.instance.instantiateableBuildings)
+    //        {
+    //            Building buildingPrefab = buildingPrefabType.GetComponent<Building>();
+    //            if (buildingPrefab == null)
+    //                continue;
+    //
+    //            if (buildingPrefab.constructName == constructName)
+    //            {
+    //                //Debug.Log("Loading Axe");
+    //                GameObject building = (GameObject)Object.Instantiate(buildingPrefabType, new Vector3(posX, posY, posZ), new Quaternion(rotX, rotY, rotZ, rotW));
+    //                building.GetComponent<Building>().resources = resources;
+    //                return building;
+    //            }
+    //        }
+    //        Debug.Log("Failed to load Building, constructName = " + constructName.ToString());
+    //        return null;
+    //    }
 }

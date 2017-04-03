@@ -34,6 +34,7 @@ public class PlayerInventory : MonoBehaviour
     Color gridColourUp;
     Color gridColourDown;
 
+    public GameObject Dust;
     public bool bookOpen;
 
     //  public List<GameObject> heldObjects = new List<GameObject>();
@@ -206,19 +207,23 @@ public class PlayerInventory : MonoBehaviour
                         switch (hit.transform.tag)
                         {
                             case "Plant":
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                                    hit.transform.GetComponent<Plant>().highlighted = true;
+                                if (heldObjects[selectedItemNum] != null)
+                                {
+                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                        hit.transform.GetComponent<Plant>().highlighted = true;
+                                }
                                 break;
                             case "Soil":
-                                if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                if (heldObjects[selectedItemNum] != null)
                                 {
-                                    //   if (hit.transform.childCount > 0)
-                                    //       hit.transform.GetChild(0).GetComponent<Plant>().highlighted = true;
-                                    for (int i = 0; i < hit.transform.childCount; ++i)
+                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                     {
-                                        if (hit.transform.GetChild(i).GetComponent<Plant>() != null)
+                                        for (int i = 0; i < hit.transform.childCount; ++i)
                                         {
-                                            hit.transform.GetChild(i).GetComponent<Plant>().highlighted = true;
+                                            if (hit.transform.GetChild(i).GetComponent<Plant>() != null)
+                                            {
+                                                hit.transform.GetChild(i).GetComponent<Plant>().highlighted = true;
+                                            }
                                         }
                                     }
                                 }
@@ -272,8 +277,8 @@ public class PlayerInventory : MonoBehaviour
 
                                 case "Item":
                                     lClickTimer = pickupRate;
-                                   // if (heldObjects[selectedItemNum] == null)
-                                   // hand.GetComponent<Item>().Move();
+                                    // if (heldObjects[selectedItemNum] == null)
+                                    // hand.GetComponent<Item>().Move();
                                     AddItem(hit.transform.gameObject);
                                     break;
 
@@ -300,6 +305,7 @@ public class PlayerInventory : MonoBehaviour
 
                                 case "CraftingBench":
                                     CraftingMenu.instance.ActivateMenu();
+                                    heldObjects[selectedItemNum].GetComponent<Item>().moveBack = true;
                                     break;
 
                                 case "Livestock":
@@ -307,16 +313,19 @@ public class PlayerInventory : MonoBehaviour
                                     holdSlider.fillAmount = 0;
                                     hit.transform.GetComponent<Livestock>().Interact();
                                     break;
-                               case "SellZone":
-                                   Debug.Log("Sell");
-                                   hit.transform.GetComponent<SellChest>().AddToSell(heldObjects[selectedItemNum]);
+                                case "SellZone":
+                                    Debug.Log("Sell");
+                                    hit.transform.GetComponent<SellChest>().AddToSell(heldObjects[selectedItemNum]);
                                     lClickTimer = lClickRate;
                                     break;
-                                    
+                                case "Building":
+                                    hit.transform.GetComponent<Building>().AddResource(heldObjects[selectedItemNum]);
+                                    lClickTimer = lClickRate;
+                                    break;
                                 default:
                                     if (heldObjects[selectedItemNum] != null)
                                     {
-                                     //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
+                                        //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
 
                                         if (heldObjects[selectedItemNum].GetComponent<Bucket>() == null)
                                             lClickTimer = lClickRate;
@@ -328,6 +337,7 @@ public class PlayerInventory : MonoBehaviour
                             }
                         }
                     }
+
 
                     if (Input.GetMouseButtonUp(0))
                     {
@@ -377,12 +387,12 @@ public class PlayerInventory : MonoBehaviour
                         //     holdSlider.fillAmount = rClickTimer / rClickRate;
                         if (lClickTimer < 0 && Physics.Raycast(ray, out hit, 5))
                         {
-                         //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
+                            //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
                             //  heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
                             if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
                             {
                                 heldObjects[selectedItemNum].GetComponent<Hammer>().Move();
-                             //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
+                                //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
                                 heldObjects[selectedItemNum].GetComponent<Hammer>().primary = false;
                                 lClickTimer = rClickRate;
                                 holdSlider.fillAmount = 0;
@@ -411,12 +421,10 @@ public class PlayerInventory : MonoBehaviour
                 if (Input.GetMouseButtonDown(0) || Input.GetButtonDown("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) > 0) // Primary Use
                 {
                     Blueprint.instance.PrimaryUse();
-                    bookOpen = false;
                 }
                 if (Input.GetMouseButtonDown(1) || Input.GetButtonDown("Controller_" + iPrimaryUse) || Input.GetAxis("Controller_" + iPrimaryUse) > 0) // Pickup
                 {
                     Blueprint.instance.SecondaryUse();
-                    bookOpen = false;
                 }
             }
         }
@@ -460,7 +468,7 @@ public class PlayerInventory : MonoBehaviour
                         if (heldObjects[i].GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
                             WaveManager.instance.rabbitsLeft--;
                     }
-
+                    Instantiate(Dust, item.transform.position, Dust.transform.rotation);
                     Destroy(item);
                     return true;
                 }
@@ -469,11 +477,17 @@ public class PlayerInventory : MonoBehaviour
 
         if (heldObjects[selectedItemNum] == null)
         {
+            Instantiate(Dust, item.transform.position, Dust.transform.rotation);
             heldObjects[selectedItemNum] = item;
             heldObjects[selectedItemNum].transform.SetParent(transform.GetChild(0));
             heldObjects[selectedItemNum].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+            heldObjects[selectedItemNum].GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = true;
-            heldObjects[selectedItemNum].layer = 2;
+            heldObjects[selectedItemNum].layer = 8;
+            for ( int i = 0; i < heldObjects[selectedItemNum].transform.childCount; i++)
+            {
+                heldObjects[selectedItemNum].transform.GetChild(i).gameObject.layer = 8;
+            }
             heldObjects[selectedItemNum].GetComponent<Collider>().enabled = false;
 
             heldObjects[selectedItemNum].transform.rotation = transform.GetChild(0).rotation;
@@ -499,11 +513,17 @@ public class PlayerInventory : MonoBehaviour
         {
             if (heldObjects[i] == null)
             {
+                Instantiate(Dust, item.transform.position, Dust.transform.rotation);
                 heldObjects[i] = item;
                 heldObjects[i].transform.SetParent(transform.GetChild(0));
                 heldObjects[i].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                heldObjects[selectedItemNum].GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
                 heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
-                heldObjects[i].layer = 2;
+                heldObjects[i].layer = 8;
+                for (int j = 0; i < heldObjects[i].transform.childCount; j++)
+                {
+                    heldObjects[i].transform.GetChild(j).gameObject.layer = 8;
+                }
                 heldObjects[i].GetComponent<Collider>().enabled = false;
 
                 heldObjects[i].transform.rotation = transform.GetChild(0).rotation;
@@ -547,6 +567,10 @@ public class PlayerInventory : MonoBehaviour
                 if (droppedItem.GetComponent<MeshRenderer>() != null)
                     droppedItem.GetComponent<MeshRenderer>().enabled = true;
                 droppedItem.layer = 0;
+                for (int i = 0; i <droppedItem.transform.childCount; i++)
+                {
+                    droppedItem.transform.GetChild(i).gameObject.layer = 0;
+                }
 
                 heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
                 if (heldObjects[selectedItemNum].GetComponent<Item>().itemID > 10)
@@ -563,6 +587,10 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum].GetComponent<Collider>().enabled = true;
                 heldObjects[selectedItemNum].transform.parent = null;
                 heldObjects[selectedItemNum].layer = 0;
+                for (int i = 0; i < heldObjects[selectedItemNum].transform.childCount; i++)
+                {
+                    heldObjects[selectedItemNum].transform.GetChild(i).gameObject.layer = 0;
+                }
                 if (heldObjects[selectedItemNum].GetComponent<MeshRenderer>() != null)
                     heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
@@ -588,6 +616,10 @@ public class PlayerInventory : MonoBehaviour
                 if (droppedItem.GetComponent<MeshRenderer>() != null)
                     droppedItem.GetComponent<MeshRenderer>().enabled = true;
                 droppedItem.layer = 0;
+                for (int i = 0; i < droppedItem.transform.childCount; i++)
+                {
+                    droppedItem.transform.GetChild(i).gameObject.layer = 0;
+                }
 
                 heldObjects[inventorySlot].GetComponent<Item>().DecreaseQuantity();
                 if (heldObjects[inventorySlot].GetComponent<Item>().itemID > 10)
@@ -604,6 +636,10 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[inventorySlot].GetComponent<Collider>().enabled = true;
                 heldObjects[inventorySlot].transform.parent = null;
                 heldObjects[inventorySlot].layer = 0;
+                for (int i = 0; i < heldObjects[inventorySlot].transform.childCount; i++)
+                {
+                    heldObjects[inventorySlot].transform.GetChild(i).gameObject.layer = 0;
+                }
                 if (heldObjects[inventorySlot].GetComponent<MeshRenderer>() != null)
                     heldObjects[inventorySlot].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[inventorySlot].GetComponent<Item>().itemID < 10)
@@ -632,8 +668,13 @@ public class PlayerInventory : MonoBehaviour
         heldObjects[slot] = item;
         heldObjects[slot].transform.SetParent(transform.GetChild(0));
         heldObjects[slot].transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+        heldObjects[selectedItemNum].GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
         heldObjects[slot].GetComponent<Rigidbody>().isKinematic = true;
-        heldObjects[slot].layer = 2;
+        heldObjects[slot].layer = 8;
+        for (int i = 0; i < heldObjects[slot].transform.childCount; i++)
+        {
+            heldObjects[slot].transform.GetChild(i).gameObject.layer = 8;
+        }
         heldObjects[slot].GetComponent<Collider>().enabled = false;
 
         heldObjects[slot].transform.rotation = transform.GetChild(0).rotation;
@@ -699,6 +740,10 @@ public class PlayerInventory : MonoBehaviour
         if (droppedItem.GetComponent<MeshRenderer>() != null)
             droppedItem.GetComponent<MeshRenderer>().enabled = true;
         droppedItem.layer = 0;
+        for (int i = 0; i < droppedItem.transform.childCount; i++)
+        {
+            droppedItem.transform.GetChild(i).gameObject.layer = 0;
+        }
         droppedItem.GetComponent<Item>().quantity = heldObjects[selectedItemNum].GetComponent<Item>().quantity;
         heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
         if (heldObjects[selectedItemNum].GetComponent<Item>().itemID > 10)
@@ -737,7 +782,7 @@ public class PlayerInventory : MonoBehaviour
                 itemText[i].text = "-";
                 itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
             }
-         //   itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+            //   itemText[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
         }
 
 
@@ -763,7 +808,7 @@ public class PlayerInventory : MonoBehaviour
             itemText[txt].text = "-";
             itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
         }
-       // itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+        // itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
 
 
 
@@ -788,7 +833,7 @@ public class PlayerInventory : MonoBehaviour
             itemText[txt].text = "-";
             itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
         }
-        itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
+        //  itemText[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = num.ToString();
     }
 
 

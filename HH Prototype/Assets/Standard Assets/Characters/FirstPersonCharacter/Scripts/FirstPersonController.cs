@@ -53,6 +53,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         private AudioClip m_LandSound;           // the sound played when character touches back on ground.
 
         public Camera m_Camera;
+        //public Camera m_RenderCamera;
         private bool m_Jump;
         private float m_YRotation;
         private Vector2 m_Input;
@@ -73,6 +74,7 @@ namespace UnityStandardAssets.Characters.FirstPerson
         {
             m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
+          //  m_RenderCamera = transform.GetChild(0).GetChild(0).GetComponent<Camera>();
             m_OriginalCameraPosition = m_Camera.transform.localPosition;
             m_FovKick.Setup(m_Camera);
             m_HeadBob.Setup(m_Camera, m_StepInterval);

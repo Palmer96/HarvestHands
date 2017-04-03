@@ -12,7 +12,7 @@ public class ConstructionMenu : ScrollMenu
     // Use this for initialization
     void Start ()
     {
-        Debug.Log("Construction Menu name = " + gameObject.name);
+      //  Debug.Log("Construction Menu name = " + gameObject.name);
         if (instance == null)
             instance = this;
         //else
@@ -88,10 +88,10 @@ public class ConstructionMenu : ScrollMenu
 
     public override void UpdateSelectedItemInfo()
     {
-        if (selectedButton == null)
-            Debug.Log("selected button == null");
-        else
-            Debug.Log("selected button = " + selectedButton.name);
+      // if (selectedButton == null)
+      //     Debug.Log("selected button == null");
+      // else
+      //     Debug.Log("selected button = " + selectedButton.name);
         if (selectedButton == null)
         {
             selectedItemName.text = "";
@@ -109,10 +109,10 @@ public class ConstructionMenu : ScrollMenu
     public void UpdateSelectedItemInfo(ConstructionMenuButton button)
     {
         selectedButton = button;
-        if (selectedButton == null)
-            Debug.Log("selected button == null");
-        else
-            Debug.Log("selected button = " + selectedButton.name);
+      // if (selectedButton == null)
+      //     Debug.Log("selected button == null");
+      // else
+      //     Debug.Log("selected button = " + selectedButton.name);
         if (button == null)
         {
             selectedItemName.text = "";
@@ -129,7 +129,7 @@ public class ConstructionMenu : ScrollMenu
 
     public override void AddButtons()
     {
-        Debug.Log("Blue print name = " + Blueprint.instance.name.ToString());
+        //Debug.Log("Blue print name = " + Blueprint.instance.name.ToString());
         List<GameObject> recipes = Blueprint.instance.Constructs;
         int recipeIndex = 0;
         //Sort alphabetically
@@ -159,7 +159,7 @@ public class ConstructionMenu : ScrollMenu
     {
         if (selectedButton == null)
         {
-            Debug.Log("NULL BITCHES");
+       //     Debug.Log("NULL BITCHES");
             return;
         }
 
@@ -167,7 +167,7 @@ public class ConstructionMenu : ScrollMenu
         {
             Destroy(Blueprint.instance.currentConstruct);
         }
-        Debug.Log("Assinginged current construct");
+     //   Debug.Log("Assinginged current construct");
         Blueprint.instance.currentConstruct = Instantiate((selectedButton as ConstructionMenuButton).recipe.gameObject);
         Blueprint.instance.currentConstruct.SetActive(true);
         PlayerInventory.instance.inMenu = false;

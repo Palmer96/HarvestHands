@@ -47,6 +47,11 @@ public class Blueprint : MonoBehaviour
             rotations++;
         }
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ConstructionCancel();
+        }
+
 
         //transform.GetChild(0).GetComponent<TextMesh>().text = Constructs[selectedConstruct].name;
 
@@ -83,7 +88,7 @@ public class Blueprint : MonoBehaviour
         }
 
     }
-    public  void PrimaryUse()
+    public void PrimaryUse()
     {
         if (currentConstruct == null)
         {
@@ -96,7 +101,7 @@ public class Blueprint : MonoBehaviour
         }
     }
 
-    public  void SecondaryUse()
+    public void SecondaryUse()
     {
         if (currentConstruct != null)
             ConstructionCancel();
@@ -139,17 +144,20 @@ public class Blueprint : MonoBehaviour
         if (currentConstruct.GetComponent<Construct>().canBuild)
         {
             currentConstruct.GetComponent<Construct>().Place();
-            currentConstruct = null;
+            // currentConstruct = null;
         }
     }
 
     public void ConstructionCancel()
     {
-        if (currentConstruct.GetComponent<Construct>().isNew)
-            Destroy(currentConstruct);
-        else
-            currentConstruct.GetComponent<Construct>().Cancel();
-
+        if (currentConstruct != null)
+        {
+            if (currentConstruct.GetComponent<Construct>().isNew)
+                Destroy(currentConstruct);
+            else
+                currentConstruct.GetComponent<Construct>().Cancel();
+            PlayerInventory.instance.bookOpen = false;
+        }
     }
 
 
@@ -205,7 +213,7 @@ public class BlueprintSave
                     continue;
 
                 if (constructName == construct.constructName)
-                { 
+                {
                     Blueprint.instance.Constructs.Add(constructPrefabType);
                     break;
                 }

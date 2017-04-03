@@ -6,6 +6,7 @@ public class Pickaxe : Item
 {
 
     public int level = 1;
+    public GameObject particle;
     // Use this for initialization
     void Start()
     {
@@ -58,10 +59,10 @@ public class Pickaxe : Item
                 used = true;
                 useTimer = useRate;
                 hit.transform.GetComponent<Rock>().Harvest();
-                if (level > 1)
-                    hit.transform.GetComponent<Rock>().Harvest();
-                if (level > 2)
-                    hit.transform.GetComponent<Rock>().Harvest();
+                GameObject part = Instantiate(particle, hit.point, transform.rotation);
+                part.transform.LookAt(transform.parent.position);
+               // part.transform.Rotate(0, 90, 0);
+                hit.transform.GetComponent<Rock>().Harvest();
                 //    Instantiate(wood, hit.point, transform.rotation);
             }
             else

@@ -25,6 +25,8 @@ public class Plant : MonoBehaviour
 
     public int strengthTimer;
     public GameObject finishedShine;
+    public GameObject deathParticle;
+    public bool died;
     public bool isWatered = false;
     public bool isAlive = true;
     public bool readyToHarvest = false;
@@ -117,6 +119,7 @@ public class Plant : MonoBehaviour
 
         //transform.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<RectTransform>().localPosition += new Vector3(0, 10, 0);
         UpdateStatus();
+        died = false;
     }
 
     // Update is called once per frame
@@ -156,6 +159,12 @@ public class Plant : MonoBehaviour
                 {
                     meshFilter.mesh = deadMesh;
                     meshCollider.sharedMesh = deadMesh;
+                    if (!died)
+                    {
+                        died = true;
+                        GameObject particle = Instantiate(deathParticle, transform.position, deathParticle.transform.rotation);
+                        particle.transform.SetParent(transform);
+                    }
                 }
                 break;
             case PlantState.Growing:
@@ -407,14 +416,14 @@ public class Plant : MonoBehaviour
     }
 
 
-    public void HarvestPlant(int level)
+    public int HarvestPlant(int level)
     {
         if (!isAlive)
         {
             if (soil != null)
                 soil.occupied = false;
-            Destroy(gameObject);
-            return;
+            return 2;
+            //return;
         }
         else if (readyToHarvest)
         {
@@ -428,18 +437,6 @@ public class Plant : MonoBehaviour
                 GameObject produce = (GameObject)Instantiate(harvestProduce, transform.position, transform.rotation);
                 produce.transform.position = transform.position;
                 produce.transform.position += new Vector3(0, 1, 0);
-                if (level > 1)
-                {
-                    GameObject produce2 = (GameObject)Instantiate(harvestProduce, transform.position + transform.up, transform.rotation);
-                    produce2.transform.position = transform.position;
-                    produce2.transform.position += new Vector3(0, 1, 0);
-                }
-                if (level > 2)
-                {
-                    GameObject produce3 = (GameObject)Instantiate(harvestProduce, transform.position + (transform.up * 2), transform.rotation);
-                    produce3.transform.position = transform.position;
-                    produce3.transform.position += new Vector3(0, 1, 0);
-                }
             }
 
             if (harvestsToRemove <= 0)
@@ -447,7 +444,7 @@ public class Plant : MonoBehaviour
                 isAlive = false;
                 if (soil != null)
                     soil.occupied = false;
-                Destroy(gameObject);
+                return 1;
             }
 
             //multiple times harvestable stuff
@@ -462,6 +459,7 @@ public class Plant : MonoBehaviour
             //      UpdatePlantMesh(PlantState.Grown);
             //  }
         }
+        return 0;
     }
 
 

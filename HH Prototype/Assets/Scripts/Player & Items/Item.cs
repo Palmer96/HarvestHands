@@ -98,6 +98,7 @@ public class Item : MonoBehaviour
             }
         }
     }
+
     public void HitUpdate()
     {
         if (moveing)
@@ -134,10 +135,12 @@ public class Item : MonoBehaviour
         {
             if (hit.transform.CompareTag("Building"))
             {
+                Debug.Log("AAAAAHHHHHH");
                 hit.transform.GetComponent<Building>().AddResource(gameObject);
             }
             else if (hit.transform.CompareTag("SellZone"))
             {
+                Debug.Log("WHAAATTT!!!");
                 hit.transform.GetComponent<SellChest>().AddToSell(gameObject);
             }
             else

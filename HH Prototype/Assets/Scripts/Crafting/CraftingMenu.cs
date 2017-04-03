@@ -31,6 +31,14 @@ public class CraftingMenu : ScrollMenu
             Destroy(this);
     }
 
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            DeactivateMenu();
+        }
+    }
+
 
     public List<CraftingRecipe> GetRecipeList()
     {
@@ -139,6 +147,7 @@ public class CraftingMenu : ScrollMenu
         dontHaveResourceList = new List<CraftingRecipe>();
         int recipeIndex = 0;
         //Sort alphabetically
+
         recipes.Sort(delegate (CraftingRecipe a, CraftingRecipe b)
         {
             return a.recipeName.CompareTo(b.recipeName);

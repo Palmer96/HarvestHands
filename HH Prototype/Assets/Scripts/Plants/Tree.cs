@@ -23,9 +23,9 @@ public class Tree : MonoBehaviour
     {
         if (woodAvaliable > 0)
         {
-            // Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
+             Instantiate(Wood, transform.GetChild(0).position, transform.GetChild(0).rotation);
            // Instantiate(Wood, new Vector3(pos.x, 6.5f, pos.z), transform.rotation);
-            Instantiate(Wood, pos, transform.rotation);
+            //Instantiate(Wood, pos, transform.rotation);
 
             woodAvaliable--;
             if (woodAvaliable == 0)

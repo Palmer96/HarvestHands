@@ -6,6 +6,8 @@ public class DestroyTimer : MonoBehaviour
 {
     public float startTimer = 2;
     public float timer;
+
+    public float speed = 0.1f;
     // Use this for initialization
     void Start()
     {
@@ -16,6 +18,10 @@ public class DestroyTimer : MonoBehaviour
     void Update()
     {
         timer -= Time.deltaTime;
+
+        transform.position += new Vector3(0, -speed, 0);
+
+
         if (timer < 0)
         {
             Destroy(gameObject);

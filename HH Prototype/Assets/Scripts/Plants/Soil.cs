@@ -17,9 +17,9 @@ public class Soil : MonoBehaviour
         if (occupied)
             return;
 
-        GameObject newPlant = Instantiate(plantPrefab);
-        newPlant.transform.position = transform.position;
+        GameObject newPlant = Instantiate(plantPrefab, transform.position, transform.rotation);
         newPlant.transform.parent = gameObject.transform;
+        newPlant.transform.localPosition = new Vector3(0,-1,0);
 
         Plant plant = newPlant.GetComponent<Plant>();
      //   plant.dayPlanted = DayNightController.instance.ingameDay;

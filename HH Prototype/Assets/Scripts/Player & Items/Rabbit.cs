@@ -238,32 +238,32 @@ public class Rabbit : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision col)
-    {
-        if (!nav.isActiveAndEnabled)
-        {
-            GetComponent<MeshCollider>().enabled = false;
-            GameObject[] parts = new GameObject[transform.childCount];
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                parts[i] = transform.GetChild(i).gameObject;
-            }
-
-            for (int i = 0; i < transform.childCount; i++)
-            {
-                transform.GetChild(i).GetComponent<Collider>().enabled = true;
-                transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
-
-                // transform.GetChild(i).GetComponent<Rigidbody>().AddForce(/*(col.transform.position - transform.position).normalized*/ col.transform.up * 1000);
-            }
-            transform.DetachChildren();
-
-            if (holdingPlant)
-            {
-                Instantiate(scraps, transform.position, transform.rotation);
-            }
-
-            Destroy(gameObject);
-        }
-    }
+  // void OnCollisionEnter(Collision col)
+  // {
+  //     if (!nav.isActiveAndEnabled)
+  //     {
+  //      //   GetComponent<MeshCollider>().enabled = false;
+  //      //   GameObject[] parts = new GameObject[transform.childCount];
+  //     //   for (int i = 0; i < transform.childCount; i++)
+  //     //   {
+  //     //       parts[i] = transform.GetChild(i).gameObject;
+  //     //   }
+  //     //
+  //     //   for (int i = 0; i < transform.childCount; i++)
+  //     //   {
+  //     //       transform.GetChild(i).GetComponent<Collider>().enabled = true;
+  //     //       transform.GetChild(i).GetComponent<Rigidbody>().isKinematic = false;
+  //     //
+  //     //       // transform.GetChild(i).GetComponent<Rigidbody>().AddForce(/*(col.transform.position - transform.position).normalized*/ col.transform.up * 1000);
+  //     //   }
+  //     //  // transform.DetachChildren();
+  //     //
+  //     //   if (holdingPlant)
+  //     //   {
+  //     //       Instantiate(scraps, transform.position, transform.rotation);
+  //     //   }
+  //
+  //     //    Destroy(gameObject);
+  //     }
+  // }
 }

@@ -14,6 +14,7 @@ public class CraftingRecipe : MonoBehaviour
     public RecipeType recipeType = RecipeType.UNASSIGNED;
     public string recipeName = "";
     public GameObject result;
+    public int quantity = 1;
     public string itemDescription = "";
     public List<CraftingManager.ResourceRequirement> requiredItems = new List<CraftingManager.ResourceRequirement>();
 
@@ -98,6 +99,7 @@ public class CraftingRecipe : MonoBehaviour
             }
         }
         GameObject newObject = (GameObject)Instantiate(result, PlayerInventory.instance.transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+        newObject.GetComponent<Item>().quantity = quantity;
         return newObject;
     }
 
