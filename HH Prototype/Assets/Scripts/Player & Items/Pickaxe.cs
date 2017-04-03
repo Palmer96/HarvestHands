@@ -19,6 +19,8 @@ public class Pickaxe : Item
     // Update is called once per frame
     void Update()
     {
+        if (!beingHeld)
+            return;
         if (moveing)
         {
             if (moveBack)
@@ -62,7 +64,6 @@ public class Pickaxe : Item
                 GameObject part = Instantiate(particle, hit.point, transform.rotation);
                 part.transform.LookAt(transform.parent.position);
                // part.transform.Rotate(0, 90, 0);
-                hit.transform.GetComponent<Rock>().Harvest();
                 //    Instantiate(wood, hit.point, transform.rotation);
             }
             else

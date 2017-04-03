@@ -53,6 +53,7 @@ public class PlayerInventory : MonoBehaviour
     public int selectedItemNum;
 
     public bool inMenu;
+    public bool inConversation;
     int oldnum;
 
     private float scrollTimer;
@@ -97,6 +98,7 @@ public class PlayerInventory : MonoBehaviour
         scrollTimer = 0.1f;
 
         inMenu = false;
+        inConversation = false;
 
         UpdateInventory();
         for (int i = 0; i < ItemHotbar.transform.childCount; i++)
@@ -129,7 +131,7 @@ public class PlayerInventory : MonoBehaviour
         UpdateItemMesh();
         UpdateImages();
 
-        if (!inMenu)
+        if (!inMenu && !inConversation)
         {
             if (!bookOpen)
             {
@@ -560,6 +562,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[selectedItemNum].transform.rotation);
                 droppedItem.SetActive(true);
                 droppedItem.GetComponent<Item>().quantity = 1;
+                droppedItem.GetComponent<Item>().beingHeld = false;
                 droppedItem.transform.parent = null;
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
@@ -595,6 +598,7 @@ public class PlayerInventory : MonoBehaviour
                     heldObjects[selectedItemNum].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[selectedItemNum].GetComponent<Item>().itemID < 10)
                     heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
+                heldObjects[selectedItemNum].GetComponent<Item>().beingHeld = false;
                 heldObjects[selectedItemNum] = null;
             }
         }
@@ -609,6 +613,7 @@ public class PlayerInventory : MonoBehaviour
                 GameObject droppedItem = Instantiate(heldObjects[inventorySlot], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[inventorySlot].transform.rotation);
                 droppedItem.SetActive(true);
                 droppedItem.GetComponent<Item>().quantity = 1;
+                droppedItem.GetComponent<Item>().beingHeld = false;
                 droppedItem.transform.parent = null;
                 droppedItem.GetComponent<Rigidbody>().isKinematic = false;
                 droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
@@ -644,6 +649,7 @@ public class PlayerInventory : MonoBehaviour
                     heldObjects[inventorySlot].GetComponent<MeshRenderer>().enabled = true;
                 if (heldObjects[inventorySlot].GetComponent<Item>().itemID < 10)
                     heldObjects[inventorySlot].GetComponent<Item>().UpdateMesh();
+                heldObjects[inventorySlot].GetComponent<Item>().beingHeld = false;
                 heldObjects[inventorySlot] = null;
             }
         }

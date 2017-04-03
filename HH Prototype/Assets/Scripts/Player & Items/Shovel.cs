@@ -23,6 +23,8 @@ public class Shovel : Item
     // Update is called once per frame
     void Update()
     {
+        if (!beingHeld)
+            return;
         if (moveing)
         {
             if (moveBack)

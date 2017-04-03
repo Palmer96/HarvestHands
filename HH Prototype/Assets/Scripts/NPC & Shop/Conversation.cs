@@ -116,7 +116,8 @@ public class Conversation : MonoBehaviour
 
     public void BeginConversation(VIDE_Assign diagToLoad, int startNode = -1)
     {
-        PlayerInventory.instance.inMenu = true;
+        PlayerInventory.instance.inConversation = true;
+
         //First step is to call BeginDialogue, passing the required VIDE_Assign component 
         //This will store the first Node data in dialogue.nodeData
         dialogue.BeginDialogue(diagToLoad);
@@ -192,7 +193,7 @@ public class Conversation : MonoBehaviour
             //This is called when we have reached the end of the conversation
             dialogue.EndDialogue(); //VIDE_Data will get reset along with nodeData.
             PlayerInventory.instance.transform.GetComponent<UnityStandardAssets.Characters.FirstPerson.FirstPersonController>().enabled = true;
-            PlayerInventory.instance.inMenu = false;
+            PlayerInventory.instance.inConversation = false;
             return;
         }
 

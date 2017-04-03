@@ -39,6 +39,8 @@ public class AnimalFeed : Item
 
     void Update()
     {
+        if (!beingHeld)
+            return;
         if (moveing)
         {
             if (moveBack)

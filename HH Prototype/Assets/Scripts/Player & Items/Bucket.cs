@@ -25,6 +25,8 @@ public class Bucket : Item
     void Update()
     {
         transform.GetChild(1).GetComponent<TextMesh>().text = currentWaterLevel.ToString();
+        if (!beingHeld)
+            return;
         if (moveing)
         {
             if (moveBack)

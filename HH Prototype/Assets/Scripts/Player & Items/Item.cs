@@ -87,7 +87,7 @@ public class Item : MonoBehaviour
     {
         Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
 
-        if (Physics.Raycast(new Ray(transform.position, new Vector3(0, 1, 0)), out hit))
+        if (Physics.Raycast(new Ray(transform.position, transform.position + new Vector3(0, 1, 0)), out hit))
         {
             if ((hit.point.y - 5) > transform.position.y)
             {
@@ -99,8 +99,10 @@ public class Item : MonoBehaviour
         }
     }
 
-    public void HitUpdate()
+    public virtual void HitUpdate()
     {
+        if (!beingHeld)
+            return;
         if (moveing)
         {
             if (moveBack)
@@ -121,6 +123,7 @@ public class Item : MonoBehaviour
             }
         }
     }
+
     public virtual void Move()
     {
         //if (moveing == false)
