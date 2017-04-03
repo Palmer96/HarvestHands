@@ -10,7 +10,6 @@ public class Bucket : Item
 
     public GameObject waterDrop;
 
-
     // Use this for initialization
     void Start()
     {

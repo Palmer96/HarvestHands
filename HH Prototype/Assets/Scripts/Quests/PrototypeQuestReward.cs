@@ -30,7 +30,7 @@ public class PrototypeQuestReward : MonoBehaviour
             Debug.Log("insside itemreward structs");
             if (reward.item.GetComponent<Item>() == null)
                 continue;
-            GameObject newObject = Instantiate(reward.item);
+            GameObject newObject = Instantiate(reward.item, PlayerInventory.instance.transform.position + new Vector3(0,0,2), transform.rotation);
             newObject.GetComponent<Item>().quantity = reward.quantity;
             PlayerInventory.instance.AddItem(newObject);
             Debug.Log("Inside itemereward structs finsih");

@@ -261,11 +261,13 @@ public class PlayerInventory : MonoBehaviour
                         //               heldObjects[selectedItemNum].GetComponent<Item>().Move();
                         //           else
                         //               hand.GetComponent<Hand>().Move();
-
-                        if (heldObjects[selectedItemNum] != null)
-                            heldObjects[selectedItemNum].GetComponent<Item>().Move();
-                        else
-                            hand.GetComponent<Item>().Move();
+                        if (!inConversation)
+                        {
+                            if (heldObjects[selectedItemNum] != null)
+                                heldObjects[selectedItemNum].GetComponent<Item>().Move();
+                            else
+                                hand.GetComponent<Item>().Move();
+                        }
 
                         if (lClickTimer < 0 && Physics.Raycast(ray, out hit, 5))
                         {
@@ -791,6 +793,7 @@ public class PlayerInventory : MonoBehaviour
             if (heldObjects[num] != null)
             {
                 itemImage[i].sprite = heldObjects[num].GetComponent<Item>().itemImage;
+                itemImage[i].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().itemName.ToString();
                 if (heldObjects[num].GetComponent<Item>().quantity > 1)
                     itemImage[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
                 else
@@ -800,6 +803,7 @@ public class PlayerInventory : MonoBehaviour
             {
                 itemImage[i].sprite = blankSprite;
                 itemImage[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+                itemImage[i].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = "";
             }
         }
 
@@ -816,6 +820,7 @@ public class PlayerInventory : MonoBehaviour
         if (heldObjects[num] != null)
         {
             itemImage[txt].sprite = heldObjects[num].GetComponent<Item>().itemImage;
+            itemImage[txt].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().itemName.ToString();
             if (heldObjects[num].GetComponent<Item>().quantity > 1)
                 itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
             else
@@ -825,6 +830,7 @@ public class PlayerInventory : MonoBehaviour
         {
             itemImage[txt].sprite = blankSprite;
             itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            itemImage[txt].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = "";
         }
 
 
@@ -839,6 +845,7 @@ public class PlayerInventory : MonoBehaviour
 
         if (heldObjects[num] != null)
         {
+            itemImage[txt].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().itemName.ToString();
             itemImage[txt].sprite = heldObjects[num].GetComponent<Item>().itemImage;
             if (heldObjects[num].GetComponent<Item>().quantity > 1)
                 itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
@@ -849,6 +856,7 @@ public class PlayerInventory : MonoBehaviour
         {
             itemImage[txt].sprite = blankSprite;
             itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            itemImage[txt].transform.GetChild(1).transform.GetComponentInChildren<Text>().text = "";
         }
     }
 
