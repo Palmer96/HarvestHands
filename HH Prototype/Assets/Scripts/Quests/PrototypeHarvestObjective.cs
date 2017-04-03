@@ -10,7 +10,7 @@ public class PrototypeHarvestObjective : QuestProtoypeObjective
 
     void Start()
     {
-        type = objectiveType.Construct;
+        type = objectiveType.Harvest;
     }
 
     public override void ActivateObjective()

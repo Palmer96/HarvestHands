@@ -17,7 +17,7 @@ public class Axe : Item
         itemCap = 1;
         MinimapManager.instance.CreateImage(transform, new Color(0.1f, 1f, 1.1f));
         SaveAndLoadManager.OnSave += Save;
-        Debug.Log(gameObject.layer);
+
     }
 
     // Update is called once per frame

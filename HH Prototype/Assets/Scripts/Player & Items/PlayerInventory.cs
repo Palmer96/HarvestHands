@@ -25,8 +25,8 @@ public class PlayerInventory : MonoBehaviour
     public int money = 0;
 
 
-    //  public GameObject ItemHotbar;
     public GameObject ItemHotbar;
+    public GameObject ItemHotbarSprites;
     public GameObject book;
     public GameObject hand;
 
@@ -37,13 +37,15 @@ public class PlayerInventory : MonoBehaviour
     public GameObject Dust;
     public bool bookOpen;
 
+    public Sprite blankSprite;
+
     //  public List<GameObject> heldObjects = new List<GameObject>();
     public List<GameObject> heldObjects = new List<GameObject>();
     //   public List<Sprite> itemSprites = new List<Sprite>();
     public List<Sprite> itemSprites = new List<Sprite>();
 
 
-    //  public List<Image> itemImage = new List<Image>();
+    public List<Image> itemImage = new List<Image>();
     public List<Text> itemText = new List<Text>();
 
 
@@ -101,11 +103,16 @@ public class PlayerInventory : MonoBehaviour
         inConversation = false;
 
         UpdateInventory();
+
         for (int i = 0; i < ItemHotbar.transform.childCount; i++)
         {
             itemText[i] = ItemHotbar.transform.GetChild(i).GetComponent<Text>();
         }
-        itemText[0].color = Color.yellow;
+        for (int i = 0; i < ItemHotbarSprites.transform.childCount; i++)
+        {
+            itemImage[i] = ItemHotbarSprites.transform.GetChild(i).GetComponent<Image>();
+        }
+        //  itemText[0].color = Color.yellow;
 
         disableLeft = true;
         disableRight = true;
@@ -389,16 +396,19 @@ public class PlayerInventory : MonoBehaviour
                         //     holdSlider.fillAmount = rClickTimer / rClickRate;
                         if (lClickTimer < 0 && Physics.Raycast(ray, out hit, 5))
                         {
-                            //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
-                            //  heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
-                            if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                            if (heldObjects[selectedItemNum] != null)
                             {
-                                heldObjects[selectedItemNum].GetComponent<Hammer>().Move();
                                 //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
-                                heldObjects[selectedItemNum].GetComponent<Hammer>().primary = false;
-                                lClickTimer = rClickRate;
-                                holdSlider.fillAmount = 0;
-                                //  disableRight = false;
+                                //  heldObjects[selectedItemNum].GetComponent<Item>().SecondaryUse();
+                                if (heldObjects[selectedItemNum].GetComponent<Hammer>() != null)
+                                {
+                                    heldObjects[selectedItemNum].GetComponent<Hammer>().Move();
+                                    //   heldObjects[selectedItemNum].GetComponent<Item>().use = true;
+                                    heldObjects[selectedItemNum].GetComponent<Hammer>().primary = false;
+                                    lClickTimer = rClickRate;
+                                    holdSlider.fillAmount = 0;
+                                    //  disableRight = false;
+                                }
                             }
                         }
                     }
@@ -766,8 +776,87 @@ public class PlayerInventory : MonoBehaviour
 
 
 
-
     void UpdateImages()
+    {
+        int num = selectedItemNum;
+
+        for (int i = 0; i < itemImage.Capacity - 1; i++)
+        {
+            num = selectedItemNum + i;
+            if (num >= heldObjects.Capacity)
+                num -= heldObjects.Capacity;
+            else if (num < 0)
+                num += heldObjects.Capacity;
+
+            if (heldObjects[num] != null)
+            {
+                itemImage[i].sprite = heldObjects[num].GetComponent<Item>().itemImage;
+                if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                    itemImage[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+                else
+                    itemImage[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
+            else
+            {
+                itemImage[i].sprite = blankSprite;
+                itemImage[i].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+            }
+        }
+
+
+
+
+        num = selectedItemNum - 2;
+        int txt = itemImage.Count - 2;
+        if (num >= heldObjects.Capacity)
+            num -= heldObjects.Capacity;
+        else if (num < 0)
+            num += heldObjects.Capacity;
+
+        if (heldObjects[num] != null)
+        {
+            itemImage[txt].sprite = heldObjects[num].GetComponent<Item>().itemImage;
+            if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+            else
+                itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        else
+        {
+            itemImage[txt].sprite = blankSprite;
+            itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+
+
+
+
+        num = selectedItemNum - 1;
+        txt = itemImage.Count - 1;
+        if (num >= heldObjects.Capacity)
+            num -= heldObjects.Capacity;
+        else if (num < 0)
+            num += heldObjects.Capacity;
+
+        if (heldObjects[num] != null)
+        {
+            itemImage[txt].sprite = heldObjects[num].GetComponent<Item>().itemImage;
+            if (heldObjects[num].GetComponent<Item>().quantity > 1)
+                itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = heldObjects[num].GetComponent<Item>().quantity.ToString();
+            else
+                itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+        else
+        {
+            itemImage[txt].sprite = blankSprite;
+            itemImage[txt].transform.GetChild(0).transform.GetComponentInChildren<Text>().text = "";
+        }
+    }
+
+
+
+
+
+    void UpdateText()
     {
         int num = selectedItemNum;
 

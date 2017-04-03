@@ -43,6 +43,7 @@ public class SellChest : MonoBehaviour
                 //Debug.Log(col.transform.name);
                 valueOfItems += item.value * item.quantity;
                 PlayerInventory.instance.money += item.value * item.quantity;
+                ScreenMessage.instance.CreateMessage("You sold " + item.quantity +  " " + item.itemName + " for $" + (item.value * item.quantity));
                 Destroy(sold);
             }
         }

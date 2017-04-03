@@ -77,13 +77,20 @@ public class Sickle : Item
                     used = true;
                     useTimer = useRate;
                     soil = hit.transform.parent.GetComponent<Soil>();
+                    if (soil != null)
+                        if (soil.weedInfestation != null)
+                            soil.weedInfestation.RemoveWeed();
                 }
+
 
                 else if (hit.transform.CompareTag("Soil"))
                 {
                     if (hit.transform.childCount > 0)
-                        hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
-                    used = true;
+                    {
+                        if (hit.transform.GetChild(0).GetComponent<Plant>() != null)
+                            hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
+                    }
+                    used = true;    
                     useTimer = useRate;
                     soil = hit.transform.GetComponent<Soil>();
                 }

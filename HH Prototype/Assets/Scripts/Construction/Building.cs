@@ -8,7 +8,10 @@ public class Building : MonoBehaviour
     {
         Wood,
         Rock,
-        Dirt
+        Dirt,
+        Glass,
+        Tiles,
+        Nails
     }
     [System.Serializable]
     public class ResourceRequired
@@ -65,10 +68,12 @@ public class Building : MonoBehaviour
                         {
                             resources[i].numHave += num;
                             item.GetComponent<Item>().DecreaseQuantity(num);
+                            ScreenMessage.instance.CreateMessage("Added " + num + " to " + constructName);
                         }
                         else
                         {
                             resources[i].numHave += item.GetComponent<Item>().quantity;
+                            ScreenMessage.instance.CreateMessage("Added " + item.GetComponent<Item>().quantity + " to " + constructName);
                             item.GetComponent<Item>().DecreaseQuantity(item.GetComponent<Item>().quantity);
                             Destroy(item);
                         }
@@ -79,10 +84,10 @@ public class Building : MonoBehaviour
         }
     }
 
-   void OnCollisionEnter(Collision col)
-   {
-       AddResource(col.gameObject);
-   }
+    void OnCollisionEnter(Collision col)
+    {
+        AddResource(col.gameObject);
+    }
 
 
 
@@ -124,30 +129,33 @@ public class Building : MonoBehaviour
         if (canBeMoved)
         {
 
-        for (int i = 0; i < resources.Count; i++)
-        {
-            //   Debug.Log
-            Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
-            GameObject obj = null;
-            for (int k = 0; k < ResourceManager.instance.resources.Length; k++)
+            for (int i = 0; i < resources.Count; i++)
             {
-                if (resources[i].resource.ToString() == ResourceManager.instance.resources[k].GetComponent<Item>().itemName)
-                    obj = ResourceManager.instance.resources[k];
+                //   Debug.Log
+                Debug.Log(resources[i].resource.ToString() + ": " + resources[i].numHave);
+                GameObject obj = null;
+                for (int k = 0; k < ResourceManager.instance.resources.Length; k++)
+                {
+                    if (resources[i].resource.ToString() == ResourceManager.instance.resources[k].GetComponent<Item>().itemName)
+                        obj = ResourceManager.instance.resources[k];
+                }
+
+                //  GameObject obj = SaveAndLoadManager.instance.instantiateableItems[i];
+
+
+
+                if (obj != null)
+                {
+                    if (resources[i].numHave > 0)
+                    {
+                        GameObject item = Instantiate(obj, transform.position + transform.up * 2, transform.rotation);
+                        item.GetComponent<Item>().quantity = resources[i].numHave;
+                    }
+                }
+                else
+                    Debug.Log("Fail");
             }
-
-            //  GameObject obj = SaveAndLoadManager.instance.instantiateableItems[i];
-
-
-
-            if (obj != null)
-            {
-                GameObject item = Instantiate(obj, transform.position + transform.up * 2, transform.rotation);
-                item.GetComponent<Item>().quantity = resources[i].numHave;
-            }
-            else
-                Debug.Log("Fail");
-        }
-        Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 
