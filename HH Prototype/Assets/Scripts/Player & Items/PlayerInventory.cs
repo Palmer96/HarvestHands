@@ -486,7 +486,7 @@ public class PlayerInventory : MonoBehaviour
             heldObjects[selectedItemNum].GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
             heldObjects[selectedItemNum].GetComponent<Rigidbody>().isKinematic = true;
             heldObjects[selectedItemNum].layer = 8;
-            for ( int i = 0; i < heldObjects[selectedItemNum].transform.childCount; i++)
+            for (int i = 0; i < heldObjects[selectedItemNum].transform.childCount; i++)
             {
                 heldObjects[selectedItemNum].transform.GetChild(i).gameObject.layer = 8;
             }
@@ -570,7 +570,7 @@ public class PlayerInventory : MonoBehaviour
                 if (droppedItem.GetComponent<MeshRenderer>() != null)
                     droppedItem.GetComponent<MeshRenderer>().enabled = true;
                 droppedItem.layer = 0;
-                for (int i = 0; i <droppedItem.transform.childCount; i++)
+                for (int i = 0; i < droppedItem.transform.childCount; i++)
                 {
                     droppedItem.transform.GetChild(i).gameObject.layer = 0;
                 }
@@ -736,28 +736,32 @@ public class PlayerInventory : MonoBehaviour
 
     public void DropAllofItem()
     {
-        GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[selectedItemNum].transform.rotation);
-        droppedItem.SetActive(true);
-        droppedItem.GetComponent<Item>().quantity = 1;
-        droppedItem.transform.parent = null;
-        droppedItem.GetComponent<Rigidbody>().isKinematic = false;
-        droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
-        droppedItem.GetComponent<Collider>().enabled = true;
-        if (droppedItem.GetComponent<MeshRenderer>() != null)
-            droppedItem.GetComponent<MeshRenderer>().enabled = true;
-        droppedItem.layer = 0;
-        for (int i = 0; i < droppedItem.transform.childCount; i++)
+        if (heldObjects[selectedItemNum] != null)
         {
-            droppedItem.transform.GetChild(i).gameObject.layer = 0;
+            GameObject droppedItem = Instantiate(heldObjects[selectedItemNum], transform.GetChild(0).position + (transform.GetChild(0).forward * 2), heldObjects[selectedItemNum].transform.rotation);
+            droppedItem.SetActive(true);
+            droppedItem.GetComponent<Item>().quantity = 1;
+            droppedItem.transform.parent = null;
+            droppedItem.GetComponent<Rigidbody>().isKinematic = false;
+            droppedItem.GetComponent<Rigidbody>().AddForce(transform.GetChild(0).forward * 500, ForceMode.Force);
+            droppedItem.GetComponent<Collider>().enabled = true;
+            if (droppedItem.GetComponent<MeshRenderer>() != null)
+                droppedItem.GetComponent<MeshRenderer>().enabled = true;
+            droppedItem.layer = 0;
+            for (int i = 0; i < droppedItem.transform.childCount; i++)
+            {
+                droppedItem.transform.GetChild(i).gameObject.layer = 0;
+            }
+            droppedItem.GetComponent<Item>().quantity = heldObjects[selectedItemNum].GetComponent<Item>().quantity;
+            heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
+            if (heldObjects[selectedItemNum].GetComponent<Item>().itemID > 10)
+                heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
+            if (droppedItem.GetComponent<Item>().itemID > 10)
+                droppedItem.GetComponent<Item>().UpdateMesh();
+            droppedItem.GetComponent<Item>().beingHeld = false;
+            Destroy(heldObjects[selectedItemNum]);
+            heldObjects[selectedItemNum] = null;
         }
-        droppedItem.GetComponent<Item>().quantity = heldObjects[selectedItemNum].GetComponent<Item>().quantity;
-        heldObjects[selectedItemNum].GetComponent<Item>().DecreaseQuantity();
-        if (heldObjects[selectedItemNum].GetComponent<Item>().itemID > 10)
-            heldObjects[selectedItemNum].GetComponent<Item>().UpdateMesh();
-        if (droppedItem.GetComponent<Item>().itemID > 10)
-            droppedItem.GetComponent<Item>().UpdateMesh();
-        Destroy(heldObjects[selectedItemNum]);
-        heldObjects[selectedItemNum] = null;
     }
 
 

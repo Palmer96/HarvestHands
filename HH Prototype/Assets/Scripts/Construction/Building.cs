@@ -17,8 +17,6 @@ public class Building : MonoBehaviour
         public int numRequired;
         public int numHave;
 
-        public int nameA;
-        public int nameB;
     }
 
 
@@ -32,6 +30,7 @@ public class Building : MonoBehaviour
     TextMesh text;
 
     bool moving;
+    public bool canBeMoved = true;
 
     public GameObject Construct;
     // Use this for initialization
@@ -122,6 +121,9 @@ public class Building : MonoBehaviour
 
     public void Deconstruct()
     {
+        if (canBeMoved)
+        {
+
         for (int i = 0; i < resources.Count; i++)
         {
             //   Debug.Log
@@ -146,6 +148,7 @@ public class Building : MonoBehaviour
                 Debug.Log("Fail");
         }
         Destroy(gameObject);
+        }
     }
 
     void OnDestroy()

@@ -12,6 +12,7 @@ public class Item : MonoBehaviour
 
     public int itemID;
     public string itemName;
+    public Sprite itemImage;
     public int quantity;
     public int value;
     public bool sellable;

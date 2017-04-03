@@ -31,6 +31,7 @@ public class HandTool : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             Conversation.instance.dialogue.EndDialogue();
+            PlayerInventory.instance.inConversation = false;
         }
 
         if (Input.GetKeyDown(KeyCode.E) || Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Return) || Input.GetButtonDown("Controller_" + Interact) || Input.GetButtonDown("Controller_A"))
