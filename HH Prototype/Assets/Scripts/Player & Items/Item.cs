@@ -86,15 +86,19 @@ public class Item : MonoBehaviour
 
     public void AllItemUpdate()
     {
-        Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-        if (Physics.Raycast(new Ray(transform.position, transform.position + new Vector3(0, 1, 0)), out hit))
+        if (!beingHeld)
         {
-            if ((hit.point.y - 5) > transform.position.y)
+            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+            if (Physics.Raycast(new Ray(transform.position, transform.position + new Vector3(0, 1, 0)), out hit))
             {
-                if (hit.transform.GetComponent<Terrain>())
+                if ((hit.point.y - 5) > transform.position.y)
                 {
-                    transform.position = hit.point + new Vector3(0, 1, 0);
+                    if (hit.transform.GetComponent<Terrain>())
+                    {
+                        transform.position = hit.point + new Vector3(0, 1, 0);
+                        Debug.Log("Deep inside AllItemUpdate");
+                    }
                 }
             }
         }
@@ -106,10 +110,14 @@ public class Item : MonoBehaviour
             return;
         if (moveing)
         {
+            Debug.Log("Inside Moving!!!");
             if (moveBack)
                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
             else
+            {
                 transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.1f);
+                   
+            }
 
             if (transform.localPosition.z > 2.4f)
                 moveBack = true;
