@@ -45,10 +45,15 @@ public class Construct : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-                if (transform.eulerAngles.x > 10 &&
-              transform.eulerAngles.x < 350 ||
-              transform.eulerAngles.z > 10 &&
-              transform.eulerAngles.z < 350)
+        Check();
+    }
+
+    public bool  Check()
+    {
+        if (transform.eulerAngles.x > 10 &&
+transform.eulerAngles.x < 350 ||
+transform.eulerAngles.z > 10 &&
+transform.eulerAngles.z < 350)
         {
             upRight = false;
         }
@@ -64,15 +69,15 @@ public class Construct : MonoBehaviour
             canBuild = true;
             for (int i = 0; i < mat.Length; i++)
                 mat[i].color = new Color(0, 1, 0, 0.5f);
+            return true;
         }
         else
         {
             canBuild = false;
             for (int i = 0; i < mat.Length; i++)
                 mat[i].color = new Color(1, 0, 0, 0.5f);
+            return false;
         }
-
-        //  colliding = false;
     }
 
     public void Place()

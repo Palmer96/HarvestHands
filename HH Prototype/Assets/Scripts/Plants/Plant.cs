@@ -231,6 +231,10 @@ public class Plant : MonoBehaviour
         harvestTimer -= time;
         waterLevel -= time * dryMultiplier;
         saplingMeshDuration -= time;
+         if (saplingMeshDuration <= 0)
+        {
+            plantState = PlantState.Growing;
+        }
 
         if (waterLevel < 0 && harvestTimer < 0)
         {
@@ -297,6 +301,7 @@ public class Plant : MonoBehaviour
                 plantState = PlantState.Growing;
             }
         }
+        else
 
         //If low water
         if (waterLevel < lowWater)

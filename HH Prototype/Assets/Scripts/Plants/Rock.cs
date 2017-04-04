@@ -27,9 +27,9 @@ public class Rock : MonoBehaviour
         SaveAndLoadManager.OnSave -= Save;
     }
 
-    public void Harvest()
+    public void Harvest(Vector3 pos)
     {
-        Instantiate(rock, spawnPoint.position, spawnPoint.rotation);
+        Instantiate(rock, pos, transform.rotation);
 
       //  rockAvaliable--;
      //   if (rockAvaliable == 0)

@@ -141,10 +141,13 @@ public class Blueprint : MonoBehaviour
 
     void ConstructionPlace()
     {
-        if (currentConstruct.GetComponent<Construct>().canBuild)
+        if (currentConstruct.GetComponent<Construct>().Check())
         {
-            currentConstruct.GetComponent<Construct>().Place();
-            // currentConstruct = null;
+
+            if (currentConstruct.GetComponent<Construct>().canBuild)
+            {
+                currentConstruct.GetComponent<Construct>().Place();
+            }
         }
     }
 

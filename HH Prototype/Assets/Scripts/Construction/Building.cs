@@ -84,10 +84,10 @@ public class Building : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision col)
-    {
-        AddResource(col.gameObject);
-    }
+  //  void OnCollisionEnter(Collision col)
+  //  {
+  //      AddResource(col.gameObject);
+  //  }
 
 
 

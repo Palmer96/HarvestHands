@@ -60,7 +60,7 @@ public class Pickaxe : Item
             {
                 used = true;
                 useTimer = useRate;
-                hit.transform.GetComponent<Rock>().Harvest();
+                hit.transform.GetComponent<Rock>().Harvest(hit.point);
                 GameObject part = Instantiate(particle, hit.point, transform.rotation);
                 part.transform.LookAt(transform.parent.position);
                // part.transform.Rotate(0, 90, 0);

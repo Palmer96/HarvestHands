@@ -138,10 +138,20 @@ public class PlayerInventory : MonoBehaviour
         UpdateItemMesh();
         UpdateImages();
 
+        if (inConversation)
+        {
+            if (heldObjects[selectedItemNum] != null && heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+            {
+                heldObjects[selectedItemNum].GetComponent<Bucket>().moveBack = true;
+            }
+        }
         if (!inMenu && !inConversation)
         {
             if (!bookOpen)
             {
+
+
+
                 Grid.transform.position = Vector3.Lerp(Grid.transform.position, new Vector3(0.5f, -0.1f, 0.5f), 0.1f);
                 Grid.GetComponent<Renderer>().material.color = Color.Lerp(Grid.GetComponent<Renderer>().material.color, gridColourDown, 0.1f);
                 if (Grid.transform.position.y < -0.09f)
@@ -149,6 +159,7 @@ public class PlayerInventory : MonoBehaviour
 
                 if (heldObjects[selectedItemNum] != null && heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                 {
+
                     waterLevel.gameObject.SetActive(true);
                     waterLevel.maxValue = heldObjects[selectedItemNum].GetComponent<Bucket>().maxWaterLevel;
                     waterLevel.value = heldObjects[selectedItemNum].GetComponent<Bucket>().currentWaterLevel;

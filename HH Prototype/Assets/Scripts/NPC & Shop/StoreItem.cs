@@ -51,11 +51,11 @@ public class StoreItem : MonoBehaviour
                 case "Item":
                     PlayerInventory.instance.money -= price;
                     //   newObject.transform.position = transform.position;
-                    newObject = (GameObject)Instantiate(objectToBuy, transform.position + new Vector3(-1.5f, 0, 0), transform.rotation);
-                    //if (PlayerInventory.instance.AddItem(newObject))
-                    //{
-                    //    newObject.transform.position += new Vector3(-1.5f, 0, 0);
-                    //}
+                    newObject = (GameObject)Instantiate(objectToBuy, transform.position + new Vector3(0, -100, 0), transform.rotation);
+                    if (!PlayerInventory.instance.AddItem(newObject))
+                    {
+                        newObject.transform.position = transform.position + new Vector3(-1.5f, 0, 0);
+                    }
                     break;
 
                // case "ConstructZone":
