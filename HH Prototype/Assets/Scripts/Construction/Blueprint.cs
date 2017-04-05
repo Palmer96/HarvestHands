@@ -42,9 +42,12 @@ public class Blueprint : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.R))
+        if (!Input.GetMouseButton(0))
         {
-            rotations++;
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                rotations++;
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))

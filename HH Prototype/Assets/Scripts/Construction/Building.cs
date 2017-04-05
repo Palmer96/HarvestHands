@@ -30,6 +30,8 @@ public class Building : MonoBehaviour
     private Vector3 oldPosition;
     private Quaternion oldRotation;
 
+    public GameObject spawn;
+
     TextMesh text;
 
     bool moving;
@@ -84,10 +86,10 @@ public class Building : MonoBehaviour
         }
     }
 
-  //  void OnCollisionEnter(Collision col)
-  //  {
-  //      AddResource(col.gameObject);
-  //  }
+    //  void OnCollisionEnter(Collision col)
+    //  {
+    //      AddResource(col.gameObject);
+    //  }
 
 
 
@@ -103,8 +105,16 @@ public class Building : MonoBehaviour
         }
         if (resources.Count == count)
         {
-            GameObject build = Instantiate(builtVersion, transform.position, transform.rotation);
-            build.tag = "Built";
+            GameObject build = null;
+
+            if (spawn != null)
+            {
+                 build = Instantiate(builtVersion, spawn.transform.position, spawn.transform.rotation);
+                Destroy(spawn);
+            }
+            else
+                 build = Instantiate(builtVersion, transform.position, transform.rotation);
+          //  build.tag = "Built";
             EventManager.ConstructEvent(constructName);
             Debug.Log("Construcing event - passing in = " + constructName);
             Destroy(gameObject);
