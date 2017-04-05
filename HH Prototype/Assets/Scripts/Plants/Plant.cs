@@ -301,7 +301,7 @@ public class Plant : MonoBehaviour
                 plantState = PlantState.Growing;
             }
         }
-        else
+
 
         //If low water
         if (waterLevel < lowWater)
