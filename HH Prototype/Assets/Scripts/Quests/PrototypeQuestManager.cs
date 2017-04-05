@@ -55,7 +55,7 @@ public class PrototypeQuestManager : MonoBehaviour
             //Skip completed quests
             if (quest.questComplete)
             {
-                Debug.Log("Inside if (quest.questcomplete");
+                //Debug.Log("Inside if (quest.questcomplete");
                 newCompletedQuests.Add(quest);
                 continue;
             }
@@ -71,7 +71,7 @@ public class PrototypeQuestManager : MonoBehaviour
             instance.ChangeActiveQuest();
         }
 
-
+        instance.UpdateNPCQuestMarkers();
         instance.UpdateQuestText();
     }
 
@@ -135,6 +135,72 @@ public class PrototypeQuestManager : MonoBehaviour
         SaveAndLoadManager.instance.saveData.questManagerSave = new QuestManagerSave(this);
         //Debug.Log("Saved item = " + name);
     }
+
+    public void UpdateNPCQuestMarkers()
+    {        
+        for (int i = 0; i < NPC.npcList.Count; ++i)
+        {
+            //Turn off npc marks
+            NPC.npcList[i].SetQuestMarkerVisible(false);
+            //Turn on marker if they have a quest to give
+            if (NPC.npcList[i].acceptableQuests.Count > 0)
+            {
+                NPC.npcList[i].SetQuestMarkerVisible(true);
+                Debug.Log("Turning on questmarker for " + NPC.npcList[i] + ": has quest to give");
+            }
+        }       
+        //Turn on npc marker if they are a goal of a quest which is not started yet but prerequisites are met
+        for (int i = 0; i < QuestGrabber.questList.Count; ++i)
+        {
+            //skip accepted quests        
+            if (!QuestGrabber.questList[i].questAccepted)
+            {
+                //if prerequisites completed
+                if (QuestGrabber.questList[i].prerequisites.Count > 0)
+                {
+
+                    if (QuestGrabber.questList[i].CheckPrerequisitesMet())
+                    {
+                        if (QuestGrabber.questList[i].objectives[0].type == QuestProtoypeObjective.objectiveType.Talk)
+                        {
+                            for (int j = 0; j < NPC.npcList.Count; ++j)
+                            {
+                                if (NPC.npcList[j].npcName == (QuestGrabber.questList[i].objectives[0] as PrototypeTalkObjective).goalName)
+                                {
+                                    NPC.npcList[j].SetQuestMarkerVisible(true);
+                                    Debug.Log("Turning on questmarker for " + NPC.npcList[i] + ": " + QuestGrabber.questList[i] + " prerequisites met");
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //Turn on npc marker if they are currently a talk objective goal
+        for (int i = 0; i < activeQuests.Count; ++i)
+        {
+            if (activeQuests[i].objectives[activeQuests[i].currentObjective].type == QuestProtoypeObjective.objectiveType.Talk)
+            {
+                for (int j = 0; j < NPC.npcList.Count; ++j)
+                {
+                    if ((activeQuests[i].objectives[activeQuests[i].currentObjective] as PrototypeTalkObjective).goalName == NPC.npcList[j].npcName)
+                    {
+                        if (NPC.npcList[j].npcName == "Melissa")
+                        {
+                            NPC.npcList[j].SetQuestMarkerVisible(true, "¿");
+                        }
+                        else
+                        {
+                            NPC.npcList[j].SetQuestMarkerVisible(true, "?");
+                            Debug.Log("Turning on questmarker for " + NPC.npcList[j] + ": talk objective goal: " + activeQuests[i].questName);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
 }
 
 [System.Serializable]
@@ -188,5 +254,5 @@ public class QuestManagerSave
         PrototypeQuestManager.instance.UpdateQuestText();
 
         return null;
-    }
+    }    
 }

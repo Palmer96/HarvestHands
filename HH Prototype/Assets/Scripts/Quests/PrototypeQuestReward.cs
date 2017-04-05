@@ -24,16 +24,16 @@ public class PrototypeQuestReward : MonoBehaviour
 
         rewardGiven = true;
         PlayerInventory.instance.money += money;
-        Debug.Log("Inside generate rewards");
+        //Debug.Log("Inside generate rewards");
         foreach (ItemRewardStruct reward in itemRewards)
         {
-            Debug.Log("insside itemreward structs");
+            //Debug.Log("insside itemreward structs");
             if (reward.item.GetComponent<Item>() == null)
                 continue;
             GameObject newObject = Instantiate(reward.item, PlayerInventory.instance.transform.position + new Vector3(0,0,2), transform.rotation);
             newObject.GetComponent<Item>().quantity = reward.quantity;
             PlayerInventory.instance.AddItem(newObject);
-            Debug.Log("Inside itemereward structs finsih");
+           // Debug.Log("Inside itemereward structs finsih");
         }
         foreach (GameObject reward in recipeRewards)
         {

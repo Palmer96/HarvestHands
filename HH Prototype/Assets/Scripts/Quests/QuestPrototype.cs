@@ -16,7 +16,7 @@ public class QuestPrototype : MonoBehaviour
 
     void Start()
     {
-        SaveAndLoadManager.OnSave += Save;
+        SaveAndLoadManager.OnSave += Save;       
     }
 
     public void StartQuest(int atObjective = 0)
@@ -26,6 +26,7 @@ public class QuestPrototype : MonoBehaviour
         questAccepted = true;
         objectives[atObjective].ActivateObjective();
         PrototypeQuestManager.instance.UpdateQuestText();
+        PrototypeQuestManager.instance.UpdateNPCQuestMarkers();
     }
 
     public void ActivateObjective(int objective = 0)

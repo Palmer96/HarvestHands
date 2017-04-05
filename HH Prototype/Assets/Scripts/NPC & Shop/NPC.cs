@@ -11,8 +11,10 @@ public class NPC : MonoBehaviour
     public List<QuestPrototype> questPool = new List<QuestPrototype>();
     public List<QuestPrototype> acceptableQuests = new List<QuestPrototype>();
 
-	// Use this for initialization
-	void Start () {
+    public TextMesh questMarker;
+
+    // Use this for initialization
+    void Start () {
         npcList.Add(this);
         SaveAndLoadManager.OnSave += Save;
 
@@ -21,7 +23,10 @@ public class NPC : MonoBehaviour
         //GetComponent<VIDE_Assign>().assignedDialogue = "Bob";  
         //Debug.Log(GetComponent<VIDE_Assign>().assignedDialogue);
 
-
+        SetQuestMarkerVisible(false);
+        if (questMarker != null)
+            if (acceptableQuests.Count > 0)
+                SetQuestMarkerVisible(true);
 
     }
 	
@@ -67,6 +72,15 @@ public class NPC : MonoBehaviour
         //PrototypeQuestManager.instance.activeQuests.Add(quest);
         acceptableQuests.RemoveAt(index);
         return quest;
+    }
+
+    public void SetQuestMarkerVisible(bool visible, string words = "!")
+    {
+        if (questMarker != null)
+        {
+            questMarker.GetComponent<MeshRenderer>().enabled = visible;
+            questMarker.text = words;
+        }
     }
 
     public virtual void Save()
