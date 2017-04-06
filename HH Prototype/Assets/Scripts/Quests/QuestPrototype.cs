@@ -56,7 +56,7 @@ public class QuestPrototype : MonoBehaviour
             questComplete = true;
             GenerateRewards();
             //QuestManager.instance.completedQuests.Add(this);            
-            Debug.Log("CONGRATULATIONS! QUEST COMPLETED!");
+            //Debug.Log("CONGRATULATIONS! QUEST COMPLETED!");
         }
         //PrototypeQuestManager.UpdateQuests();
         //PrototypeQuestManager.instance.UpdateQuestText();

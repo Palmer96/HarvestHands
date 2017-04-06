@@ -158,7 +158,10 @@ public class PrototypeQuestManager : MonoBehaviour
                 //if prerequisites completed
                 if (QuestGrabber.questList[i].prerequisites.Count > 0)
                 {
-
+                    if (QuestGrabber.questList[i].questName == "Farm for Sally 2.0")
+                    {
+                        Debug.Log("Farmforsally2.0 prerequisites = " + QuestGrabber.questList[i].CheckPrerequisitesMet());
+                    }
                     if (QuestGrabber.questList[i].CheckPrerequisitesMet())
                     {
                         if (QuestGrabber.questList[i].objectives[0].type == QuestProtoypeObjective.objectiveType.Talk)
@@ -168,7 +171,7 @@ public class PrototypeQuestManager : MonoBehaviour
                                 if (NPC.npcList[j].npcName == (QuestGrabber.questList[i].objectives[0] as PrototypeTalkObjective).goalName)
                                 {
                                     NPC.npcList[j].SetQuestMarkerVisible(true);
-                                    Debug.Log("Turning on questmarker for " + NPC.npcList[i] + ": " + QuestGrabber.questList[i] + " prerequisites met");
+                                    Debug.Log("Turning on questmarker for " + NPC.npcList[j] + ": " + QuestGrabber.questList[i] + " prerequisites met");
                                     break;
                                 }
                             }
