@@ -327,6 +327,7 @@ public class PlayerInventory : MonoBehaviour
 
                                 case "CraftingBench":
                                     CraftingMenu.instance.ActivateMenu();
+                                    if (GetComponent<Item>() != null)
                                     heldObjects[selectedItemNum].GetComponent<Item>().moveBack = true;
                                     break;
 
