@@ -17,80 +17,57 @@ public class WeedMaker : Item
     // Update is called once per frame
     void Update()
     {
-        if (used)
+        if (!beingHeld)
+            return;
+        if (moveing)
         {
-            useTimer -= Time.deltaTime;
-            if (useTimer < 0)
+            if (moveBack)
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2), 0.1f);
+            else
+                transform.localPosition = Vector3.Lerp(transform.localPosition, new Vector3(1.6f, -0.8f, 2.5f), 0.2f);
+
+            if (transform.localPosition.z > 2.4f)
             {
-                used = false;
+                moveBack = true;
+                PrimaryUse();
+            }
+            if (moveBack)
+            {
+                if (transform.localPosition.z < 2.01f)
+                {
+                    transform.localPosition = new Vector3(1.6f, -0.8f, 2);
+                    moveing = false;
+                    moveBack = false;
+                }
             }
         }
     }
 
     public override void PrimaryUse()
     {
-
-        //   if (!used)
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));        
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
-            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-            //Debug.Log("Axe");
-            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
             {
-                if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
-                {
-                    used = true;
-                    useTimer = useRate;
-                    //Get soil
-                    Soil soil;
-                    if (hit.transform.CompareTag("Soil"))
-                        soil = hit.transform.GetComponent<Soil>();
-                    else
-                        soil = hit.transform.parent.GetComponent<Soil>();
-                    //Add Weed
-                    if (soil != null)
-                        if (soil.weedInfestation == null)
-                        {
-                            GameObject newWeed = Instantiate(weed);
-                            newWeed.GetComponent<Weed>().InfestSoil(soil);
-                        }
-                }
+                used = true;
+                useTimer = useRate;
+                //Get soil
+                Soil soil;
+                if (hit.transform.CompareTag("Soil"))
+                    soil = hit.transform.GetComponent<Soil>();
                 else
-                    ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
+                    soil = hit.transform.parent.GetComponent<Soil>();
+                //Add Weed
+                if (soil != null)
+                    if (soil.weedInfestation == null)
+                    {
+                        GameObject newWeed = Instantiate(weed);
+                        newWeed.GetComponent<Weed>().InfestSoil(soil);
+                    }
             }
+            else
+                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
-
-    }
-
-   // public override void SecondaryUse()
-   // {
-   //     //   if (!used)
-   //     {
-   //         ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-   //         if (Physics.Raycast(ray, out hit, rayMaxDist))
-   //         {
-   //             if (hit.transform.CompareTag("Soil") || hit.transform.CompareTag("Plant"))
-   //             {
-   //                 used = true;
-   //                 useTimer = useRate;
-   //                 //Get soil
-   //                 Soil soil;
-   //                 if (hit.transform.CompareTag("Soil"))
-   //                     soil = hit.transform.GetComponent<Soil>();
-   //                 else
-   //                     soil = hit.transform.parent.GetComponent<Soil>();
-   //                 //Add Weed
-   //                 if (soil != null)
-   //                     if (soil.weedInfestation == null)
-   //                     {
-   //                         GameObject newWeed = Instantiate(weed);
-   //                         newWeed.GetComponent<Weed>().InfestSoil(soil);
-   //                     }
-   //             }
-   //             else
-   //                 ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-   //         }
-   //     }
-   //
-   // }
+    }    
 }

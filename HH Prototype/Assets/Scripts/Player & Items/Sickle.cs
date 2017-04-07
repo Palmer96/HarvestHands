@@ -52,57 +52,51 @@ public class Sickle : Item
 
     public override void PrimaryUse()
     {
+        ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
+
+        if (Physics.Raycast(ray, out hit, rayMaxDist))
         {
-            ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
-
-            Debug.Log("Sickle");
-            if (Physics.Raycast(ray, out hit, rayMaxDist))
+            used = true;
+            useTimer = useRate;
+            //Get plant && soil references
+            Soil soil = null;
+            Plant plant = null;
+            if (hit.transform.CompareTag("Soil"))
             {
-                Soil soil = null;
-
-                if (hit.transform.CompareTag("Plant"))
-                {
-                    int temp = hit.transform.GetComponent<Plant>().HarvestPlant(level);
-                    if (temp > 0)
-                    {
-                        GameObject part = null;
-                        if (temp == 1)
-                            part = Instantiate(particle, hit.point, transform.rotation);
-                        else
-                            part = Instantiate(particleDead, hit.point, transform.rotation);
-                        part.transform.LookAt(transform.position);
-                        part.transform.Rotate(0, 90, 0);
-                        Destroy(hit.transform.gameObject);
-                    }
-                    used = true;
-                    useTimer = useRate;
-                    soil = hit.transform.parent.GetComponent<Soil>();
-                    if (soil != null)
-                        if (soil.weedInfestation != null)
-                            soil.weedInfestation.RemoveWeed();
-                }
-
-
-                else if (hit.transform.CompareTag("Soil"))
-                {
-                    if (hit.transform.childCount > 0)
-                    {
-                        if (hit.transform.GetChild(0).GetComponent<Plant>() != null)
-                            hit.transform.GetChild(0).GetComponent<Plant>().HarvestPlant(level);
-                    }
-                    used = true;    
-                    useTimer = useRate;
-                    soil = hit.transform.GetComponent<Soil>();
-                }
-                else
-                    ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
-
-                if (soil != null)
-                    if (soil.weedInfestation != null)
-                        soil.weedInfestation.RemoveWeed();
+                soil = hit.transform.GetComponent<Soil>();
+                if (hit.transform.childCount > 0)
+                    plant = hit.transform.GetChild(0).GetComponent<Plant>();
             }
+            else if (hit.transform.CompareTag("Plant"))
+            {
+                plant = hit.transform.GetComponent<Plant>();
+                if (plant != null)
+                    soil = plant.soil;
+            }
+            //Check for weed removal
+            if (soil != null && soil.weedInfestation != null)
+            {
+                soil.weedInfestation.RemoveWeed();
+            }
+            //Else try harvest
+            else if (plant != null)
+            {
+                int temp = plant.HarvestPlant(level);
+                if (temp > 0)
+                {
+                    GameObject particles = null;
+                    if (temp == 1)
+                        particles = Instantiate(particle, hit.point, transform.rotation);
+                    else
+                        particles = Instantiate(particleDead, hit.point, transform.rotation);
+                    particles.transform.LookAt(transform.position);
+                    particles.transform.Rotate(0, 90, 0);
+                    Destroy(plant.gameObject);
+                }
+            }
+            else
+                ScreenMessage.instance.CreateMessage("You cannot use " + itemName + " here");
         }
-
     }
 
     void OnTriggerEnter(Collider col)

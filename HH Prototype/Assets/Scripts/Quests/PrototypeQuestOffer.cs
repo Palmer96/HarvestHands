@@ -33,6 +33,10 @@ public class PrototypeQuestOffer : MonoBehaviour
         else if (Input.GetKeyDown(declineButton))
         {
             questBoardSource.potentialQuests.Add(questOffered);
+            if (questBoardSource.potentialQuests.Count == 0)
+                questBoardSource.transform.GetChild(0).gameObject.SetActive(false);
+            else
+                questBoardSource.transform.GetChild(0).gameObject.SetActive(true);
 
             PlayerInventory.instance.eUsed = false;
 

@@ -229,14 +229,14 @@ public class PlayerInventory : MonoBehaviour
                             case "Plant":
                                 if (heldObjects[selectedItemNum] != null)
                                 {
-                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                    //if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                         hit.transform.GetComponent<Plant>().highlighted = true;
                                 }
                                 break;
                             case "Soil":
                                 if (heldObjects[selectedItemNum] != null)
                                 {
-                                    if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
+                                    //if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
                                     {
                                         for (int i = 0; i < hit.transform.childCount; ++i)
                                         {
