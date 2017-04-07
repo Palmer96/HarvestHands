@@ -546,7 +546,7 @@ public class PlayerInventory : MonoBehaviour
                 heldObjects[selectedItemNum].GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
                 heldObjects[i].GetComponent<Rigidbody>().isKinematic = true;
                 heldObjects[i].layer = 8;
-                for (int j = 0; i < heldObjects[i].transform.childCount; j++)
+                for (int j = 0; j < heldObjects[i].transform.childCount; j++)
                 {
                     heldObjects[i].transform.GetChild(j).gameObject.layer = 8;
                 }

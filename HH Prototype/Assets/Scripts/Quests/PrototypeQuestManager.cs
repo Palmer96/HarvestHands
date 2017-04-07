@@ -23,7 +23,17 @@ public class PrototypeQuestManager : MonoBehaviour
         else if (instance != this)
         {
             Destroy(gameObject);
-        }       
+        }
+        if (activeQuests.Count > 0)
+        {
+            for (int i = 0; i < activeQuests.Count; ++i)
+            {
+                activeQuests[i].questAccepted = true;
+                activeQuests[i].objectives[activeQuests[i].currentObjective].ActivateObjective();
+            }
+            UpdateQuestText();
+            UpdateNPCQuestMarkers();
+        }
         UpdateQuestText();
     }
 
