@@ -15,11 +15,15 @@ public class MovementTracker : MonoBehaviour
     public GameObject Dot;
     int posSize;
 
+    public Gradient col;
+    public int highest;
+
     // Use this for initialization
     void Start()
     {
         timer = rate;
         count = 0;
+        highest = 0;
     }
 
     // Update is called once per frame
@@ -46,17 +50,25 @@ public class MovementTracker : MonoBehaviour
         {
             Save();
         }
-
         if (Input.GetKeyDown(KeyCode.P))
         {
+            Save2();
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
             Load();
+        }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Load2();
         }
 
     }
 
     void OnApplicationClose()
     {
-        Save();
+     //   Save();
     }
     public void Save()
     {
@@ -67,15 +79,39 @@ public class MovementTracker : MonoBehaviour
 
         data.posSize = posSize;
 
-        data.posX = new float[posSize];
-        data.posY = new float[posSize];
-        data.posZ = new float[posSize];
+        data.posX = new int[posSize];
+        data.posY = new int[posSize];
+        data.posZ = new int[posSize];
 
         for (int i = 0; i < posSize; i++)
         {
-            data.posX[i] = pos[i].x;
-            data.posY[i] = pos[i].y;
-            data.posZ[i] = pos[i].z;
+            data.posX[i] = (int)Mathf.Round(pos[i].x);
+            data.posY[i] = (int)Mathf.Round(pos[i].y);
+            data.posZ[i] = (int)Mathf.Round(pos[i].z);
+        }
+
+        bf.Serialize(file, data);
+        file.Close();
+    }
+
+    public void Save2()
+    {
+        BinaryFormatter bf = new BinaryFormatter();
+        FileStream file = File.Open(Application.persistentDataPath + "/playerInfo2.dat", FileMode.Open);
+
+        SaveData data = new SaveData();
+
+        data.posSize = posSize;
+
+        data.posX = new int[posSize + data.posSize];
+        data.posY = new int[posSize + data.posSize];
+        data.posZ = new int[posSize + data.posSize];
+
+        for (int i = posSize; i < data.posSize; i++)
+        {
+            data.posX[i] = (int)Mathf.Round(pos[i-posSize].x);
+            data.posY[i] = (int)Mathf.Round(pos[i-posSize].y);
+            data.posZ[i] = (int)Mathf.Round(pos[i-posSize].z);
         }
 
         bf.Serialize(file, data);
@@ -92,7 +128,8 @@ public class MovementTracker : MonoBehaviour
             file.Close();
 
             posSize = data.posSize;
-            
+
+            //  pos.Clear();
             pos = new Vector3[posSize];
 
 
@@ -103,9 +140,39 @@ public class MovementTracker : MonoBehaviour
                 pos[i].y = data.posY[i];
                 pos[i].z = data.posZ[i];
             }
-            //pos.Add(new Vector3(data.posX, data.posY, data.posZ));
+
+
+
+            for (int i = 0; i < pos.Length; i++)
+            {
+               GameObject dot = Instantiate(Dot, pos[i], transform.rotation);
+                dot.GetComponent<HeatmapDot>().Tracker = gameObject;
+            }
+        }
+    }
+    void Load2()
+    { 
+        if (File.Exists(Application.persistentDataPath + "/playerInfo2.dat"))
+        {
+            BinaryFormatter bf = new BinaryFormatter();
+            FileStream file = File.Open(Application.persistentDataPath + "/playerInfo2.dat", FileMode.Open);
+            SaveData data = (SaveData)bf.Deserialize(file);
+            file.Close();
+
+            // posSize = data.posSize;
+
             //  pos.Clear();
-            // pos.Add(new Vector3(data.posX[i], data.posY[i], data.posZ[i]));
+            pos = new Vector3[posSize + data.posSize];
+
+
+            for (int i = posSize; i < data.posSize; i++)
+            {
+
+                pos[i].x = data.posX[i];
+                pos[i].y = data.posY[i];
+                pos[i].z = data.posZ[i];
+            }
+
 
 
             for (int i = 0; i < pos.Length; i++)
@@ -113,15 +180,17 @@ public class MovementTracker : MonoBehaviour
                 Instantiate(Dot, pos[i], transform.rotation);
             }
         }
+
     }
+
 
     [Serializable]
     class SaveData
     {
         public int posSize;
-        public float[] posX;
-        public float[] posY;
-        public float[] posZ;
+        public int[] posX;
+        public int[] posY;
+        public int[] posZ;
     }
 
 }
