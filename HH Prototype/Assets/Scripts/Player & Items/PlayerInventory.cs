@@ -27,7 +27,6 @@ public class PlayerInventory : MonoBehaviour
 
     public GameObject ItemHotbar;
     public GameObject ItemHotbarSprites;
-    public GameObject book;
     public GameObject hand;
 
     public GameObject Grid;

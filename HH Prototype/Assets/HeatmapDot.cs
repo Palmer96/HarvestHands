@@ -14,21 +14,20 @@ public class HeatmapDot : MonoBehaviour
     }
 
     public HeatColour heatColour = HeatColour.Red;
-    public GameObject Tracker;
     public int count;
-    Color col;
+  public  Color col;
     // Use this for initialization
     void Start()
     {
         count = 0;
-        col = GetComponent<Renderer>().material.GetColor("_MainColor");
+       // col = GetComponent<Renderer>().material.GetColor("_MainColor");
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        //   GetComponent<Renderer>().material.SetColor("_MainColor", Tracker.GetComponent<MovementTracker>().GetColour(count));
+        //    GetComponent<Renderer>().material.SetColor("_MainColor", MovementTracker.instance.GetColour(count));
         switch (heatColour)
         {
             case HeatColour.Red:
@@ -42,16 +41,23 @@ public class HeatmapDot : MonoBehaviour
 
                 break;
         }
-        
+
         //    transform.localScale = new Vector3(1,1,1) +  (new Vector3(0.001f, 0.001f, 0.001f) * count);
     }
 
+    public void SetColour(Color colour)
+    {
+        GetComponent<SpriteRenderer>().color = colour;
+      //  GetComponent<SpriteRenderer>().color = new Color(col.r, col.g - ((count * 10) / 255f), col.b, col.a);
+     //  GetComponent<Renderer>().material.SetColor("_MainColor", new Color(col.r, col.g - (count / 255f), col.b, 1));
+    //    GetComponent<Renderer>().material.SetColor("_MainColor", new Color(col.r, col.g - (count / 255f), col.b, col.a));
+    }
     void OnTriggerEnter(Collider other)
     {
 
-        if (other.transform.CompareTag("HeatDot"))
-        {
-            count += 10;
-        }
+      //  if (other.transform.CompareTag("HeatDot"))
+      //  {
+      //      count += 10;
+      //  }
     }
 }

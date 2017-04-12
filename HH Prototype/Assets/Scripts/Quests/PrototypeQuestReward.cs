@@ -43,7 +43,7 @@ public class PrototypeQuestReward : MonoBehaviour
         }
         foreach (GameObject reward in blueprintRewards)
         {
-            PlayerInventory.instance.book.GetComponent<Blueprint>().Constructs.Add(reward);
+            PlayerInventory.instance.transform.GetComponent<Blueprint>().Constructs.Add(reward);
         }
     }
 }
