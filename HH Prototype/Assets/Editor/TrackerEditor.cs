@@ -17,14 +17,9 @@ public class TrackerEditor : Editor {
         EditorGUILayout.HelpBox("Functions", MessageType.Info);
 
 
-        if (GUILayout.Button("Load"))
+        if (GUILayout.Button("Load Single"))
         {
-            myTarget.Load();
-        }
-
-        if (GUILayout.Button("Load2"))
-        {
-            myTarget.Load2();
+            myTarget.LoadSingle();
         }
 
         if (GUILayout.Button("Load All"))
