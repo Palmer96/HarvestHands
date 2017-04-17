@@ -209,7 +209,9 @@ public class Conversation : MonoBehaviour
                 if (npcText.text != data.npcComment[data.npcCommentIndex])
                 {
                     npcText.text = "";
+
                     StartCoroutine(AnimateText());
+                    
                 }
 
             npcName.text = data.tag;
@@ -221,6 +223,12 @@ public class Conversation : MonoBehaviour
 
     //This uses the returned string[] from nodeData.playerComments to create the UIs for each comment
     //It first cleans, then it instantiates new options
+    public void Escape()
+    {
+        dialogue.EndDialogue();
+        StopCoroutine(AnimateText());
+        animatingText = false;
+    }
     public void SetOptions(string[] opts)
     {
         //Destroy the current options

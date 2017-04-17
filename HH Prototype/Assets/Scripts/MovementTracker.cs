@@ -218,7 +218,7 @@ public class MovementTracker : MonoBehaviour
         highest = 0;
         for (int i = 0; i < count.Count; i++)
         {
-            if (count[i] > highestMax)
+            if (count[i] < highestMax)
             {
                 if (count[i] > highest)
                     highest = count[i];

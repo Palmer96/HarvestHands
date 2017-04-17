@@ -30,7 +30,9 @@ public class HandTool : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Conversation.instance.dialogue.EndDialogue();
+            Conversation.instance.Escape();
+         //   Conversation.instance.dialogue.EndDialogue();
+            Conversation.instance.dialogue.assigned = null;
             PlayerInventory.instance.inConversation = false;
         }
 
