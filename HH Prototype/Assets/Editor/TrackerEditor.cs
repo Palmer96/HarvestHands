@@ -27,6 +27,15 @@ public class TrackerEditor : Editor {
             myTarget.LoadAll();
         }
 
+        if (GUILayout.Button("Fake Pos"))
+        {
+            myTarget.FakePos();
+        }
+        if (GUILayout.Button("Fake Load"))
+        {
+            myTarget.LoadFake();
+        }
+
         if (GUILayout.Button("Clear"))
         {
             myTarget.Clear();

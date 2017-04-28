@@ -23,8 +23,6 @@ public class MovementTracker : MonoBehaviour
     public GameObject Dot;
     int posSize;
 
-    public Gradient col;
-
     public Transform Movement;
 
     public Terrain terrain;
@@ -35,6 +33,9 @@ public class MovementTracker : MonoBehaviour
     public FileInfo[] infoArray;
 
     public string loadFileName;
+
+    public float xSize;
+    public float ySize;
 
     // Use this for initialization
     void Start()
@@ -70,10 +71,67 @@ public class MovementTracker : MonoBehaviour
 
     void OnApplicationQuit()
     {
-        if (Application.platform == RuntimePlatform.WindowsPlayer)
-            Save();
+        //   if (Application.platform == RuntimePlatform.WindowsPlayer)
+        Save();
     }
 
+    public void FakePos()
+    {
+        int num = 150;
+        Clear();
+        pos = new Vector2[num * num + 1];
+        count.Clear();
+        for (int i = 0; i < num; i++)
+        {
+            for (int j = 0; j < num; j++)
+            {
+                pos[i * j] = new Vector2(i, j);
+            }
+        }
+    }
+
+    public void LoadFake()
+    {
+
+      // heat = new List<Vector2>();
+      // count = new List<int>();
+
+       // for (int i = 0; i < pos.Length; i++)
+       // {
+       //     bool toAdd = true;
+       //   //  for (int j = 0; j < heat.Count; j++)
+       //   //  {
+       //   //      if (heat[j] == pos[i])
+       //   //      {
+       //   //          count[j]++;
+       //   //          toAdd = false;
+       //   //          break;
+       //   //      }
+       //   //  }
+       //     if (toAdd)
+       //     {
+       //         heat.Add(pos[i]);
+       //         count.Add(1);
+       //     }
+       // }
+       // highest = 0;
+       // for (int i = 0; i < count.Count; i++)
+       // {
+       //     if (count[i] <= highestMax)
+       //     {
+       //         if (count[i] > highest)
+       //             highest = count[i];
+       //     }
+       // }
+
+        for (int i = 0; i < pos.Length; i++)
+        {
+            GameObject dot = Instantiate(Dot, new Vector3(pos[i].x, 120, pos[i].y), Dot.transform.rotation);
+            dot.transform.SetParent(Movement);
+         //   dot.GetComponent<HeatmapDot>().count = count[i];
+         //   dot.GetComponent<HeatmapDot>().SetColour(grdnt.Evaluate(((float)count[i] / highest)));
+        }
+    }
     public void Save()
     {
         if (!File.Exists(Application.dataPath + "/SaveFiles"))
@@ -149,8 +207,11 @@ public class MovementTracker : MonoBehaviour
             highest = 0;
             for (int i = 0; i < count.Count; i++)
             {
-                if (count[i] > highest)
-                    highest = count[i];
+                if (count[i] <= highestMax)
+                {
+                    if (count[i] > highest)
+                        highest = count[i];
+                }
             }
 
             for (int i = 0; i < heat.Count; i++)
@@ -218,20 +279,39 @@ public class MovementTracker : MonoBehaviour
         highest = 0;
         for (int i = 0; i < count.Count; i++)
         {
-            if (count[i] < highestMax)
+            if (count[i] <= highestMax)
             {
                 if (count[i] > highest)
                     highest = count[i];
             }
         }
 
+        float xMin = 10000;
+        float xMax = 0;
+        float yMin = 10000;
+        float yMax = 0;
+
         for (int i = 0; i < heat.Count; i++)
         {
+            if (heat[i].x > xMax)
+                xMax = heat[i].x;
+            if (heat[i].x < xMin)
+                xMin = heat[i].x;
+
+            if (heat[i].y > yMax)
+                yMax = heat[i].y;
+            if (heat[i].y < yMin)
+                yMin = heat[i].y;
+
+
             GameObject dot = Instantiate(Dot, new Vector3(heat[i].x, 0, heat[i].y), Dot.transform.rotation);
             dot.transform.SetParent(Movement);
             dot.GetComponent<HeatmapDot>().count = count[i];
             dot.GetComponent<HeatmapDot>().SetColour(grdnt.Evaluate(((float)count[i] / highest)));
         }
+
+        xSize = xMax - xMin;
+        ySize = yMax - yMin;
     }
 
 

@@ -229,7 +229,7 @@ public class PlayerInventory : MonoBehaviour
                                 if (heldObjects[selectedItemNum] != null)
                                 {
                                     //if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                                        hit.transform.GetComponent<Plant>().highlighted = true;
+                                    hit.transform.GetComponent<Plant>().highlighted = true;
                                 }
                                 break;
                             case "Soil":
@@ -327,7 +327,7 @@ public class PlayerInventory : MonoBehaviour
                                 case "CraftingBench":
                                     CraftingMenu.instance.ActivateMenu();
                                     if (GetComponent<Item>() != null)
-                                    heldObjects[selectedItemNum].GetComponent<Item>().moveBack = true;
+                                        heldObjects[selectedItemNum].GetComponent<Item>().moveBack = true;
                                     break;
 
                                 case "Livestock":
@@ -363,16 +363,7 @@ public class PlayerInventory : MonoBehaviour
 
                     if (Input.GetMouseButtonUp(0))
                     {
-                        if (heldObjects[selectedItemNum] != null)
-                        {
-
-                            if (heldObjects[selectedItemNum].GetComponent<Bucket>() != null)
-                            {
-                                lClickTimer = lClickRate;
-                                heldObjects[selectedItemNum].GetComponent<Bucket>().moveBack = true;
-                                heldObjects[selectedItemNum].GetComponent<Bucket>().used = true;
-                            }
-                        }
+                        StopBucket();
 
                     }
 
@@ -453,8 +444,26 @@ public class PlayerInventory : MonoBehaviour
                 }
             }
         }
+        else
+            StopBucket();
     }
 
+    public void StopBucket()
+    {
+        for (int i = 0; i < heldObjects.Count; i++)
+        {
+        if (heldObjects[i] != null)
+        {
+            if (heldObjects[i].GetComponent<Bucket>() != null)
+            {
+                lClickTimer = lClickRate;
+                heldObjects[i].GetComponent<Bucket>().moveBack = true;
+                heldObjects[i].GetComponent<Bucket>().used = true;
+            }
+        }
+
+        }
+    }
 
     public bool AddItem(GameObject item)
     {
@@ -1073,7 +1082,7 @@ public class PlayerInventory : MonoBehaviour
         {
             if ((Input.GetAxis("Mouse ScrollWheel") > 0.05f) || Input.GetButton("Controller_" + iSelectDown))
             {
-
+                StopBucket();
                 if (selectedItemNum > 0)
                 {
                     selectedItemNum--;
@@ -1087,6 +1096,7 @@ public class PlayerInventory : MonoBehaviour
 
             if ((Input.GetAxis("Mouse ScrollWheel") < -0.05f) || Input.GetButton("Controller_" + iSelectUp))
             {
+                StopBucket();
                 if (selectedItemNum < heldObjects.Capacity - 1)
                 {
                     selectedItemNum++;
